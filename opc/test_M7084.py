@@ -22,6 +22,8 @@ class TestM7084(unittest.TestCase):
         self.m7084 = icpdas.M7084(self.master2, 3)
         self.di = owenio.DI16(self.master, 9)
         self.do = owenio.DO32(self.master, 5)
+        self.enable_first = True
+        self.enable_second = True
 
     def tearDown(self):
         self.master.close()

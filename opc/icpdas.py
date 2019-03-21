@@ -8,6 +8,10 @@ except Exception as exc:
     import bitwise
 
 
+class M7084onlyE(M7084):
+    """быстроопрашиваемый частотомер - только первый и третий каналы (2 энкодера)"""
+
+
 class M7084:
     """частотомер icp das M7084"""
 
@@ -24,10 +28,27 @@ class M7084:
         self.time = time.time()
         self.value = [0] * 8
         self._resp = []
+        self.chanel_03 = True
+        self.chanel_47 = True
 
     def _read_data(self):
         if self.port:
-            return self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
+            if self.chanel_03 and self.chanel_47:
+                return self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
+            elif self.chanel_03:
+                a = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 2)
+                b = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 4, 2)
+                c = [0] * 16
+                c[0] = c[2] = a[0]
+                c[1] = c[3] = a[1]
+                c[4] = c[6] = b[0]
+                c[5] = c[7] = b[1]
+                return c
+            elif self.chanel_47:
+                a = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 8, 8)
+                c = [0] * 8
+                return c + a
+            return [0] * 16
         else:
             return [0] * 16
 
@@ -106,18 +127,3 @@ class M7084:
         if len(self._resp) >= 10:
             self._resp = self._resp[1:]
         self._resp.append(value)
-
-
-class M7084onlyE(M7084):
-    def _read_data(self):
-        if self.port:
-            a = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 2)
-            b = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 4, 2)
-            c = [0] * 16
-            c[0] = c[2] = a[0]
-            c[1] = c[3] = a[1]
-            c[4] = c[6] = b[0]
-            c[5] = c[7] = b[1]
-            return c
-        else:
-            return [0] * 16

@@ -52,6 +52,7 @@ class Pchv(QtCore.QObject):
         self.mav = 0  # текущее значение
 
         self.feedback_freq = 0
+        self.only_speed = False
 
     def _update_time(self):
         self.time = time.time()
@@ -309,10 +310,11 @@ class Pchv(QtCore.QObject):
 
     def update_status(self):
         if not self.port: return True
-        while not self._read_ref(): pass
-        while not self._read_ctw(): pass
-        while not self._read_stw(): pass
-        while not self._read_mav(): pass
+        if not self.only_speed:
+            while not self._read_ref(): pass
+            while not self._read_ctw(): pass
+            while not self._read_stw(): pass
+            while not self._read_mav(): pass
         while not self._read_feedback(): pass
 
         self.speed_updated.emit(self.speed)
@@ -356,11 +358,3 @@ class Pchv(QtCore.QObject):
     def _read_feedback(self):
         if self.port:
             self.feedback_freq = self.port.execute(self.dev, cst.READ_HOLDING_REGISTERS, 16679, 1)[0]
-
-
-class PchvOnlySpeed(Pchv):
-    def update_status(self):
-        if not self.port: return True
-        while not self._read_feedback(): pass
-        self.speed_updated.emit(self.speed)
-        return True

@@ -67,6 +67,8 @@ class Encoder(QtCore.QObject):
 
 
 class PidA(QtCore.QObject):
+    """пид-регулятор для установки тока в силовой цепи"""
+
     def __init__(self, p, i, d, dev_in, dev_out, pin_out, parent=None):
         super().__init__(parent)
         self.p = -p
@@ -85,7 +87,7 @@ class PidA(QtCore.QObject):
         self.e = 0
 
     def write(self):
-        self.e =  self.value-self.devi.value
+        self.e = self.value - self.devi.value
 
         self.kp = self.p * (self.e - self.e1)
         self.ki = self.i * self.p * self.e

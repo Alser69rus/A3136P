@@ -132,7 +132,7 @@ class OwenOutputModule(OwenIOModule):
 
     def write(self):
         while not self.update(): pass
-        return self.read()
+        return True
 
 
 class DI16(OwenInputModule):
@@ -210,7 +210,7 @@ class AO8I(OwenOutputModule):
         return list(data)
 
     def _pack_data(self, data):
-        return data
+        return [int(i) for i in data]
 
     def _write_data(self, data):
         if self.port:

@@ -68,7 +68,6 @@ class Server(QtCore.QObject):
         self.do2 = owenio.DO32(self.master1, 5)
         self.gen = ddsgenerator.Generator(self.master3, 100)
         self.freq = icpdas.M7084(self.master4, 3)
-        self.freqE = icpdas.M7084onlyE(self.master4, 3)
         self.pv1 = electropribor.ElMultimeter(self.master1, 11)
         self.pv2 = electropribor.ElMultimeter(self.master1, 12)
         self.pa1 = electropribor.ElMultimeter(self.master1, 21)
@@ -88,7 +87,7 @@ class Server(QtCore.QObject):
 
     @QtCore.pyqtSlot()
     def run(self):
-        #self.f=open('d:\\1.txt','w')
+
         self.running = True
         self.c.started.emit()
 
@@ -100,16 +99,13 @@ class Server(QtCore.QObject):
             self.read_auxiliary()
             self.c.updated_quality.emit(self.get_qmsg())
             self.c.updated.emit()
-            #if self.pida in self.write_list:
-            #    print('v:{} u:{} p:{} i:{} d:{}'.format(self.pida.value, self.pida.u, self.pida.kp, self.pida.ki,
-            #                                            self.pida.kd),file=self.f)
 
         self.switch_off()
         self.port_close()
 
         self.c.finished.emit()
         print('finished opc')
-        #self.f.close()
+
 
     def isSuspended(self):
         """проверка на паузу сервера"""

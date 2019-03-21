@@ -2,6 +2,10 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 class Scale:
+    """отрисовка шкал приборов x,y - центр шкалы, r-радиус до внутренней границе меток,
+    startA, finishA - углы начала и окончания шкалы, startV и finishV - подписи начала и конца диапазона
+    prim, sec,ter - количество главных, второстепенных и третичных штрихов, f_str - строка формоматирования подписей"""
+
     def __init__(self, x, y, r, startA=180, finishA=0, startV=0, finishV=1, prim=10, sec=2, ter=1, f_str='{}'):
         super().__init__()
         self.x = x
@@ -64,9 +68,9 @@ class Scale:
         da = (self.finishA - self.startA) / count
         dv = (self.finishV - self.startV) / count
         w = QtGui.QFontMetrics(painter.font()).width(self.f_str.format(self.finishV))
-        for i in range(count+1):
+        for i in range(count + 1):
             v = self.startV + i * dv
-            w=max(w,QtGui.QFontMetrics(painter.font()).width(self.f_str.format(v)))
+            w = max(w, QtGui.QFontMetrics(painter.font()).width(self.f_str.format(v)))
 
         h = QtGui.QFontMetrics(painter.font()).height()
 
@@ -84,13 +88,14 @@ class Scale:
 
 
 class Arrow:
+    """отрисовка стрелки x,y - центр, r-радиус, l-длина видимой части, w- ширина"""
+
     def __init__(self, x, y, r, l, w=4):
         self.x = x
         self.y = y
         self.r = r
         self.l = l
         self.w = w
-
 
     def drawArrow(self, painter: QtGui.QPainter, angle):
         painter.save()
