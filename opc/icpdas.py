@@ -7,11 +7,6 @@ try:
 except Exception as exc:
     import bitwise
 
-
-class M7084onlyE(M7084):
-    """быстроопрашиваемый частотомер - только первый и третий каналы (2 энкодера)"""
-
-
 class M7084:
     """частотомер icp das M7084"""
 

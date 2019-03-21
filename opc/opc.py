@@ -74,7 +74,7 @@ class Server(QtCore.QObject):
         self.pa2 = electropribor.ElMultimeter(self.master1, 22)
         self.pa3 = electropribor.ElMultimeter(self.master1, 23, 0.001)
         self.pchv = owenpchv.Pchv(self.master2, 2, 1565, 1.333)
-        self.pchv_only_speed = owenpchv.PchvOnlySpeed(self.master2, 2, 1565, 1.333)
+
 
     def port_open(self, *args, **kwargs):
         """обертка открытия порта"""
