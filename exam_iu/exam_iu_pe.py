@@ -59,6 +59,24 @@ class Exam_iu_pe(QtCore.QObject):
         self.st_br3_1.onEntry = self.on_br3_1_entry
         self.st_br3_2.onEntry = self.on_br3_2_entry
 
+    def on_set_pe_entry(self, e):
+        self.form.stl.setCurrentWidget(self.form.exam_iu_pe_set_pe)
+
+    def on_inst0_entry(self, e):
+        self.form.disconnectmenu()
+
+    def on_inst1_entry(self, e):
+        self.form.stl.setCurrentWidget(self.form.exam_iu_pe_inst1)
+
+    def on_inst2_entry(self, e):
+        self.form.stl.setCurrentWidget(self.form.exam_iu_pe_inst2)
+
+    def on_inst3_entry(self, e):
+        self.form.stl.setCurrentWidget(self.form.exam_iu_pe_inst3)
+
+    def on_inst4_entry(self, e):
+        self.form.stl.setCurrentWidget(self.form.exam_iu_pe_inst4)
+
     def on_start500_1_entry(self, e):
         self.form.stl.setCurrentWidget(self.form.exam_iu_pe_check)
         self.server.suspend(True)
@@ -112,27 +130,9 @@ class Exam_iu_pe(QtCore.QObject):
                                                 'позиции 2\n\nНажмите ПРИНЯТЬ для продолжения')
 
     def on_br3_2_entry(self, e):
-        self.server.ao.value[2] = int(self.current_u1 + self.server.br3.value)
+        self.server.ao.value[2] = self.current_u1 + self.server.br3.value
 
     def on_finish(self, e):
         self.server.do1.value = [0] * 32
         self.server.do5.value = [0] * 32
         self.server.ao.value = [0] * 8
-
-    def on_set_pe_entry(self, e):
-        self.form.stl.setCurrentWidget(self.form.exam_iu_pe_set_pe)
-
-    def on_inst0_entry(self, e):
-        self.form.disconnectmenu()
-
-    def on_inst1_entry(self, e):
-        self.form.stl.setCurrentWidget(self.form.exam_iu_pe_inst1)
-
-    def on_inst2_entry(self, e):
-        self.form.stl.setCurrentWidget(self.form.exam_iu_pe_inst2)
-
-    def on_inst3_entry(self, e):
-        self.form.stl.setCurrentWidget(self.form.exam_iu_pe_inst3)
-
-    def on_inst4_entry(self, e):
-        self.form.stl.setCurrentWidget(self.form.exam_iu_pe_inst4)

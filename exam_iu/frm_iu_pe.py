@@ -1,9 +1,8 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import pyqtSlot as pyqtSlot
 
-import guielement.Tachometr
-import guielement.multimetr
-import guielement.indicator
+import guielement.scale as scale
+from guielement.scale import ScaledDevice as ScaledDevice
 
 
 class Form_iu_pe_set_pe(QtWidgets.QWidget):
@@ -170,13 +169,28 @@ class Form_iu_pe_check(QtWidgets.QWidget):
         self.vbox = QtWidgets.QVBoxLayout()
         self.hbox = QtWidgets.QHBoxLayout()
         self.text = QtWidgets.QLabel()
-        self.pa3 = guielement.multimetr.PA3()
-        self.tachometr = guielement.Tachometr.Tachometr600()
-        self.indicator = guielement.indicator.Indicator()
+
+        self.pa3 = ScaledDevice(width=380, height=320, arr_x=180, arr_y=155, arr_r=90, min_a=270,
+                                max_a=-22.5, min_v=0, max_v=2.6, mark_prim=13, mark_sec=2, mark_ter=5,
+                                f_mark='{: >.1f}', f_text='{:>5.3f} А')
+        self.pa3.caption.setText('PA3')
+        self.pa3.text.setAlignment(QtCore.Qt.AlignRight)
+        self.pa3.setArrowVisible(True, False)
+
+        self.tachometer = ScaledDevice(width=280, height=320, arr_x=250, arr_y=250, arr_r=180, min_a=180, max_a=90,
+                                       min_v=0, max_v=600, mark_prim=6, mark_sec=2, mark_ter=5, f_mark='{:3.0f}',
+                                       f_text='{:>3.0f} об/мин')
+        self.tachometer.caption.setText('Тахометр')
+
+        self.indicator = ScaledDevice(width=280, height=320, arr_x=130, arr_y=500, arr_r=350, arr_length=40, min_a=106,
+                                      max_a=74, min_v=0, max_v=10, mark_prim=10, mark_sec=2, mark_ter=1,
+                                      f_mark='{:.0f}', f_text='Позиция: {:>3.1f}')
+        self.indicator.caption.setText('Указатель\nсилового вала')
+
         self.panel = QtWidgets.QWidget()
 
         self.hbox.addWidget(self.pa3)
-        self.hbox.addWidget(self.tachometr)
+        self.hbox.addWidget(self.tachometer)
         self.hbox.addWidget(self.indicator)
         self.panel.setLayout(self.hbox)
 
@@ -184,8 +198,7 @@ class Form_iu_pe_check(QtWidgets.QWidget):
         self.vbox.addWidget(self.text)
         self.setLayout(self.vbox)
 
-        self.panel.setSizePolicy(QtWidgets.QSizePolicy.Preferred,QtWidgets.QSizePolicy.Fixed)
-
+        self.panel.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
 
         self.text.setFont(QtGui.QFont('Segoi UI', 16))
         self.text.setWordWrap(True)
@@ -197,5 +210,5 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication([])
     win = Form_iu_pe_check()
     win.show()
-    print(win.width(),win.height())
+    print(win.width(), win.height())
     app.exec_()
