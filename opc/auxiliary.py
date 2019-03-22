@@ -1,4 +1,4 @@
-from PyQt5 import QtCore
+﻿from PyQt5 import QtCore
 import time
 
 
@@ -66,18 +66,19 @@ class Encoder(QtCore.QObject):
         self.k = (value - self.offset) * self.k / (self.value - self.offset)
 
 
-class PidA(QtCore.QObject):
+class Pid(QtCore.QObject):
     """пид-регулятор для установки тока в силовой цепи"""
+    value_changed = QtCore.pyqtSignal(float)
 
     def __init__(self, p, i, d, dev_in, dev_out, pin_out, parent=None):
         super().__init__(parent)
         self.p = -p
         self.i = -i
-        self.d = d
+        self.d = -d
         self.u = 0
         self.e1 = 0
         self.e2 = 0
-        self.value = 0
+        self._value = 0
         self.devi = dev_in
         self.devo = dev_out
         self.pino = pin_out
@@ -87,7 +88,7 @@ class PidA(QtCore.QObject):
         self.e = 0
 
     def write(self):
-        self.e = self.value - self.devi.value
+        self.e = self._value - self.devi.value
 
         self.kp = self.p * (self.e - self.e1)
         self.ki = self.i * self.p * self.e
@@ -105,10 +106,19 @@ class PidA(QtCore.QObject):
 
     def reset(self):
         self.u = self.devo.value[self.pino]
-        self.value = self.devi.value
+        self._value = self.devi.value
         self.e = 0
         self.e1 = 0
         self.e2 = 0
         self.kp = 0
         self.kd = 0
         self.ki = 0
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value: float):
+        self._value = value
+        self.value_changed.emit(value)

@@ -55,9 +55,10 @@ class Server(QtCore.QObject):
         self.btnUp = auxilitary.Btn(self.di, 4)
         self.btnDown = auxilitary.Btn(self.di, 7)
         self.btnOk = auxilitary.Btn(self.di, 5)
-        self.br2 = auxilitary.Encoder(self.freq, 0)
+        self.br2 = auxilitary.Encoder(self.freq, 0, 1 / 128)
         self.br3 = auxilitary.Encoder(self.freq, 2)
-        self.pida = auxilitary.PidA(25, 3, 0.1, self.pa3, self.ao, 2)
+        self.pid_current = auxilitary.Pid(25, 2, 0.1, self.pa3, self.ao, 2)
+        self.pid_angle = auxilitary.Pid(0.1, 0.4, 0.1, self.br2, self.ao, 2)
 
     def connect_primary(self):
         """подключение первичных приборов"""
@@ -74,7 +75,6 @@ class Server(QtCore.QObject):
         self.pa2 = electropribor.ElMultimeter(self.master1, 22)
         self.pa3 = electropribor.ElMultimeter(self.master1, 23, 0.001)
         self.pchv = owenpchv.Pchv(self.master2, 2, 1565, 1.333)
-
 
     def port_open(self, *args, **kwargs):
         """обертка открытия порта"""
@@ -105,7 +105,6 @@ class Server(QtCore.QObject):
 
         self.c.finished.emit()
         print('finished opc')
-
 
     def isSuspended(self):
         """проверка на паузу сервера"""

@@ -57,6 +57,7 @@ class Main(QtCore.QObject):
         self.st_menu_UI.addTransition(self.form.mnu_UI.btn_IU_back.clicked, self.st_menu_main)
         self.st_menu_UI.addTransition(self.form.btnPanel.btnBack.clicked, self.st_menu_main)
         self.st_menu_UI.addTransition(self.form.mnu_UI.btn_IU_PE_tune.clicked, self.st_exam_iu_pe)
+        self.st_exam_iu_pe.addTransition(self.st_exam_iu_pe.finished, self.st_menu_UI)
 
         self.st_init.onEntry = self.on_st_init_entry
         self.st_menu_main.onEntry = self.on_st_menu_main_entry
@@ -90,7 +91,6 @@ class Main(QtCore.QObject):
             self.server.running = False
         if self.thread1.isRunning():
             self.thread1.wait(5000)
-
 
         event.accept()
 
