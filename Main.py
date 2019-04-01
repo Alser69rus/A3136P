@@ -6,6 +6,7 @@ import time
 import opc.opc
 import menu.mainform
 import exam_iu.exam_iu_pe
+import cfg
 
 
 class Trans(QtCore.QSignalTransition):
@@ -26,6 +27,7 @@ class Main(QtCore.QObject):
         super().__init__(parent)
 
         self.server = opc.opc.Server()
+        cfg.server = self.server
         self.thread1 = QtCore.QThread()
         self.server.moveToThread(self.thread1)
         self.thread1.started.connect(self.server.run)
@@ -34,17 +36,15 @@ class Main(QtCore.QObject):
         self.server.c.finished.connect(self.thread1.deleteLater)
 
         self.form = menu.mainform.MainForm(self.server)
+        cfg.form = self.form
         self.form.showMaximized()
-
-        self.exam_iu_pe = exam_iu.exam_iu_pe.Exam_iu_pe(self.server, self.form)
 
         self.stm = QtCore.QStateMachine()
 
         self.st_init = QState(self.stm)
         self.st_menu = QState(self.stm)
         self.st_close = QtCore.QFinalState(self.stm)
-        self.st_exam_iu_pe = self.exam_iu_pe.state
-        self.stm.addState(self.st_exam_iu_pe)
+        self.st_exam_iu_pe = exam_iu.exam_iu_pe.Exam_iu_pe(self.stm)
 
         self.stm.setInitialState(self.st_init)
 

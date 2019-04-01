@@ -7,6 +7,7 @@ try:
 except Exception as exc:
     import bitwise
 
+
 class M7084:
     """частотомер icp das M7084"""
 
@@ -27,7 +28,7 @@ class M7084:
         self.chanel_47 = True
 
     def _read_data(self):
-        if self.port:
+        if self.port is not None:
             if self.chanel_03 and self.chanel_47:
                 return self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
             elif self.chanel_03:
@@ -94,7 +95,7 @@ class M7084:
         self.update_status()
 
     def update_status(self):
-        if not self.port:
+        if self.port is None:
             return True
         try:
             data = self._read_data()
