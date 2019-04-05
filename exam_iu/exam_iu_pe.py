@@ -31,8 +31,10 @@ class Exam_iu_pe(QtCore.QState):
         global com
         global server
         global form
+
         server = cfg.server
         form = cfg.form
+
         text = form.exam_iu_pe_check.text
         com = Communicate()
         com.btnOk = form.btnPanel.btnOk.clicked
@@ -40,6 +42,15 @@ class Exam_iu_pe(QtCore.QState):
         com.error = server.c.error
         com.suspended = server.c.suspended
         com.updated = server.c.updated
+
+        server.pchv.speed_updated.connect(form.exam_iu_pe_check.tachometer.setValue,
+                                          QtCore.Qt.QueuedConnection)
+
+        server.pchv.speed_task_changed.connect(form.exam_iu_pe_check.tachometer.setTask,
+                                               QtCore.Qt.QueuedConnection)
+        server.pa3.c.value_changed.connect(form.exam_iu_pe_check.pa3.setValue, QtCore.Qt.QueuedConnection)
+        server.br2.updated.connect(form.exam_iu_pe_check.indicator.setValue, QtCore.Qt.QueuedConnection)
+        server.pid_angle.value_changed.connect(form.exam_iu_pe_check.indicator.setTask, QtCore.Qt.QueuedConnection)
 
         self.install_0 = Install0(self)
         self.install_1 = Install1(self)
@@ -113,7 +124,7 @@ class Exam_iu_pe(QtCore.QState):
         self.tune_i1.addTransition(com.btnOk, self.set_current_13)
 
         self.set_position_8.addTransition(self.wait_position_8)
-        self.wait_position_8.addTransition(com.updated,self.wait_position_8)
+        self.wait_position_8.addTransition(com.updated, self.wait_position_8)
 
 
 class Install0(QtCore.QState):
@@ -121,17 +132,10 @@ class Install0(QtCore.QState):
         global server
         global form
         form.disconnectmenu()
-        server.pchv.speed_updated.connect(form.exam_iu_pe_check.tachometer.setValue,
-                                          QtCore.Qt.QueuedConnection)
 
-        server.pchv.speed_task_changed.connect(form.exam_iu_pe_check.tachometer.setTask,
-                                               QtCore.Qt.QueuedConnection)
-        server.pa3.c.value_changed.connect(form.exam_iu_pe_check.pa3.setValue, QtCore.Qt.QueuedConnection)
         form.exam_iu_pe_check.indicator.setArrowVisible(False, False)
         form.exam_iu_pe_check.indicator.text.setVisible(False)
         server.br2.setZero()
-        server.br2.updated.connect(form.exam_iu_pe_check.indicator.setValue)
-        server.pid_angle.value_changed.connect(form.exam_iu_pe_check.indicator.setTask)
 
 
 class Install1(QtCore.QState):
@@ -385,11 +389,11 @@ class DisconnectForm(QtCore.QState):
         global server
         server.read_list = [server.di, server.freq]
         server.write_list = []
-        server.pchv.speed_updated.disconnect()
-        server.pchv.speed_task_changed.disconnect()
-        server.pa3.c.value_changed.disconnect()
-        server.br2.updated.disconnect()
-        server.pid_angle.value_changed.disconnect()
+        # server.pchv.speed_updated.disconnect()
+        # server.pchv.speed_task_changed.disconnect()
+        # server.pa3.c.value_changed.disconnect()
+        # server.br2.updated.disconnect()
+        # server.pid_angle.value_changed.disconnect()
         server.suspend(False)
 
 
@@ -397,4 +401,3 @@ class Finish(QtCore.QFinalState):
     def onEntry(self, e):
         global form
         form.connectmenu()
-

@@ -73,7 +73,7 @@ class Main(QtCore.QObject):
         self.form.closeEvent = self.closeEvent
         self.form.mnu_main.btnQuit.clicked.connect(self.form.close)
         if self.server:
-            self.server.c.updated_quality.connect(self.form.on_statusbar_update)
+            self.server.c.updated_quality.connect(self.form.on_statusbar_update,QtCore.Qt.QueuedConnection)
         self.signal.emit('main menu')
 
     def on_st_menu_main_entry(self, e):

@@ -72,7 +72,7 @@ class MainForm(QtWidgets.QWidget):
         self.btnPanel.btnBack.clicked.connect(self.currentmenu.on_btn_back_clicked)
         self.btnPanel.btnOk.clicked.connect(self.currentmenu.on_btn_ok_clicked)
         if self.server:
-            self.server.br3.updated.connect(self.currentmenu.on_encoder)
+            self.server.br3.updated.connect(self.currentmenu.on_encoder,QtCore.Qt.QueuedConnection)
 
     def disconnectmenu(self):
         self.btnPanel.btnUp.clicked.disconnect(self.currentmenu.on_btn_up_clicked)

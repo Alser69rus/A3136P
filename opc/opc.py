@@ -1,14 +1,14 @@
 ﻿from PyQt5 import QtCore
 import serial
 from modbus_tk import modbus_rtu
-import time
-import opc
 import opc.auxiliary as auxilitary
 import opc.ddsgenerator as ddsgenerator
 import opc.electropribor as electropribor
 import opc.icpdas as icpdas
 import opc.owenio as owenio
 import opc.owenpchv as owenpchv
+
+from opc.monad import Maybe as Maybe
 
 
 class Communucate(QtCore.QObject):
@@ -18,6 +18,9 @@ class Communucate(QtCore.QObject):
     finished = QtCore.pyqtSignal()
     started = QtCore.pyqtSignal()
     suspended = QtCore.pyqtSignal()
+
+
+
 
 
 class Server(QtCore.QObject):
@@ -38,6 +41,7 @@ class Server(QtCore.QObject):
         # self.master2, self.err = self.port_open('COM2', 38400, timeout=0.3)
         # self.master3, self.err = self.port_open('COM3', 115200, timeout=0.5)
         # self.master4, self.err = self.port_open('COM7', 38400, timeout=0.3)
+
 
         self.master1 = None
         self.master2 = None
@@ -97,8 +101,9 @@ class Server(QtCore.QObject):
             if not self.write_all(): break
             if not self.read_all(): break
             self.read_auxiliary()
-            # self.c.updated_quality.emit(self.get_qmsg())
+            self.c.updated_quality.emit(self.get_qmsg())
             self.c.updated.emit()
+            self.thread().msleep(5)
 
         self.switch_off()
         self.port_close()
@@ -136,7 +141,7 @@ class Server(QtCore.QObject):
         """"подготовка строки статуса"""
         qmsg = 'ai:{} ao:{} di:{} do1:{} do2:{} gen:{} freq:{} pv1:{} pv2:{} pa1:{} pa2:{} pa3:{} pchv:{}'
         qmsg = qmsg.format(self.ai.quality, self.ao.quality, self.di.quality, self.do1.quality,
-                           self.do2.quality, self.gen.quality,self.freq.quality, self.pv1.quality,
+                           self.do2.quality, self.gen.quality, self.freq.quality, self.pv1.quality,
                            self.pv2.quality, self.pa1.quality, self.pa2.quality, self.pa3.quality,
                            self.pchv.quality)
         if not self.master1:

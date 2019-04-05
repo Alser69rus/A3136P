@@ -1,52 +1,38 @@
-import time
+from PyQt5 import QtCore
 import modbus_tk.defines as cst
-from modbus_tk import modbus_rtu
-
-try:
-    from . import bitwise
-except Exception as exc:
-    import bitwise
+import opc.bitwise as bitwise
+from opc.monad import Maybe
 
 
-class M7084:
+class M7084(QtCore.QObject):
     """частотомер icp das M7084"""
 
-    def __init__(self, port=None, dev=1, timeout=0.3, delay=0.005, verbose=False):
+    updated = QtCore.pyqtSignal()
+    warning = QtCore.pyqtSignal(str)
+    changed = QtCore.pyqtSignal()
+    active_change = QtCore.pyqtSignal(bool)
+    enabled = QtCore.pyqtSignal()
+    cleared = QtCore.pyqtSignal()
+
+    def __init__(self, port=None, dev=1, name='Частотомер', parent=None):
+        super().__init__(parent)
+        self.name = name
         self.port = port
         self.dev = dev
-        self._delay = delay
-        self._timeout = timeout
-        self._verbose = verbose
-        if self.port:
-            self.port.set_timeout(timeout)
-            self.port.set_verbose(verbose)
-
-        self.time = time.time()
         self.value = [0] * 8
-        self._resp = []
-        self.chanel_03 = True
-        self.chanel_47 = True
+        self.k = [1] * 8
+        self.off = [0] * 8
+        self.eps = [1] * 8
+        self.error = None
+        self.active = False
+        self._clear_cmd = False
+        self._clear_ch = 0
+        self._enable_cmd = False
+        self._enable_ch = 0
+        self._enable_value = True
 
-    def _read_data(self):
-        if self.port is not None:
-            if self.chanel_03 and self.chanel_47:
-                return self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
-            elif self.chanel_03:
-                a = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 2)
-                b = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 4, 2)
-                c = [0] * 16
-                c[0] = c[2] = a[0]
-                c[1] = c[3] = a[1]
-                c[4] = c[6] = b[0]
-                c[5] = c[7] = b[1]
-                return c
-            elif self.chanel_47:
-                a = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 8, 8)
-                c = [0] * 8
-                return c + a
-            return [0] * 16
-        else:
-            return [0] * 16
+    def _read_data(self, port):
+        return port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
 
     def _unpack_data(self, data):
         value = [0] * 8
@@ -55,71 +41,61 @@ class M7084:
             value[i] = bitwise.to_signed32(value[i])
         return value
 
-    def _update_time(self):
-        self.time = time.time()
+    def _clear(self, port, n):
+        port.execute(self.dev, cst.WRITE_SINGLE_COIL, 512 + n, output_value=1)
+        return port
 
-    def clear(self, n):
-        """сервисная функция очистки регистров счетчиков"""
-        if not self.port:
-            return
-        while True:
-            try:
-                self.port.execute(self.dev, cst.WRITE_SINGLE_COIL, 512 + n, output_value=1)
-                self.quality = True
-                time.sleep(self._delay)
-                return
-            except Exception as exc:
-                self.quality = False
-                if self.quality == 0: raise exc
-                time.sleep(self._delay)
+    def _clear_done(self, data):
+        self._clear_cmd = False
+        self.cleared.emit()
+        return data
 
-    def enable(self, n, value):
-        """сервисная функция включения/выключения счетчиков"""
-        if not self.port: return
-        while True:
-            try:
-                data = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 489, 1)
-                time.sleep(self._delay)
-                data = data[0]
-                data = bitwise.override(data, n, value)
-                self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 489, output_value=data)
-                time.sleep(self._delay)
-                self.quality = True
-                return
-            except Exception as exc:
-                self.quality = False
-                if self.quality == 0: raise exc
-                time.sleep(self._delay)
+    def _enable(self, data, n, value):
+        data = bitwise.override(data, n, value)
+        self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 489, output_value=data)
+        return data
+
+    def _read_enable(self, port):
+        return port.execute(self.dev, cst.READ_INPUT_REGISTERS, 489, 1)
+
+    def _enable_done(self, data):
+        self._enable_cmd = False
+        self.enabled.emit()
+        return data
+
+    def _emit_updated(self, data):
+        value = [data[i] * self.k[i] + self.off[i] for i in range(8)]
+        if any([abs(value[i] - self.value[i]) > self.eps[i] for i in range(8)]):
+            self.value = value
+            self.changed.emit()
+        self.updated.emit()
+        return data
+
+    def _emit_warning(self, data, error):
+        self.error = error
+        self.warning.emit('{} warning: {}'.format(self.name, self.error))
+        return data
 
     def update(self):
-        self.update_status()
+        if self._clear_cmd:
+            Maybe(self.port)(self._clear, self._clear_ch)(self._clear_done)
+        if self._enable_cmd:
+            Maybe(self.port)(self._read_enable)(self._enable, self._enable_ch, self._enable_value)(self._enable_done)
+        if self.active:
+            Maybe(self.port)(self._read_data)(self._unpack_data)(self._emit_updated).or_else(self._emit_warning)
 
-    def update_status(self):
-        if self.port is None:
-            return True
-        try:
-            data = self._read_data()
-            self.value = self._unpack_data(data)
-            self.quality = True
-            # time.sleep(self._delay)
-        except Exception as exc:
-            self.quality = False
-            if self.quality == 0: raise exc
-            time.sleep(self._delay)
-            return False
-        # self._update_time()
-        return True
+    @QtCore.pyqtSlot(bool)
+    def setActive(self, value=True):
+        self.active = value
+        self.active_change.emit(value)
 
-    def read(self):
-        while not self.update_status(): pass
-        return self.value
+    @QtCore.pyqtSlot(int, bool)
+    def setEnable(self, n, value):
+        self._enable_ch = n
+        self._enable_value = value
+        self._enable_cmd = True
 
-    @property
-    def quality(self):
-        return 10 - self._resp.count(False)
-
-    @quality.setter
-    def quality(self, value):
-        if len(self._resp) >= 10:
-            self._resp = self._resp[1:]
-        self._resp.append(value)
+    @QtCore.pyqtSlot(int)
+    def setClear(self, n):
+        self._clear_ch = n
+        self._clear_cmd = True

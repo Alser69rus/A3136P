@@ -2,77 +2,58 @@ import time
 import modbus_tk.defines as cst
 from PyQt5 import QtCore
 
-
-class Communicate(QtCore.QObject):
-    value_changed = QtCore.pyqtSignal(float)
+from opc.monad import Maybe
 
 
-class ElMultimeter:
+class ElMultimeter(QtCore.QObject):
+    changed = QtCore.pyqtSignal(float)
+    updated = QtCore.pyqtSignal()
+    warning = QtCore.pyqtSignal(str)
+    active_change = QtCore.pyqtSignal(bool)
     '''амперметры и вольтметры Электроприбор'''
 
-    def __init__(self, port=None, dev=1, k=1, offset=0, timeout=0.3, delay=0.005, verbose=False):
-        self.c = Communicate()
+    def __init__(self, port=None, dev=1, k=1, offset=0, eps=1, name='PX', parent=None):
+        super().__init__(parent)
+        self.name = name
         self.port = port
         self.dev = dev
-        self._timeout = timeout
-        self._delay = delay
-        self._verbose = verbose
-        if self.port:
-            self.port.set_timeout(timeout)
-            self.port.set_verbose(verbose)
-
-        self.time = time.time()
         self.value = 0
-        self._resp = []
+        self.error = None
+        self.active = False
         self.k = k
         self.off = offset
+        self.eps = eps
 
-    def _read_data(self):
-        if self.port:
-            return self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 4, 1)
-        else:
-            return [0]
+    def _read_data(self, port):
+        return port.execute(self.dev, cst.READ_INPUT_REGISTERS, 4, 1)
 
     def _unpack_data(self, data):
-        if data[0] == 32768:
-            return None
-        if data[0] > 32768:
-            return data[0] - 65536
-        return data[0] * self.k - self.off
+        value = data[0]
+        if value == 32768:
+            raise Exception('{}. Выход за пределы диапазона'.format(self.name))
 
-    def _update_time(self):
-        self.time = time.time()
+        if value > 32768:
+            value = 65536 - value
+        value = value * self.k - self.off
+        return value
+
+    def _emit_warning(self, data, error):
+        self.error = error
+        self.warning.emit('{} warning: {}'.format(self.name, self.error))
+        return data
+
+    def _emit_updated(self, value):
+        if abs(value - self.value) > self.eps:
+            self.value = value
+            self.changed.emit(value)
+        self.updated.emit()
+        return value
 
     def update(self):
-        self.update_status()
+        if self.active:
+            Maybe(self.port)(self._read_data)(self._unpack_data)(self._emit_updated).or_else(self._emit_warning)
 
-    def update_status(self):
-        if not self.port:
-            return True
-        try:
-            data = self._read_data()
-            self.value = self._unpack_data(data)
-            self.quality = True
-            # time.sleep(self._delay)
-            self.c.value_changed.emit(self.value)
-        except Exception as exc:
-            self.quality = False
-            if self.quality == 0: raise exc
-            time.sleep(self._delay)
-            return False
-        # self._update_time()
-        return True
-
-    def read(self):
-        while not self.update_status(): pass
-        return self.value
-
-    @property
-    def quality(self):
-        return 10 - self._resp.count(False)
-
-    @quality.setter
-    def quality(self, value):
-        if len(self._resp) >= 10:
-            self._resp = self._resp[1:]
-        self._resp.append(value)
+    @QtCore.pyqtSlot(bool)
+    def setActive(self, value=True):
+        self.active = value
+        self.active_change.emit(value)
