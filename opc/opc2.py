@@ -10,19 +10,11 @@ from opc.icpdas import M7084
 from opc.owenpchv import Pchv
 
 
-class Com(QtCore.QObject):
-    pass
-
-
-com = Com()
-
-
 class Worker(QtCore.QObject):
     """opc-сервер"""
     finished = QtCore.pyqtSignal()
 
     def __init__(self, port=None, baud=9600, timeout=0.05, parent=None):
-        global com
         super().__init__(parent)
         self.running = False
         self.name = port
@@ -30,16 +22,17 @@ class Worker(QtCore.QObject):
         if self.port.value is None:
             print(self.port.error)
         self.port = self.port.value
-        self.com = com
         self.dev = []
 
     def run(self):
+
         if self.port is not None:
             print('Запущен сервер {}'.format(self.name))
             self.running = True
 
         while self.running:
             for dev in self.dev:
+                if self.thread() == dev.thread(): print(self.thread(), dev.thread(), dev)
                 dev.update()
                 self.thread().msleep(2)
                 if not self.running:
@@ -120,6 +113,8 @@ class Worker4(Worker):
 class Server(QtCore.QObject):
     """класс запускающий и останавливающий opc-сервера"""
     finished = QtCore.pyqtSignal()
+    warning = QtCore.pyqtSignal(str)
+    error = QtCore.pyqtSignal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -134,6 +129,35 @@ class Server(QtCore.QObject):
             self.finished.connect(worker.deleteLater)
             self.pool.append(thread)
 
+        self.ai = self.workers[0].ai
+        self.di = self.workers[0].di
+        self.do1 = self.workers[0].do1
+        self.do2 = self.workers[0].do2
+        self.ao = self.workers[0].ao
+        self.pv1 = self.workers[0].pv1
+        self.pv2 = self.workers[0].pv2
+        self.pa1 = self.workers[0].pa1
+        self.pa2 = self.workers[0].pa2
+        self.pa3 = self.workers[0].pa3
+        self.pchv = self.workers[1].pchv
+        self.gen = self.workers[2].gen
+        self.freq = self.workers[3].freq
+
+        self.ai.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.di.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.do1.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.do2.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.ao.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.pv1.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.pv2.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.pa1.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.pa2.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.pa3.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.gen.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.freq.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.pchv.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.pchv.alarmed.connect(self.error, QtCore.Qt.QueuedConnection)
+
     def start(self):
         print('Запуск сервера')
         for th in self.pool:
@@ -146,6 +170,14 @@ class Server(QtCore.QObject):
             th.wait(5000)
         self.finished.emit()
         print('Сервер остановлен')
+
+    @QtCore.pyqtSlot(str)
+    def on_warning(self, msg):
+        self.warning.emit(msg)
+
+    @QtCore.pyqtSlot(str)
+    def on_error(self, msg):
+        self.error.emit(msg)
 
 
 if __name__ == '__main__':

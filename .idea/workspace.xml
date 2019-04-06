@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="полностью переделан сервер&#10;теперь 4 независимых потока, повышена потокобезопасность">
-      <change afterPath="$PROJECT_DIR$/opc/monad.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/opc/opc2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tstOpc.py" afterDir="false" />
+    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exam_iu/exam_iu_pe.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_iu/exam_iu_pe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/menu/mainform.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu/mainform.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opc/ddsgenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/ddsgenerator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opc/electropribor.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/electropribor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opc/icpdas.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/icpdas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opc/opc.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/opc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opc/owenio.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/owenio.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opc/owenpchv.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/owenpchv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/opc2.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/opc2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tstOpc.py" beforeDir="false" afterPath="$PROJECT_DIR$/tstOpc.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -28,11 +18,8 @@
       <file leaf-file-name="opc.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/opc.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
+            <state relative-caret-position="1360">
               <caret line="80" column="60" selection-start-line="80" selection-start-column="48" selection-end-line="80" selection-end-column="62" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -40,11 +27,8 @@
       <file leaf-file-name="owenio.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/owenio.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
+            <state relative-caret-position="1819">
               <caret line="115" column="48" selection-start-line="115" selection-start-column="48" selection-end-line="115" selection-end-column="48" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -52,11 +36,8 @@
       <file leaf-file-name="electropribor.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/electropribor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="45" column="43" lean-forward="true" selection-start-line="45" selection-start-column="43" selection-end-line="45" selection-end-column="43" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="765">
+              <caret line="45" column="43" selection-start-line="45" selection-start-column="43" selection-end-line="45" selection-end-column="43" />
             </state>
           </provider>
         </entry>
@@ -64,11 +45,8 @@
       <file leaf-file-name="ddsgenerator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/ddsgenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="331">
+            <state relative-caret-position="952">
               <caret line="56" column="5" selection-start-line="56" selection-end-line="59" selection-end-column="38" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -76,7 +54,7 @@
       <file leaf-file-name="icpdas.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
+            <state relative-caret-position="1088">
               <caret line="67" column="47" selection-start-line="67" selection-start-column="47" selection-end-line="67" selection-end-column="47" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
@@ -88,7 +66,7 @@
       <file leaf-file-name="monad.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/monad.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="552">
+            <state relative-caret-position="697">
               <caret line="41" column="24" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
             </state>
           </provider>
@@ -97,8 +75,8 @@
       <file leaf-file-name="opc2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/opc2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="314">
-              <caret line="68" column="48" selection-start-line="68" selection-start-column="48" selection-end-line="68" selection-end-column="48" />
+            <state relative-caret-position="739">
+              <caret line="175" column="30" lean-forward="true" selection-start-line="175" selection-start-column="30" selection-end-line="175" selection-end-column="30" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -106,20 +84,29 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tstOpc.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="tstOpc.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tstOpc.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="850">
-              <caret line="105" column="44" selection-start-line="105" selection-start-column="44" selection-end-line="105" selection-end-column="44" />
+            <state relative-caret-position="374">
+              <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="owenpchv.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="scale.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/guielement/scale.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="210" lean-forward="true" selection-start-line="210" selection-end-line="210" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="owenpchv.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/owenpchv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1190">
-              <caret line="139" column="36" selection-start-line="139" selection-start-column="36" selection-end-line="139" selection-end-column="36" />
+            <state relative-caret-position="255">
+              <caret line="15" column="32" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -195,13 +182,13 @@
         <option value="$PROJECT_DIR$/Main.py" />
         <option value="$PROJECT_DIR$/opc/opc.py" />
         <option value="$PROJECT_DIR$/opc/ddsgenerator.py" />
-        <option value="$PROJECT_DIR$/tstOpc.py" />
         <option value="$PROJECT_DIR$/opc/monad.py" />
         <option value="$PROJECT_DIR$/opc/electropribor.py" />
-        <option value="$PROJECT_DIR$/opc/opc2.py" />
         <option value="$PROJECT_DIR$/opc/owenio.py" />
         <option value="$PROJECT_DIR$/opc/icpdas.py" />
         <option value="$PROJECT_DIR$/opc/owenpchv.py" />
+        <option value="$PROJECT_DIR$/opc/opc2.py" />
+        <option value="$PROJECT_DIR$/tstOpc.py" />
       </list>
     </option>
   </component>
@@ -218,7 +205,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="NBKnowledgePane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -250,6 +236,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="NBKnowledgePane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -434,7 +421,14 @@
       <option name="project" value="LOCAL" />
       <updated>1554137439364</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="полностью переделан сервер&#10;теперь 4 независимых потока, повышена потокобезопасность&#10;более-менее рабочие сигналы.">
+      <created>1554469299539</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1554469299539</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -473,12 +467,12 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17395833" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17395833" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5002644" side_tool="true" weight="0.398641" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49920678" visible="true" weight="0.3269639" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49920678" visible="true" weight="0.3269639" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32908705" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -502,7 +496,8 @@
     <MESSAGE value="убраны классы отдельных цифровых приборов&#10;создан универсальный класс ScaledDevice" />
     <MESSAGE value="добавлен второй пид-регулятор" />
     <MESSAGE value="переделана проверка ПЭ под машину состояний" />
-    <option name="LAST_COMMIT_MESSAGE" value="переделана проверка ПЭ под машину состояний" />
+    <MESSAGE value="полностью переделан сервер&#10;теперь 4 независимых потока, повышена потокобезопасность&#10;более-менее рабочие сигналы." />
+    <option name="LAST_COMMIT_MESSAGE" value="полностью переделан сервер&#10;теперь 4 независимых потока, повышена потокобезопасность&#10;более-менее рабочие сигналы." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -618,13 +613,6 @@
     <entry file="file://$PROJECT_DIR$/guielement/Tachometr.py" />
     <entry file="file://$PROJECT_DIR$/guielement/multimetr.py" />
     <entry file="file://$PROJECT_DIR$/guielement/indicator.py" />
-    <entry file="file://$PROJECT_DIR$/guielement/scale.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="398">
-          <caret line="204" column="45" selection-start-line="203" selection-start-column="4" selection-end-line="205" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/943167800/PyQt5/QtCore/QState.py" />
     <entry file="file://$PROJECT_DIR$/opc/auxiliary.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -689,9 +677,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6290">
           <caret line="370" selection-start-line="370" selection-end-line="370" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -699,19 +684,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="178">
           <caret line="85" column="25" lean-forward="true" selection-start-line="85" selection-start-column="25" selection-end-line="85" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/opc/opc.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
+        <state relative-caret-position="1360">
           <caret line="80" column="60" selection-start-line="80" selection-start-column="48" selection-end-line="80" selection-end-column="62" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -731,65 +710,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/opc/monad.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="552">
+        <state relative-caret-position="697">
           <caret line="41" column="24" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/opc2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="68" column="48" selection-start-line="68" selection-start-column="48" selection-end-line="68" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/owenio.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="115" column="48" selection-start-line="115" selection-start-column="48" selection-end-line="115" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/opc/electropribor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="45" column="43" lean-forward="true" selection-start-line="45" selection-start-column="43" selection-end-line="45" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="765">
+          <caret line="45" column="43" selection-start-line="45" selection-start-column="43" selection-end-line="45" selection-end-column="43" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/opc/ddsgenerator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
+        <state relative-caret-position="952">
           <caret line="56" column="5" selection-start-line="56" selection-end-line="59" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
+        <state relative-caret-position="1088">
           <caret line="67" column="47" selection-start-line="67" selection-start-column="47" selection-end-line="67" selection-end-column="47" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tstOpc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="850">
-          <caret line="105" column="44" selection-start-line="105" selection-start-column="44" selection-end-line="105" selection-end-column="44" />
         </state>
       </provider>
     </entry>
@@ -802,11 +748,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/opc/owenpchv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1190">
-          <caret line="139" column="36" selection-start-line="139" selection-start-column="36" selection-end-line="139" selection-end-column="36" />
+        <state relative-caret-position="255">
+          <caret line="15" column="32" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/owenio.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1819">
+          <caret line="115" column="48" selection-start-line="115" selection-start-column="48" selection-end-line="115" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/opc2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="739">
+          <caret line="175" column="30" lean-forward="true" selection-start-line="175" selection-start-column="30" selection-end-line="175" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/guielement/scale.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="210" lean-forward="true" selection-start-line="210" selection-end-line="210" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tstOpc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
         </state>
       </provider>
     </entry>
