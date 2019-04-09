@@ -6,7 +6,7 @@ except Exception:
     import aseMenu, btn
 
 
-class mnuUI(template.Menu):
+class mnuIU(template.Menu):
     def __init__(self, parent=None):
         super().__init__('Проверка исполнительного устройства', parent)
 

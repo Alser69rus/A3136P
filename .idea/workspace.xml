@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="">
+    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="полностью переделан сервер&#10;теперь 4 независимых потока, повышена потокобезопасность">
+      <change afterPath="$PROJECT_DIR$/opc/pid.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exam_iu/exam_iu_pe.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_iu/exam_iu_pe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/menu/mainform.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu/mainform.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/menu/mnuUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu/mnuUI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/menu/template.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu/template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/ddsgenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/ddsgenerator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/electropribor.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/electropribor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/icpdas.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/icpdas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/opc/opc2.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/opc2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/owenio.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/owenio.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/owenpchv.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/owenpchv.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tstOpc.py" beforeDir="false" afterPath="$PROJECT_DIR$/tstOpc.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,56 +29,17 @@
       <file leaf-file-name="opc.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/opc.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1360">
-              <caret line="80" column="60" selection-start-line="80" selection-start-column="48" selection-end-line="80" selection-end-column="62" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="owenio.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/opc/owenio.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1819">
-              <caret line="115" column="48" selection-start-line="115" selection-start-column="48" selection-end-line="115" selection-end-column="48" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="electropribor.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/opc/electropribor.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="45" column="43" selection-start-line="45" selection-start-column="43" selection-end-line="45" selection-end-column="43" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ddsgenerator.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/opc/ddsgenerator.py">
-          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="952">
-              <caret line="56" column="5" selection-start-line="56" selection-end-line="59" selection-end-column="38" />
+              <caret line="56" column="53" selection-start-line="56" selection-start-column="48" selection-end-line="56" selection-end-column="53" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="icpdas.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
+      <file leaf-file-name="pid.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/opc/pid.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1088">
-              <caret line="67" column="47" selection-start-line="67" selection-start-column="47" selection-end-line="67" selection-end-column="47" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="monad.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/opc/monad.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="697">
-              <caret line="41" column="24" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
+            <state relative-caret-position="629">
+              <caret line="37" column="18" selection-start-line="37" selection-start-column="18" selection-end-line="37" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -75,41 +47,47 @@
       <file leaf-file-name="opc2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/opc2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="739">
-              <caret line="175" column="30" lean-forward="true" selection-start-line="175" selection-start-column="30" selection-end-line="175" selection-end-column="30" />
-              <folding>
-                <element signature="e#0#35#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="247">
+              <caret line="173" selection-start-line="173" selection-end-line="173" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tstOpc.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tstOpc.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tstOpc.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
+            <state relative-caret-position="2414">
+              <caret line="142" selection-start-line="142" selection-end-line="142" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="scale.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/guielement/scale.py">
+      <file leaf-file-name="Main.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="210" lean-forward="true" selection-start-line="210" selection-end-line="210" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="owenpchv.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/opc/owenpchv.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="32" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
+            <state relative-caret-position="451">
+              <caret line="76" column="16" selection-start-line="76" selection-start-column="16" selection-end-line="76" selection-end-column="16" />
               <folding>
-                <element signature="e#0#31#0" expanded="true" />
+                <element signature="e#0#10#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mainform.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/menu/mainform.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1071">
+              <caret line="94" column="24" lean-forward="true" selection-start-line="94" selection-start-column="24" selection-end-line="94" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="exam_iu_pe.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_pe.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="553">
+              <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
             </state>
           </provider>
         </entry>
@@ -138,7 +116,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/opc/test_do.py" />
         <option value="$PROJECT_DIR$/opc/test_gen.py" />
         <option value="$PROJECT_DIR$/opc/test_multimeter.py" />
         <option value="$PROJECT_DIR$/opc/test_pchv.py" />
@@ -151,13 +128,11 @@
         <option value="$PROJECT_DIR$/menu/SimpleMenu.py" />
         <option value="$PROJECT_DIR$/menu/aseMenu.py" />
         <option value="$PROJECT_DIR$/menu/mnuMain.py" />
-        <option value="$PROJECT_DIR$/menu/mnuUI.py" />
         <option value="$PROJECT_DIR$/menu/MainForm.py" />
         <option value="$PROJECT_DIR$/menu/btn.py" />
         <option value="$PROJECT_DIR$/menu/caption.py" />
         <option value="$PROJECT_DIR$/menu/btnPanel.py" />
         <option value="$PROJECT_DIR$/opc/bitwise.py" />
-        <option value="$PROJECT_DIR$/menu/template.py" />
         <option value="$PROJECT_DIR$/exam/test_frm_ui_pe.py" />
         <option value="$PROJECT_DIR$/exam/frm_ui_pe.py" />
         <option value="$PROJECT_DIR$/exam/frm_iu_pe.py" />
@@ -177,18 +152,21 @@
         <option value="$PROJECT_DIR$/opc/auxiliary.py" />
         <option value="$PROJECT_DIR$/cfg.py" />
         <option value="$PROJECT_DIR$/opc/Monad.py" />
-        <option value="$PROJECT_DIR$/menu/mainform.py" />
-        <option value="$PROJECT_DIR$/exam_iu/exam_iu_pe.py" />
-        <option value="$PROJECT_DIR$/Main.py" />
         <option value="$PROJECT_DIR$/opc/opc.py" />
-        <option value="$PROJECT_DIR$/opc/ddsgenerator.py" />
         <option value="$PROJECT_DIR$/opc/monad.py" />
+        <option value="$PROJECT_DIR$/opc/ddsgenerator.py" />
         <option value="$PROJECT_DIR$/opc/electropribor.py" />
-        <option value="$PROJECT_DIR$/opc/owenio.py" />
         <option value="$PROJECT_DIR$/opc/icpdas.py" />
+        <option value="$PROJECT_DIR$/opc/owenio.py" />
         <option value="$PROJECT_DIR$/opc/owenpchv.py" />
-        <option value="$PROJECT_DIR$/opc/opc2.py" />
+        <option value="$PROJECT_DIR$/opc/pid.py" />
         <option value="$PROJECT_DIR$/tstOpc.py" />
+        <option value="$PROJECT_DIR$/menu/mnuUI.py" />
+        <option value="$PROJECT_DIR$/exam_iu/exam_iu_pe.py" />
+        <option value="$PROJECT_DIR$/opc/opc2.py" />
+        <option value="$PROJECT_DIR$/menu/template.py" />
+        <option value="$PROJECT_DIR$/menu/mainform.py" />
+        <option value="$PROJECT_DIR$/Main.py" />
       </list>
     </option>
   </component>
@@ -204,6 +182,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="NBKnowledgePane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -227,16 +206,10 @@
               <item name="A3136P" type="462c0819:PsiDirectoryNode" />
               <item name="menu" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="A3136P" type="b2602c69:ProjectViewProjectNode" />
-              <item name="A3136P" type="462c0819:PsiDirectoryNode" />
-              <item name="opc" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="NBKnowledgePane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -260,7 +233,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.tstOpc">
+  <component name="RunManager" selected="Python.Main">
     <configuration name="Main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="A3136P" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -360,10 +333,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Main" />
         <item itemvalue="Python.tstOpc" />
         <item itemvalue="Python.opc2" />
         <item itemvalue="Python.owenio" />
-        <item itemvalue="Python.Main" />
         <item itemvalue="Python.frm_iu_pe" />
       </list>
     </recent_temporary>
@@ -428,7 +401,14 @@
       <option name="project" value="LOCAL" />
       <updated>1554469299539</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="на сервере сделан общий обработчик ошибок и предупреждений&#10;на сервере введены ссылки на приборы в разных потоках">
+      <created>1554543880015</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1554543880015</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -465,14 +445,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17395833" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1734375" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5002644" side_tool="true" weight="0.398641" />
-      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.3295583" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49920678" visible="true" weight="0.3269639" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49920678" visible="true" weight="0.32590234" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32908705" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -497,7 +476,8 @@
     <MESSAGE value="добавлен второй пид-регулятор" />
     <MESSAGE value="переделана проверка ПЭ под машину состояний" />
     <MESSAGE value="полностью переделан сервер&#10;теперь 4 независимых потока, повышена потокобезопасность&#10;более-менее рабочие сигналы." />
-    <option name="LAST_COMMIT_MESSAGE" value="полностью переделан сервер&#10;теперь 4 независимых потока, повышена потокобезопасность&#10;более-менее рабочие сигналы." />
+    <MESSAGE value="на сервере сделан общий обработчик ошибок и предупреждений&#10;на сервере введены ссылки на приборы в разных потоках" />
+    <option name="LAST_COMMIT_MESSAGE" value="на сервере сделан общий обработчик ошибок и предупреждений&#10;на сервере введены ссылки на приборы в разных потоках" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -508,7 +488,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="37" />
+      <option name="time" value="4" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="tests">
@@ -517,23 +497,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tstSignal.py" />
-    <entry file="file://$PROJECT_DIR$/opc/tstBtn.py" />
-    <entry file="file://$PROJECT_DIR$/menu/menubutton.py" />
-    <entry file="file://$PROJECT_DIR$/opc/test_pchv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="23" column="5" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/menu/mnuMain.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/menu/caption.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -542,13 +505,6 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/943167800/PyQt5/QtCore/QTimer.py" />
-    <entry file="file://$PROJECT_DIR$/menu/mnuUI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/menu/btn.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -570,32 +526,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/menu/template.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="551">
-          <caret line="88" column="38" selection-start-line="88" selection-start-column="38" selection-end-line="88" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/943167800/PyQt5/QtGui/QPainter.py" />
     <entry file="file://$PROJECT_DIR$/guielement/test1.py" />
     <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/943167800/PyQt5/QtWidgets/QAbstractButton.py" />
-    <entry file="file://$PROJECT_DIR$/menu/btnPanel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="24" column="39" selection-start-line="24" selection-start-column="39" selection-end-line="24" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tstpida.py" />
     <entry file="file://$PROJECT_DIR$/guielement/tst.py" />
-    <entry file="file://$PROJECT_DIR$/opc/test_ao.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="62" selection-start-line="62" selection-end-line="62" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tstManual.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
@@ -614,13 +549,6 @@
     <entry file="file://$PROJECT_DIR$/guielement/multimetr.py" />
     <entry file="file://$PROJECT_DIR$/guielement/indicator.py" />
     <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/943167800/PyQt5/QtCore/QState.py" />
-    <entry file="file://$PROJECT_DIR$/opc/auxiliary.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1092">
-          <caret line="53" column="8" selection-start-line="53" selection-start-column="8" selection-end-line="53" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/exam_iu/frm_iu_pe.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3486">
@@ -631,41 +559,10 @@
     <entry file="file://$PROJECT_DIR$/../python37/Lib/site-packages/modbus_tk/modbus_rtu.py" />
     <entry file="file://$PROJECT_DIR$/../python37/Lib/site-packages/serial/serialutil.py" />
     <entry file="file://$PROJECT_DIR$/../python37/Lib/site-packages/serial/serialjava.py" />
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/builtins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="917">
-          <caret line="3640" column="8" selection-start-line="3640" selection-start-column="8" selection-end-line="3640" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtCore/QThreadPool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="42" column="8" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/sip.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="146" column="6" selection-start-line="146" selection-start-column="6" selection-end-line="146" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtCore/QRunnable.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="25" selection-start-line="10" selection-start-column="25" selection-end-line="10" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/python/Lib/codecs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="324" selection-start-line="324" selection-end-line="324" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/builtins.py" />
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtCore/QThreadPool.py" />
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/sip.py" />
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtCore/QRunnable.py" />
     <entry file="file://$PROJECT_DIR$/cfg.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -673,34 +570,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_pe.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6290">
-          <caret line="370" selection-start-line="370" selection-end-line="370" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="85" column="25" lean-forward="true" selection-start-line="85" selection-start-column="25" selection-end-line="85" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/opc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1360">
-          <caret line="80" column="60" selection-start-line="80" selection-start-column="48" selection-end-line="80" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtWidgets/QAbstractButton.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtWidgets/QAbstractButton.py" />
     <entry file="file://$PROJECT_DIR$/opc/bitwise.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -710,66 +580,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/opc/monad.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="41" column="24" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/electropribor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="45" column="43" selection-start-line="45" selection-start-column="43" selection-end-line="45" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/ddsgenerator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="952">
-          <caret line="56" column="5" selection-start-line="56" selection-end-line="59" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1088">
-          <caret line="67" column="47" selection-start-line="67" selection-start-column="47" selection-end-line="67" selection-end-column="47" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/menu/mainform.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="74" column="99" selection-start-line="74" selection-start-column="99" selection-end-line="74" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/owenpchv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="32" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/owenio.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1819">
-          <caret line="115" column="48" selection-start-line="115" selection-start-column="48" selection-end-line="115" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/opc2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="739">
-          <caret line="175" column="30" lean-forward="true" selection-start-line="175" selection-start-column="30" selection-end-line="175" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="882">
+          <caret line="42" selection-start-line="42" selection-end-line="42" />
         </state>
       </provider>
     </entry>
@@ -780,10 +592,161 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/opc/test_pchv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="318">
+          <caret line="23" column="5" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/opc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="952">
+          <caret line="56" column="53" selection-start-line="56" selection-start-column="48" selection-end-line="56" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/auxiliary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1615">
+          <caret line="96" column="9" selection-start-line="96" selection-start-column="9" selection-end-line="96" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/test_ao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="62" selection-start-line="62" selection-end-line="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/electropribor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="451">
+          <caret line="57" column="32" selection-start-line="57" selection-start-column="32" selection-end-line="57" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="90" column="42" selection-start-line="90" selection-start-column="42" selection-end-line="90" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/ddsgenerator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="55" selection-start-line="55" selection-end-line="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtWidgets/QCheckBox.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="204" column="8" selection-start-line="204" selection-start-column="8" selection-end-line="204" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/test_gen.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-331" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/owenio.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="42" selection-start-line="42" selection-end-line="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/owenpchv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-824">
+          <caret line="96" selection-start-line="96" selection-end-line="96" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/pid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="37" column="18" selection-start-line="37" selection-start-column="18" selection-end-line="37" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tstOpc.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2414">
+          <caret line="142" selection-start-line="142" selection-end-line="142" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/menu/mnuUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="11" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/python/Lib/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="324" selection-start-line="324" selection-end-line="324" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/opc2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="173" selection-start-line="173" selection-end-line="173" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/menu/mnuMain.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
-          <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/menu/template.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-646">
+          <caret line="37" column="8" lean-forward="true" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/menu/btnPanel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="30" column="8" selection-start-line="30" selection-start-column="8" selection-end-line="30" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_pe.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="553">
+          <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/menu/mainform.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1071">
+          <caret line="94" column="24" lean-forward="true" selection-start-line="94" selection-start-column="24" selection-end-line="94" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="451">
+          <caret line="76" column="16" selection-start-line="76" selection-start-column="16" selection-end-line="76" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -11,7 +11,8 @@ import exam_iu.frm_iu_pe
 class MainForm(QtWidgets.QWidget):
     def __init__(self, server=None, parent=None):
         super().__init__(parent)
-        self.server = server
+        self.opc = server
+
         self.vbox = QtWidgets.QVBoxLayout()
         self.setWindowTitle('А3136. Стенд проверки и регулировки ЭРЧМ')
         self.resize(1024, 768)
@@ -26,7 +27,7 @@ class MainForm(QtWidgets.QWidget):
         self.setLayout(self.vbox)
 
         self.mnu_main = mnumain.MainMenu()
-        self.mnu_UI = mnuui.mnuUI()
+        self.mnu_iu = mnuui.mnuIU()
 
         self.exam_iu_pe_set_pe = exam_iu.frm_iu_pe.Form_iu_pe_set_pe()
         self.exam_iu_pe_inst1 = exam_iu.frm_iu_pe.Form_iu_inst1()
@@ -37,7 +38,7 @@ class MainForm(QtWidgets.QWidget):
 
         self.stl = QtWidgets.QStackedLayout()
         self.stl.addWidget(self.mnu_main)
-        self.stl.addWidget(self.mnu_UI)
+        self.stl.addWidget(self.mnu_iu)
         self.stl.addWidget(self.exam_iu_pe_set_pe)
         self.stl.addWidget(self.exam_iu_pe_inst1)
         self.stl.addWidget(self.exam_iu_pe_inst2)
@@ -48,6 +49,8 @@ class MainForm(QtWidgets.QWidget):
         self.table.setLayout(self.stl)
         self._currentmenu = None
 
+        self.opc.di.changed.connect(self.on_di_change, QtCore.Qt.QueuedConnection)
+        self.opc.freq.changed.connect(self.on_freq_change, QtCore.Qt.QueuedConnection)
 
     @pyqtSlot(str)
     def on_statusbar_update(self, msg):
@@ -66,18 +69,34 @@ class MainForm(QtWidgets.QWidget):
         self.connectmenu()
 
     def connectmenu(self):
-        self.currentmenu.encoder_value = self.server.br3.value
+        self.currentmenu.encoder_value = self.opc.freq.value[2]
         self.btnPanel.btnUp.clicked.connect(self.currentmenu.on_btn_up_clicked)
         self.btnPanel.btnDown.clicked.connect(self.currentmenu.on_btn_down_clicked)
         self.btnPanel.btnBack.clicked.connect(self.currentmenu.on_btn_back_clicked)
         self.btnPanel.btnOk.clicked.connect(self.currentmenu.on_btn_ok_clicked)
-        if self.server:
-            self.server.br3.updated.connect(self.currentmenu.on_encoder,QtCore.Qt.QueuedConnection)
 
     def disconnectmenu(self):
-        self.btnPanel.btnUp.clicked.disconnect(self.currentmenu.on_btn_up_clicked)
-        self.btnPanel.btnDown.clicked.disconnect(self.currentmenu.on_btn_down_clicked)
-        self.btnPanel.btnBack.clicked.disconnect(self.currentmenu.on_btn_back_clicked)
-        self.btnPanel.btnOk.clicked.disconnect(self.currentmenu.on_btn_ok_clicked)
-        if self.server:
-            self.server.br3.updated.disconnect()
+        try:
+            self.btnPanel.btnUp.clicked.disconnect(self.currentmenu.on_btn_up_clicked)
+            self.btnPanel.btnDown.clicked.disconnect(self.currentmenu.on_btn_down_clicked)
+            self.btnPanel.btnBack.clicked.disconnect(self.currentmenu.on_btn_back_clicked)
+            self.btnPanel.btnOk.clicked.disconnect(self.currentmenu.on_btn_ok_clicked)
+        except Exception:
+            pass
+
+    @QtCore.pyqtSlot()
+    def on_freq_change(self):
+        br3 = self.opc.freq.value[2]
+        if self.currentmenu:
+            self.currentmenu.on_encoder(br3)
+
+    @QtCore.pyqtSlot()
+    def on_di_change(self):
+        if self.opc.di.value[6]:
+            self.btnPanel.on_back_clicked()
+        if self.opc.di.value[4]:
+            self.btnPanel.on_up_clicked()
+        if self.opc.di.value[7]:
+            self.btnPanel.on_down_clicked()
+        if self.opc.di.value[5]:
+            self.btnPanel.on_ok_clicked()

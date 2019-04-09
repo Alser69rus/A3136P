@@ -1,56 +1,34 @@
 ﻿from PyQt5 import QtCore
-import cfg
 
-text = None
 com = None
-form = None
-server = None
-count = 0
-u1 = 0
-u2 = 0
-i1 = 0
-i2 = 0
 
 
-class Communicate(QtCore.QObject):
-    signal = QtCore.pyqtSignal()
-    signalStr = QtCore.pyqtSignal(str)
+class ExamIUPE(QtCore.QState):
+    """Установка поворотного электромагнита на исполнительное устройство"""
     success = QtCore.pyqtSignal()
     fail = QtCore.pyqtSignal()
-    btnBack = None
-    btnOk = None
-    error = None
-    suspended = None
-    updated = None
+    btnBack=None
+    btnOk=None
 
-
-class Exam_iu_pe(QtCore.QState):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, server=None, form=None):
         super().__init__(parent)
-        global text
         global com
-        global server
-        global form
-
-        server = cfg.server
-        form = cfg.form
-
-        text = form.exam_iu_pe_check.text
-        com = Communicate()
-        com.btnOk = form.btnPanel.btnOk.clicked
-        com.btnBack = form.btnPanel.btnBack.clicked
-        com.error = server.c.error
-        com.suspended = server.c.suspended
-        com.updated = server.c.updated
-
-        server.pchv.speed_updated.connect(form.exam_iu_pe_check.tachometer.setValue,
-                                          QtCore.Qt.QueuedConnection)
-
-        server.pchv.speed_task_changed.connect(form.exam_iu_pe_check.tachometer.setTask,
-                                               QtCore.Qt.QueuedConnection)
-        server.pa3.c.value_changed.connect(form.exam_iu_pe_check.pa3.setValue, QtCore.Qt.QueuedConnection)
-        server.br2.updated.connect(form.exam_iu_pe_check.indicator.setValue, QtCore.Qt.QueuedConnection)
-        server.pid_angle.value_changed.connect(form.exam_iu_pe_check.indicator.setTask, QtCore.Qt.QueuedConnection)
+        com = self
+        self.opc = server
+        self.frm_main = form
+        self.frm = self.frm_main.exam_iu_pe_check
+        self.text = self.frm.text
+        self.btnOk = self.frm_main.btnPanel.btnOk
+        self.btnBack = self.frm_main.btnPanel.btnBack
+        self.pchv = self.opc.pchv
+        self.tachometer = self.frm.tachometer
+        self.pchv.speed_changed.connect(self.tachometer.setValue, QtCore.Qt.QueuedConnection)
+        self.pchv.task_changed.connect(self.tachometer.setTask, QtCore.Qt.QueuedConnection)
+        self.pa3 = self.opc.pa3
+        self.pa3.changed.connect(self.frm.pa3.setValue, QtCore.Qt.QueuedConnection)
+        # server.pid_angle.value_changed.connect(form.exam_iu_pe_check.indicator.setTask, QtCore.Qt.QueuedConnection)
+        com.btnBack=self.frm_main.btnPanel.btnBack.clicked
+        com.btnOk=self.frm_main.btnPanel.btnOk.clicked
 
         self.install_0 = Install0(self)
         self.install_1 = Install1(self)
@@ -60,9 +38,7 @@ class Exam_iu_pe(QtCore.QState):
         self.set_pe = SetPe(self)
 
         self.show_check_win = ShowCheckWin(self)
-        self.connect_devices = ConnectDevices(self)
         self.start_PCHV = StartPCHV(self)
-        self.start_server = StartServer(self)
 
         self.set_current_13 = SetCurrent13(self)
         self.wait_current_13 = WaitCurrent13(self)
@@ -88,35 +64,35 @@ class Exam_iu_pe(QtCore.QState):
 
         self.setInitialState(self.install_0)
 
-        self.addTransition(com.error, self.error)
+        self.addTransition(com.opc.error, self.error)
         self.error.addTransition(self.stop_server)
         self.addTransition(com.btnBack, self.stop_server)
-        self.stop_server.addTransition(com.suspended, self.stop_PCHV)
+        # self.stop_server.addTransition(com.suspended, self.stop_PCHV)
         self.stop_PCHV.addTransition(self.disconnect_devices)
         self.disconnect_devices.addTransition(self.disconnect_form)
-        self.disconnect_form.addTransition(com.updated, self.finish)
+        # self.disconnect_form.addTransition(com.updated, self.finish)
 
         self.install_0.addTransition(self.install_1)
         self.install_1.addTransition(com.btnOk, self.install_3)
         self.install_3.addTransition(com.btnOk, self.install_4)
         self.install_4.addTransition(com.btnOk, self.set_pe)
         self.set_pe.addTransition(com.btnOk, self.show_check_win)
-        self.show_check_win.addTransition(com.suspended, self.connect_devices)
-        self.connect_devices.addTransition(self.start_PCHV)
-        self.start_PCHV.addTransition(self.start_server)
-        self.start_server.addTransition(server.pchv.on_task_signal, self.set_current_13)
+        # self.show_check_win.addTransition(com.suspended, self.connect_devices)
+        # self.connect_devices.addTransition(self.start_PCHV)
+        # self.start_PCHV.addTransition(self.start_server)
+        # self.start_server.addTransition(server.pchv.on_task_signal, self.set_current_13)
 
         self.set_current_13.addTransition(self.wait_current_13)
-        self.wait_current_13.addTransition(com.updated, self.wait_current_13)
+        # self.wait_current_13.addTransition(com.updated, self.wait_current_13)
         self.wait_current_13.addTransition(com.success, self.connect_br3)
 
         self.connect_br3.addTransition(self.set_u1_with_br3)
-        self.set_u1_with_br3.addTransition(com.updated, self.set_u1_with_br3)
+        # self.set_u1_with_br3.addTransition(com.updated, self.set_u1_with_br3)
         self.set_u1_with_br3.addTransition(com.btnOk, self.reset_br2)
 
         self.reset_br2.addTransition(self.prepare_measure_i1)
         self.prepare_measure_i1.addTransition(self.measure_i1)
-        self.measure_i1.addTransition(com.updated, self.measure_i1)
+        # self.measure_i1.addTransition(com.updated, self.measure_i1)
         self.measure_i1.addTransition(com.success, self.check_i1)
 
         self.check_i1.addTransition(com.success, self.set_position_8)
@@ -124,94 +100,98 @@ class Exam_iu_pe(QtCore.QState):
         self.tune_i1.addTransition(com.btnOk, self.set_current_13)
 
         self.set_position_8.addTransition(self.wait_position_8)
-        self.wait_position_8.addTransition(com.updated, self.wait_position_8)
+        # self.wait_position_8.addTransition(com.updated, self.wait_position_8)
 
 
 class Install0(QtCore.QState):
-    def onEntry(self, e):
-        global server
-        global form
-        form.disconnectmenu()
+    """подготовка"""
 
-        form.exam_iu_pe_check.indicator.setArrowVisible(False, False)
-        form.exam_iu_pe_check.indicator.text.setVisible(False)
-        server.br2.setZero()
+    def onEntry(self, e):
+        global com
+        com.frm_main.disconnectmenu()
+
+        com.frm.indicator.setArrowVisible(False, False)
+        com.frm.indicator.text.setVisible(False)
+        com.opc.freq.setClear(2)
 
 
 class Install1(QtCore.QState):
+    """установка оборудования 1"""
+
     def onEntry(self, e):
-        global form
-        form.stl.setCurrentWidget(form.exam_iu_pe_inst1)
+        global com
+        com.frm_main.stl.setCurrentWidget(com.frm_main.exam_iu_pe_inst1)
 
 
 class Install2(QtCore.QState):
+    """установка оборудования 2"""
+
     def onEntry(self, e):
-        global form
-        form.stl.setCurrentWidget(form.exam_iu_pe_inst2)
+        global com
+        form.stl.setCurrentWidget(com.frm_main.exam_iu_pe_inst2)
 
 
 class Install3(QtCore.QState):
+    """установка оборудования 3"""
+
     def onEntry(self, e):
-        global form
-        form.stl.setCurrentWidget(form.exam_iu_pe_inst3)
+        global com
+        com.frm_main.stl.setCurrentWidget(com.frm_main.exam_iu_pe_inst3)
 
 
 class Install4(QtCore.QState):
+    """установка оборудования 4"""
+
     def onEntry(self, e):
-        global form
-        form.stl.setCurrentWidget(form.exam_iu_pe_inst4)
+        global com
+        com.frm_main.stl.setCurrentWidget(com.frm_main.exam_iu_pe_inst4)
 
 
 class SetPe(QtCore.QState):
+    """установка ПЭ на ИУ"""
+
     def onEntry(self, e):
-        global form
-        form.stl.setCurrentWidget(form.exam_iu_pe_set_pe)
+        global com
+        com.frm_main.stl.setCurrentWidget(com.frm_main.exam_iu_pe_set_pe)
 
 
 class ShowCheckWin(QtCore.QState):
+    """Начало испытания"""
+
     def onEntry(self, e):
-        global form
-        global server
-        global text
-        text.setText('Запуск вращения вала ИУ на скорости 500 об/мин')
-        form.stl.setCurrentWidget(form.exam_iu_pe_check)
-        server.suspend(True)
+        global com
+        com.text.setText('Запуск вращения вала ИУ на скорости 500 об/мин')
+        com.frm_main.stl.setCurrentWidget(com.frm_main.exam_iu_pe_check)
 
 
-class ConnectDevices(QtCore.QState):
+class ConnectPchv(QtCore.QState):
+    """Подключение ПЧВ"""
+
     def onEntry(self, e):
-        global server
-        server.do2.value[0] = True
-        server.do2.value[1] = True
-        server.do2.value[4] = True
-        server.do2.value[5] = True
-        server.do2.value[15] = True
-        server.do2.write()
+        global com
+        com.connect_pchv()
+
+
+class ConnectPe(QtCore.QState):
+    """Подключение силового канала VD2"""
+
+    def onEntry(self, QEvent):
+        global com
+        com.connect_pe()
 
 
 class StartPCHV(QtCore.QState):
+    """Запуск ПЧВ на скорости 500"""
+
     def onEntry(self, e):
-        global server
-        server.pchv.wait_ready()
+        global opc
         server.pchv.speed = 500
-        server.pchv.only_speed = False
-        server.pchv.start()
-
-
-class StartServer(QtCore.QState):
-    def onEntry(self, e):
-        global server
-        server.read_list = [server.di, server.pa3, server.pchv]
-        server.write_list = []
-        server.suspend(False)
 
 
 class SetCurrent13(QtCore.QState):
     def onEntry(self, e):
-        global server
-        global text
-        global count
-        text.setText('Установка тока 1,3 А в силовой цепи')
+        global opc
+        opc.text.setText('Установка тока 1,3 А в силовой цепи')
         server.pid_current.value = 1.3
         server.read_list = [server.di, server.pa3, server.pchv]
         server.write_list = [server.pid_current, server.ao]

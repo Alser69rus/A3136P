@@ -56,8 +56,9 @@ class Generator(QtCore.QObject):
 
     @QtCore.pyqtSlot(bool)
     def setActive(self, value=True):
-        self.active = value
-        self.active_change.emit(value)
+        if self.active != value:
+            self.active = value
+            self.active_change.emit(value)
 
     def update(self):
         if self.active:

@@ -86,8 +86,9 @@ class M7084(QtCore.QObject):
 
     @QtCore.pyqtSlot(bool)
     def setActive(self, value=True):
-        self.active = value
-        self.active_change.emit(value)
+        if self.active != value:
+            self.active = value
+            self.active_change.emit(value)
 
     @QtCore.pyqtSlot(int, bool)
     def setEnable(self, n, value):

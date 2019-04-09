@@ -82,8 +82,8 @@ class Menu(QtWidgets.QWidget):
         if self.selected:
             self.selected.animateClick()
 
-    @pyqtSlot(float, float)
-    def on_encoder(self, value, delta):
+    @pyqtSlot(float)
+    def on_encoder(self, value):
         if value - self.encoder_value > 5:
             self.encoder_value = value
             self.on_btn_down_clicked()
