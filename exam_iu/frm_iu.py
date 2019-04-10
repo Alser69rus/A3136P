@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtWidgets, QtGui
+﻿from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import pyqtSlot as pyqtSlot
 
 import guielement.scale as scale
@@ -185,7 +185,7 @@ class Form_iu_pe_check(QtWidgets.QWidget):
         self.indicator = ScaledDevice(width=280, height=320, arr_x=130, arr_y=500, arr_r=350, arr_length=40, min_a=106,
                                       max_a=74, min_v=0, max_v=10, mark_prim=10, mark_sec=2, mark_ter=1,
                                       f_mark='{:.0f}', f_text='Позиция: {:>3.1f}')
-        self.indicator.caption.setText('Указатель\nсилового вала')
+        self.indicator.caption.setText('Указатель\nнагрузки')
 
         self.panel = QtWidgets.QWidget()
 
@@ -200,7 +200,60 @@ class Form_iu_pe_check(QtWidgets.QWidget):
 
         self.panel.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
 
-        self.text.setFont(QtGui.QFont('Segoi UI', 16))
+        self.text.setFont(QtGui.QFont('Segoi UI', 14))
+        self.text.setWordWrap(True)
+        self.text.setText('Запуск вращения вала ИУ на скорости 500 об/мин\n')
+        self.text.setAlignment(QtCore.Qt.AlignTop)
+
+
+class Form_iu_dp_check(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.vbox = QtWidgets.QVBoxLayout()
+        self.hbox = QtWidgets.QHBoxLayout()
+        self.text = QtWidgets.QLabel()
+
+        self.pa3 = ScaledDevice(width=200, height=250, arr_x=100, arr_y=115, arr_r=35, min_a=270,
+                                max_a=-22.5, min_v=0.8, max_v=2.4, mark_prim=8, mark_sec=2, mark_ter=1,
+                                f_mark='{: >.1f}', f_text='{:>5.3f} А')
+        self.pa3.caption.setText('PA3')
+        self.pa3.text.setAlignment(QtCore.Qt.AlignRight)
+        self.pa3.setArrowVisible(True, False)
+        self.pa3.setValue(0)
+
+        self.tachometer = ScaledDevice(width=200, height=250, arr_x=180, arr_y=190, arr_r=100, min_a=180, max_a=90,
+                                       min_v=0, max_v=600, mark_prim=6, mark_sec=5, mark_ter=1, f_mark='{:3.0f}',
+                                       f_text='{:>3.0f} об/мин')
+        self.tachometer.caption.setText('Тахометр')
+        self.tachometer.setValue(0)
+
+        self.indicator = ScaledDevice(width=200, height=250, arr_x=100, arr_y=410, arr_r=270, arr_length=40, min_a=106,
+                                      max_a=74, min_v=0, max_v=10, mark_prim=10, mark_sec=2, mark_ter=1,
+                                      f_mark='{:.0f}', f_text='Позиция: {:>3.1f}')
+        self.indicator.caption.setText('Указатель\nнагрузки')
+        self.indicator.setValue(0)
+
+        self.dp = ScaledDevice(width=320, height=250, arr_x=160, arr_y=610, arr_r=470, arr_length=40, min_a=106,
+                               max_a=74, min_v=14, max_v=26, mark_prim=6, mark_sec=2, mark_ter=5,
+                               f_mark='{:.0f}', f_text='Частота: {:>5.3f} кГц')
+        self.dp.caption.setText('Показания ДП')
+        self.dp.setValue(0)
+
+        self.panel = QtWidgets.QWidget()
+
+        self.hbox.addWidget(self.pa3)
+        self.hbox.addWidget(self.tachometer)
+        self.hbox.addWidget(self.indicator)
+        self.hbox.addWidget(self.dp)
+        self.panel.setLayout(self.hbox)
+
+        self.vbox.addWidget(self.panel)
+        self.vbox.addWidget(self.text)
+        self.setLayout(self.vbox)
+
+        self.panel.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+
+        self.text.setFont(QtGui.QFont('Segoi UI', 14))
         self.text.setWordWrap(True)
         self.text.setText('Запуск вращения вала ИУ на скорости 500 об/мин\n')
         self.text.setAlignment(QtCore.Qt.AlignTop)
@@ -208,7 +261,7 @@ class Form_iu_pe_check(QtWidgets.QWidget):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-    win = Form_iu_pe_check()
+    win = Form_iu_dp_check()
     win.show()
     print(win.width(), win.height())
     app.exec_()

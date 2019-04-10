@@ -5,6 +5,7 @@ from PyQt5.QtCore import QState as QState
 import opc.opc2
 import menu.mainform
 import exam_iu.exam_iu_pe
+import exam_iu.exam_iu_dp
 
 com = None
 
@@ -28,6 +29,7 @@ class Main(QtCore.QObject):
 
         self.form = menu.mainform.MainForm(self.opc)
         com.form = self.form
+        # com.form.setCursor(QtCore.Qt.BlankCursor)
         self.form.closeEvent = self.closeEvent
         self.form.mnu_main.btnQuit.clicked.connect(self.form.close)
         self.form.showMaximized()
@@ -39,6 +41,7 @@ class Main(QtCore.QObject):
         self.menu_main = MenuMain(self.menu)
         self.menu_iu = MenuIU(self.menu)
         self.exam_iu_pe = exam_iu.exam_iu_pe.ExamIUPE(self.stm, self.opc, self.form)
+        self.exam_iu_dp = exam_iu.exam_iu_dp.ExamIUDP(self.stm, self.opc, self.form)
         self.state_close = QtCore.QFinalState(self.stm)
 
         self.stm.setInitialState(self.state_init)
@@ -49,7 +52,9 @@ class Main(QtCore.QObject):
         self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_back.clicked, self.menu_main)
         self.menu_iu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
         self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_PE_tune.clicked, self.exam_iu_pe)
+        self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_DP_tune.clicked, self.exam_iu_dp)
         self.exam_iu_pe.addTransition(self.exam_iu_pe.finished, self.menu_iu)
+        self.exam_iu_dp.addTransition(self.exam_iu_dp.finished, self.menu_iu)
 
         self.opc.started.connect(self.stm.start)
         self.opc.start()

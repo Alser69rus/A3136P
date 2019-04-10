@@ -48,6 +48,7 @@ class M7084(QtCore.QObject):
     def _clear_done(self, data):
         self._clear_cmd = False
         self.cleared.emit()
+        self.changed.emit()
         return data
 
     def _enable(self, data, n, value):
