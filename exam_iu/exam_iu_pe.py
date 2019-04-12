@@ -169,6 +169,7 @@ class Finish(QtCore.QFinalState):
         com.opc.pa2.setActive(False)
         com.opc.pa3.setActive(False)
         com.frm_main.connectmenu()
+        com.pchv.setActive(False)
 
 
 class Install0(QtCore.QState):
@@ -190,6 +191,7 @@ class Install0(QtCore.QState):
         com.opc.pa1.setActive(False)
         com.opc.pa2.setActive(False)
         com.opc.pa3.setActive(True)
+        com.pchv.setActive(False)
         com.i1 = 0
         com.i2 = 0
         com.u1 = 0
@@ -250,6 +252,7 @@ class ConnectPchv(QtCore.QState):
 
     def onEntry(self, e):
         global com
+        com.pchv.setActive(True)
         com.opc.connect_pchv()
 
 
@@ -258,6 +261,8 @@ class ConnectPe(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
+        com.ao.value[2] = 0
+        com.ao.setActive()
         com.opc.connect_pe()
 
 

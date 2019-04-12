@@ -9,6 +9,7 @@ class ExamIUDP(QtCore.QState):
     fail = QtCore.pyqtSignal()
     br2_changed = QtCore.pyqtSignal(float)
     br3_changed = QtCore.pyqtSignal(float)
+    dp_changed = QtCore.pyqtSignal(float)
     btnBack = None
     btnOk = None
 
@@ -16,15 +17,15 @@ class ExamIUDP(QtCore.QState):
         super().__init__(parent)
         global com
         com = self
-        self.u1 = 0
-        self.u2 = 0
-        self.i1 = 0
-        self.i2 = 0
+        self.f1 = 0
+        self.f2 = 0
+        self.f3 = 0
+        self.dp = 0
         self.br2 = 0
         self.br3 = 0
         self.opc = server
         self.frm_main = form
-        self.frm = self.frm_main.exam_iu_pe_check
+        self.frm = self.frm_main.exam_iu_dp_check
         self.text = self.frm.text
         self.btnOk = self.frm_main.btnPanel.btnOk.clicked
         self.btnBack = self.frm_main.btnPanel.btnBack.clicked
@@ -41,6 +42,7 @@ class ExamIUDP(QtCore.QState):
         self.indicator = self.frm.indicator
         self.pida.task_changed.connect(self.indicator.setTask, QtCore.Qt.QueuedConnection)
         self.br2_changed.connect(self.indicator.setValue, QtCore.Qt.QueuedConnection)
+        self.dp_changed.connect(self.frm.dp.setValue, QtCore.Qt.QueuedConnection)
         com.btnBack = self.frm_main.btnPanel.btnBack.clicked
         com.btnOk = self.frm_main.btnPanel.btnOk.clicked
         self.ao = self.opc.ao
@@ -65,56 +67,56 @@ class ExamIUDP(QtCore.QState):
         self.install_2 = Install2(self)
         self.install_3 = Install3(self)
         self.install_4 = Install4(self)
-        self.set_pe = SetPe(self)
-        self.show_check_win = ShowCheckWin(self)
+        self.set_dp = SetDp(self)
+
         self.install_0.addTransition(self.install_1)
         self.install_1.addTransition(com.btnOk, self.install_3)
         self.install_3.addTransition(com.btnOk, self.install_4)
-        self.install_4.addTransition(com.btnOk, self.set_pe)
-        self.set_pe.addTransition(com.btnOk, self.show_check_win)
+        self.install_4.addTransition(com.btnOk, self.set_dp)
 
-        # Запуск ПЧВ
-        self.connect_pchv = ConnectPchv(self)
-        self.connect_pe = ConnectPe(self)
-        self.start_PCHV = StartPCHV(self)
-        self.show_check_win.addTransition(self.connect_pchv)
-        self.connect_pchv.addTransition(self.connect_pe)
-        self.connect_pe.addTransition(self.start_PCHV)
+        # Подключение ДП и измерение максимальной частоты
+        self.connect_dev = ConnectDev(self)
+        self.show_f3 = ShowF3(self)
+        self.measure_f3 = MeasureF3(self)
+        self.set_dp.addTransition(self.btnOk, self.connect_dev)
+        self.connect_dev.addTransition(self.show_f3)
+        self.show_f3.addTransition(self.btnOk, self.measure_f3)
 
-        # Установка тока 0 А и сброс энкодера Br2
-        self.set_current_0 = SetCurrent0(self)
+        # Установка на начальную позицию
+        self.set_pos_0 = SetPos0(self)
+        self.wait_pos_0 = WaitPos0(self)
         self.reset_br2 = ResetBr2(self)
-        self.start_PCHV.addTransition(self.pchv.speed_reached, self.set_current_0)
-        self.set_current_0.addTransition(self.pidc.task_reached, self.reset_br2)
+        self.show_f1 = ShowF1(self)
+        self.measure_f1 = MeasureF1(self)
+        self.measure_f3.addTransition(self.set_pos_0)
+        self.set_pos_0.addTransition(self.pchv.speed_reached, self.wait_pos_0)
+        self.wait_pos_0.addTransition(self.pidc.task_reached, self.reset_br2)
+        self.reset_br2.addTransition(self.freq.cleared, self.show_f1)
+        self.show_f1.addTransition(self.btnOk, self.measure_f1)
 
-        # Установка тока 1,3 А и позиции 2
-        self.set_current_13 = SetCurrent13(self)
-        self.show_pos_2 = ShowPos2(self)
-        self.tune_pos_2 = TunePos2(self)
-        self.reset_br2.addTransition(self.freq.cleared, self.set_current_13)
-        self.set_current_13.addTransition(self.pidc.task_reached, self.show_pos_2)
-        self.show_pos_2.addTransition(self.tune_pos_2)
-        self.tune_pos_2.addTransition(self.br3_changed, self.tune_pos_2)
+        # Запуск ПЧВ и установка в позицию 10
+        self.start_pchv = StartPCHV(self)
+        self.set_pos8 = SetPos8(self)
+        self.reset_br3 = ResetBr3(self)
+        self.tune_current = TuneCurrent(self)
+        self.measure_f2 = MeasureF2(self)
+        self.measure_f1.addTransition(self.start_pchv)
+        self.start_pchv.addTransition(self.pchv.speed_reached, self.set_pos8)
+        self.set_pos8.addTransition(self.pidc.task_reached, self.reset_br3)
+        self.reset_br3.addTransition(self.freq.cleared, self.tune_current)
+        self.tune_current.addTransition(self.br3_changed, self.tune_current)
+        self.tune_current.addTransition(self.btnOk, self.measure_f2)
 
-        # Установка тока 2 А и позиции 8
-        self.set_current_20 = SetCurrent20(self)
-        self.show_pos_8 = ShowPos8(self)
-        self.tune_pos_8 = TunePos8(self)
-        self.tune_pos_2.addTransition(self.btnOk, self.set_current_20)
-        self.set_current_20.addTransition(self.pidc.task_reached, self.show_pos_8)
-        self.show_pos_8.addTransition(self.tune_pos_8)
-        self.tune_pos_8.addTransition(self.br3_changed, self.tune_pos_8)
-
-        # Отображение результатов проверки и рекомендаций по настройке
-        self.check_result = CheckResult(self)
-        self.tune_i1 = TuneI1(self)
-        self.tune_i2 = TuneI2(self)
-        self.tune_pos_8.addTransition(self.btnOk, self.check_result)
-        self.check_result.addTransition(self.btnOk, self.tune_i1)
-        self.tune_i1.addTransition(self.success, self.tune_i2)
-        self.tune_i1.addTransition(self.btnOk, self.tune_i2)
-        self.tune_i2.addTransition(self.success, self.set_current_0)
-        self.tune_i2.addTransition(self.btnOk, self.set_current_0)
+        # Результаты проверки
+        self.set_current_0 = SetCurrent0(self)
+        self.set_speed_0 = SetSpeed0(self)
+        self.show_result = ShowResult(self)
+        self.tune_dp = TuneDP(self)
+        self.measure_f2.addTransition(self.set_current_0)
+        self.set_current_0.addTransition(self.set_speed_0)
+        self.set_speed_0.addTransition(self.pchv.break_on, self.show_result)
+        self.show_result.addTransition(self.btnOk, self.tune_dp)
+        self.tune_dp.addTransition(self.btnOk, self.measure_f2)
 
         self.setInitialState(self.install_0)
 
@@ -127,6 +129,10 @@ class ExamIUDP(QtCore.QState):
         if v != self.br3:
             self.br3 = v
             self.br3_changed.emit(v)
+        v = self.freq.value[7]
+        if v != self.dp:
+            self.dp = v
+            self.dp_changed.emit(v)
 
 
 class Error(QtCore.QState):
@@ -166,6 +172,7 @@ class Finish(QtCore.QFinalState):
         com.opc.pa1.setActive(False)
         com.opc.pa2.setActive(False)
         com.opc.pa3.setActive(False)
+        com.pchv.setActive(False)
         com.frm_main.connectmenu()
 
 
@@ -176,8 +183,9 @@ class Install0(QtCore.QState):
         global com
         com.frm_main.disconnectmenu()
 
-        com.indicator.setArrowVisible(False, False)
+        com.indicator.setArrowVisible(True, False)
         com.indicator.text.setVisible(False)
+        com.frm.dp.setArrowVisible(True, False)
         com.freq.setClear(2)
         com.br2 = com.freq.value[0]
         com.br3 = com.freq.value[2]
@@ -188,10 +196,13 @@ class Install0(QtCore.QState):
         com.opc.pa1.setActive(False)
         com.opc.pa2.setActive(False)
         com.opc.pa3.setActive(True)
-        com.i1 = 0
-        com.i2 = 0
-        com.u1 = 0
-        com.u2 = 0
+        com.pchv.setActive(False)
+        com.f1 = 0
+        com.f2 = 0
+        com.f3 = 0
+        com.dp = 0
+        com.br2 = com.freq.value[0]
+        com.br3 = com.freq.value[2]
 
 
 class Install1(QtCore.QState):
@@ -226,70 +237,63 @@ class Install4(QtCore.QState):
         com.frm_main.stl.setCurrentWidget(com.frm_main.exam_iu_pe_inst4)
 
 
-class SetPe(QtCore.QState):
+class SetDp(QtCore.QState):
     """установка ПЭ на ИУ"""
 
     def onEntry(self, e):
         global com
-        com.frm_main.stl.setCurrentWidget(com.frm_main.exam_iu_pe_set_pe)
+        com.frm_main.stl.setCurrentWidget(com.frm_main.exam_iu_pe_set_dp)
 
 
-class ShowCheckWin(QtCore.QState):
+class ConnectDev(QtCore.QState):
+    """Подключение ПЧВ, ПЭ и ДП"""
+
+    def onEntry(self, e):
+        global com
+        com.pchv.setActive(True)
+        com.opc.connect_pchv()
+        com.ao.value[2] = 0
+        com.ao.setActive()
+        com.opc.connect_pe()
+        com.opc.connect_dp()
+
+
+class ShowF3(QtCore.QState):
     """Начало испытания"""
 
     def onEntry(self, e):
         global com
-        com.text.setText('<p>Ожидайте.<br>Выполняется установка скорости вращения вала ИУ 500 об/мин.</p>')
-        com.frm_main.stl.setCurrentWidget(com.frm_main.exam_iu_pe_check)
+        com.text.setText(
+            '<p>Необходимо ослабить стопорный болт рычага, сопряженного с пальцем 21 и задвинуть толкатель'
+            ' 20, на котором установлены ферритовые кольца в катушку 22 до упора.</p>' + \
+            '<p><br>Нажать ПРИНЯТЬ для продолжения.</p>')
+        com.frm_main.stl.setCurrentWidget(com.frm_main.exam_iu_dp_check)
 
 
-class ConnectPchv(QtCore.QState):
-    """Подключение ПЧВ"""
-
-    def onEntry(self, e):
-        global com
-        com.opc.connect_pchv()
-
-
-class ConnectPe(QtCore.QState):
-    """Подключение силового канала VD2"""
+class MeasureF3(QtCore.QState):
+    """Запись частоты полностью задвинутого ДП"""
 
     def onEntry(self, QEvent):
         global com
-        com.opc.connect_pe()
+        com.f3 = com.dp
 
 
-class StartPCHV(QtCore.QState):
-    """Запуск ПЧВ на скорости 500"""
-
-    def onEntry(self, e):
-        global com
-        com.pchv.speed = 500
-
-
-class SetCurrent0(QtCore.QState):
-    """установка тока 0 А в силовой цепи"""
+class SetPos0(QtCore.QState):
+    """Запуск ПЧВ для установки позиции 0"""
 
     def onEntry(self, QEvent):
         global com
-        com.text.setText('<p>Ожидайте. <br>Выполняется установка тока 0 А в силовой цепи.</p>')
+        com.pchv.set_speed(500)
+        com.text.setText('<p>Ожидайте.</p><p>Производится кратковременный запуск двигателя для установки'
+                         ' индикатора нагрузки в положение "0"</p>')
+
+
+class WaitPos0(QtCore.QState):
+    """Установка позиции 0"""
+
+    def onEntry(self, QEvent):
+        global com
         com.pidc.setTask(0)
-
-
-class SetCurrent13(QtCore.QState):
-    """Установка тока 1,3 А в силовой цепи"""
-
-    def onEntry(self, QEvent):
-        com.text.setText('<p>Ожидайте.<br>Выполняется установка тока 1,3 А в силовой цепи.</p>')
-        com.pidc.setTask(1.3)
-
-
-class SetCurrent20(QtCore.QState):
-    """Установка тока 2,0 А в силовой цепи"""
-
-    def onEntry(self, QEvent):
-        com.text.setText('<p>Ожидайте.<br>Выполняется установка тока 2,0 А в силовой цепи.</p>')
-        com.pidc.setTask(2.0)
 
 
 class ResetBr2(QtCore.QState):
@@ -298,113 +302,139 @@ class ResetBr2(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.freq.setClear(0)
-        com.indicator.setArrowVisible(True, True)
+        com.indicator.setArrowVisible(True, False)
         com.indicator.text.setVisible(True)
-        com.i1 = 0
-        com.i2 = 0
-        com.u1 = 0
-        com.u2 = 0
 
 
-class ShowPos2(QtCore.QState):
-    """Подготовка к проверке позиции 2"""
-
-    def onEntry(self, e):
-        global com
-        com.u1 = com.ao.value[2]
-        com.freq.setClear(2)
-        com.text.setText('<p>При помощи поворота рукоятки BR3 отрегулируйте ток силовой цепи ' + \
-                         'таким образом, чтобы указатель нагрузки на выходном валу ИУ находился на ' + \
-                         'позиции 2</p><p>Нажмите ПРИНЯТЬ для продолжения</p>')
-
-
-class TunePos2(QtCore.QState):
-    """Настройка тока позиции 2"""
-
-    def onEntry(self, e):
-        global com
-        com.ao.value[2] = com.u1 + com.br3
-        com.ao.setActive()
-        com.i1 = com.pa3.value
-
-
-class ShowPos8(QtCore.QState):
-    """Подготовка к проверке позиции 8"""
+class ShowF1(QtCore.QState):
+    """Установка ДП в начальное положение"""
 
     def onEntry(self, QEvent):
         global com
-        com.u2 = com.ao.value[2]
-        com.freq.setClear(2)
-        com.text.setText('<p>При помощи поворота рукоятки BR3 отрегулируйте ток силовой цепи ' + \
-                         'таким образом, чтобы указатель нагрузки на выходном валу ИУ находился на ' + \
-                         'позиции 8.</p><p>Нажмите ПРИНЯТЬ для продолжения</p>')
+        com.pchv.set_speed(0)
+        com.text.setText(
+            '<p>Установить выходной вал исполнительного устройства в положении "СТОП", при этом '
+            'указатель нагрузки должен находится в положении "0"</p>'
+            '<p>Изменяя положение рычага, сопряженного с пальцем 21, относительно зафиксированного в положении "СТОП" '
+            'выходного вала 6 исполнительного устройства, установить его так, чтобы толкатель выступал относительно'
+            'торца втулки на 0,5±0,5 мм. Стопорным болтом закрепить рычаг.</p>'
+            '<p><br>Нажать ПРИНЯТЬ для продолжения<br></p>')
 
 
-class TunePos8(QtCore.QState):
-    """Настройка тока позиции 2"""
+class MeasureF1(QtCore.QState):
+    """Запись частоты начального положения ДП"""
 
-    def onEntry(self, e):
+    def onEntry(self, QEvent):
         global com
-        com.ao.value[2] = com.u2 + com.br3
+        com.f1 = com.dp
+
+
+class StartPCHV(QtCore.QState):
+    """Запуск ПЧВ для установки указателя на поз. 10"""
+
+    def onEntry(self, QEvent):
+        global com
+        com.pchv.set_speed(500)
+        com.text.setText('<p>Ожидайте</p><p>Производится установка скорости вращения вала исполнительного' + \
+                         ' устройства 500 об/мин.</p>')
+
+
+class SetPos8(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.pidc.setTask(2)
+        com.text.setText('<p>Ожидайте.</p><p>Производится предварительная установка тока в силовой цепи' + \
+                         ' поворотного электромагнита</p>')
+
+
+class ResetBr3(QtCore.QState):
+    """Сброс энкодера Br3"""
+
+    def onEntry(self, QEvent):
+        global com
+        com.u = com.ao.value[2]
+        com.freq.setClear(2)
+        com.text.setText('<p>Поворотом рукоятки энкодера BR3 установите ток в силовой цепи таким образом, чтобы ' + \
+                         'указатель нагрузки исполнительного устройства находился на позиции "10"</p>' + \
+                         '<p><font color="red">Внимание!!! Будьте осторожны и старайтесь не повышать ток в силовой' + \
+                         ' цепи больше необходимого, поскольку это может привести к механической поломке датчика ' + \
+                         'положения, в том случае, если он не правильно отрегулирован. Так же не рекомендуется ' + \
+                         'находится в этом режиме дольше нескольких минут во избежание перегрева силовой' + \
+                         'цепи стенда.<font color="black"></p><p><br>Нажать ПРИНЯТЬ для продолжения</p>')
+
+
+class TuneCurrent(QtCore.QState):
+    """Ручная регулировка тока для установки позиции 10"""
+
+    def onEntry(self, QEvent):
+        global com
+        com.ao.value[2] = com.u + com.br3
         com.ao.setActive()
-        com.i2 = com.pa3.value
 
 
-class CheckResult(QtCore.QState):
-    """Проверка на соответствие ТУ"""
+class MeasureF2(QtCore.QState):
+    """Запись частоты конечного положения ДП"""
 
-    def onEntry(self, e):
+    def onEntry(self, QEvent):
+        global com
+        com.f2 = com.dp
+
+
+class SetCurrent0(QtCore.QState):
+    """Сброс тока в 0"""
+
+    def onEntry(self, QEvent):
         global com
         com.pidc.setTask(0)
-        res1 = 'НОРМА' if 1.25 <= com.i1 <= 1.35 else '<font color="red">НЕ НОРМА<font color="black">'
-        res2 = 'НОРМА' if 1.95 <= com.i2 <= 2.05 else '<font color="red">НЕ НОРМА<font color="black">'
-        if 1.25 <= com.i1 <= 1.35 and 1.95 <= com.i2 <= 2.05:
-            res3 = 'Настройка не требуется.'
-        else:
-            res3 = '<font color="red">Требуется настройка поворотного электромагнита.<font color="black">'
-
-        com.text.setText('<p>Результаты проверки:<br>' + \
-                         'Ток на позиции 2 выходного вала ИУ:<br>' + \
-                         'Норма: {} А. Факт: {:4.3f} А. Результат: {}<br>'.format('1,25-1,35', com.i1, res1) + \
-                         'Ток на позиции 8 выходного вала ИУ:<br>' + \
-                         'Норма: {} А. Факт: {:4.3f} А. Результат: {}<br>'.format('1,95-2,05', com.i2, res2) + \
-                         res3 + '</p><p>Нажмите НАЗАД для прекращения проверки и выхода в меню<br>' + \
-                         'Нажмите ПРИНЯТЬ для продолжения проверки</p>')
+        com.text.setText('<p>Ожидайте.</p><p>Производится отключение силовой цепи</p>')
 
 
-class TuneI1(QtCore.QState):
-    def onEntry(self, e):
-        global com
-        if 1.25 <= com.i1 <= 1.35:
-            com.success.emit()
-        else:
-            com.pidc.setTask(1.3)
+class SetSpeed0(QtCore.QState):
+    """Остановка ПЧВ"""
 
-        com.text.setText('''При помощи винта 25 отрегулируйте натяжение пружины 31 
-        чтобы стрелка указателя силового вала ИУ встала на позицию 2. 
-
-        Если натяжением пружины не получается отрегулировать позицию указателя,
-        пружину следует заменить и выполнить повторную проверку.
-        Если заменой пружины невозможно исправить проблему, необходимо заменить
-        поворотный электромагнит, а неисправный отдать в ремонот.
-
-        Нажмите НАЗАД для прекращения проверки и выхода в меню
-        Нажмите ПРИНЯТЬ для продолжения проверки''')
-
-
-class TuneI2(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        if 1.95 <= com.i2 <= 2.05:
-            com.success.emit()
-        else:
-            com.pidc.setTask(2.0)
+        com.pchv.set_speed(0)
+        com.text.setText('<p>Ожидайте.</p><p>Производится остановка привода</p>')
 
-        com.text.setText(
-            '<p>Изменяя положение рычага 17 относительно привалочной плоскости поворотного электромагнита ' + \
-            '(изменяя размер "L") установить стрелку указателя нагрузки на деление 8. При этом угол a не ' + \
-            'должен меняться.</p>' + \
-            '<p>После настройки следует выполнить повторную проверку. Если настроить поворотный электромагнит' + \
-            'не удалось, то следует его заменить, а неисправный отдать в ремонт.</p>' + \
-            '<p>Нажмите НАЗАД для прекращения проверки и выхода в меню<br>' + \
-            'Нажмите ПРИНЯТЬ для продолжения проверки</p>')
+
+class ShowResult(QtCore.QState):
+    """Отображение результатов проверки"""
+
+    def onEntry(self, QEvent):
+        global com
+        if com.f1 < com.f2:
+            res1 = 'НОРМА' if com.f1 <= 20 else '<font color="red">НЕ НОРМА<font color="black">'
+            res2 = 'НОРМА' if com.f2 >= 24 else '<font color="red">НЕ НОРМА<font color="black">'
+            res3 = 'НОРМА' if com.f3 >= com.f2 + 0.5 else '<font color="red">НЕ НОРМА<font color="black">'
+            com.text.setText('<p>Результаты проверки:</p>'
+                             '<p>Показания датчика положения:<br> на позиции "0": '
+                             '{:6.3f} кГц, норма не более 20 кГц, результат: {}<br>'.format(com.f1, res1) + \
+                             ' на позиции "10": '
+                             '{:6.3f} кГц, норма не менее 24 кГц, результат: {}<br>'.format(com.f2, res2) + \
+                             'в крайнем положении: {:6.3f} кГц, норма: больше чем на позиции "10"'.format(com.f3) + \
+                             ', результат: {}</p>'.format(res3) + \
+                             '<p><br>Нажать ПРИНЯТЬ для продолжения</p>')
+        else:
+            res1 = 'НОРМА' if com.f1 >= 24 else '<font color="red">НЕ НОРМА<font color="black">'
+            res2 = 'НОРМА' if com.f2 <= 20 else '<font color="red">НЕ НОРМА<font color="black">'
+            res3 = 'НОРМА' if com.f3 <= com.f2 - 0.5 else '<font color="red">НЕ НОРМА<font color="black">'
+            com.text.setText('<p>Результаты проверки:</p>'
+                             '<p>Показания датчика положения:<br> на позиции "0": '
+                             '{:6.3f} кГц, норма не менее 24 кГц, результат: {}<br>'.format(com.f1, res1) + \
+                             ' на позиции "10": '
+                             '{:6.3f} кГц, норма не более 20 кГц, результат: {}<br>'.format(com.f2, res2) + \
+                             'в крайнем положении: {:6.3f} кГц, норма: меньше чем на позиции "10"'.format(com.f3) + \
+                             ', результат: {}</p>'.format(res3) + \
+                             '<p><br>Нажать ПРИНЯТЬ для продолжения</p>')
+
+
+class TuneDP(QtCore.QState):
+    """Рекомендации по настройке"""
+
+    def onEntry(self, QEvent):
+        global com
+        com.text.setText('<p>Ослабив стопорный болт, поверните рычаг с пальцем 21, чтобы положение толкателя 20'
+                         ' относительно торца втулки увеличилось примерно на 0,5 мм  и повторите проверку.</p><p>'
+                         'Нажмите ПРИНЯТЬ для повторной проверки<br>'
+                         'Нажмите НАЗАД для выхода в меню</p>')

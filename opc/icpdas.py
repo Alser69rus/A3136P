@@ -42,8 +42,8 @@ class M7084(QtCore.QObject):
         return value
 
     def _clear(self, port, n):
-        port.execute(self.dev, cst.WRITE_SINGLE_COIL, 512 + n, output_value=1)
-        return port
+        return port.execute(self.dev, cst.WRITE_SINGLE_COIL, 512 + n, output_value=1)
+
 
     def _clear_done(self, data):
         self._clear_cmd = False
@@ -53,8 +53,8 @@ class M7084(QtCore.QObject):
 
     def _enable(self, data, n, value):
         data = bitwise.override(data, n, value)
-        self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 489, output_value=data)
-        return data
+        return self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 489, output_value=data)
+
 
     def _read_enable(self, port):
         return port.execute(self.dev, cst.READ_INPUT_REGISTERS, 489, 1)

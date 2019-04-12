@@ -31,7 +31,8 @@ class MainForm(QtWidgets.QWidget):
         self.mnu_main = mnumain.MainMenu()
         self.mnu_iu = mnuui.mnuIU()
 
-        self.exam_iu_pe_set_pe = exam_iu.frm_iu.Form_iu_pe_set_pe()
+        self.exam_iu_pe_set_pe = exam_iu.frm_iu.Form_iu_set_pe()
+        self.exam_iu_pe_set_dp = exam_iu.frm_iu.Form_iu_set_dp()
         self.exam_iu_pe_inst1 = exam_iu.frm_iu.Form_iu_inst1()
         self.exam_iu_pe_inst2 = exam_iu.frm_iu.Form_iu_inst2()
         self.exam_iu_pe_inst3 = exam_iu.frm_iu.Form_iu_inst3()
@@ -43,6 +44,7 @@ class MainForm(QtWidgets.QWidget):
         self.stl.addWidget(self.mnu_main)
         self.stl.addWidget(self.mnu_iu)
         self.stl.addWidget(self.exam_iu_pe_set_pe)
+        self.stl.addWidget(self.exam_iu_pe_set_dp)
         self.stl.addWidget(self.exam_iu_pe_inst1)
         self.stl.addWidget(self.exam_iu_pe_inst2)
         self.stl.addWidget(self.exam_iu_pe_inst3)

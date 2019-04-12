@@ -111,8 +111,8 @@ class Worker4(Worker):
     def __init__(self, port=None, baud=9600, timeout=0.05, parent=None):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
         self.freq = M7084(self.port, 3)
-        self.freq.k = [0.0078125, 0.0078125, 1, 1, 0, 1, 1, 1]
-        self.freq.eps = [0.05, 0.05, 1, 1, 0, 5, 5, 5]
+        self.freq.k = [0.0078125, 0.0078125, 1, 1, 0, 1, 1, 0.001]
+        self.freq.eps = [0.05, 0.05, 1, 1, 0, 5, 5, 0.005]
         self.dev = [self.freq]
         self.freq.setActive()
 
@@ -232,6 +232,11 @@ class Server(QtCore.QObject):
     @QtCore.pyqtSlot(bool)
     def connect_gen(self, value=True):
         self.do2.value[9:15] = [value] * 6
+        self.do2.setActive()
+
+    @QtCore.pyqtSlot(bool)
+    def connect_dp(self, value=True):
+        self.do2.value[15] = value
         self.do2.setActive()
 
     @QtCore.pyqtSlot()

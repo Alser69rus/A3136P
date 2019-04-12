@@ -135,8 +135,8 @@ class DO32(OwenOutputModule):
         return pack
 
     def _write_data(self, pack):
-        self.port.execute(self.dev, cst.WRITE_MULTIPLE_REGISTERS, 97, output_value=pack)
-        return pack
+        return self.port.execute(self.dev, cst.WRITE_MULTIPLE_REGISTERS, 97, output_value=pack)
+
 
 
 class AO8I(OwenOutputModule):
@@ -149,5 +149,5 @@ class AO8I(OwenOutputModule):
         return [int(i) for i in data]
 
     def _write_data(self, data):
-        self.port.execute(self.dev, cst.WRITE_MULTIPLE_REGISTERS, 0, output_value=data)
-        return data
+        return self.port.execute(self.dev, cst.WRITE_MULTIPLE_REGISTERS, 0, output_value=data)
+

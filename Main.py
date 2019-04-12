@@ -80,6 +80,8 @@ class StateInit(QtCore.QState):
         com.opc.pa1.setActive(False)
         com.opc.pa2.setActive(False)
         com.opc.pa3.setActive(False)
+        com.form.mnu_main.reset()
+        com.form.mnu_iu.reset()
         com.success.emit()
 
 
@@ -90,8 +92,8 @@ class MenuMain(QtCore.QState):
 
 class MenuIU(QtCore.QState):
     def onEntry(self, QEvent):
-        com.form.mnu_iu.reset()
         com.form.currentmenu = com.form.mnu_iu
+        com.form.mnu_iu.reset()
 
 
 if __name__ == '__main__':

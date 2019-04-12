@@ -5,7 +5,7 @@ import guielement.scale as scale
 from guielement.scale import ScaledDevice as ScaledDevice
 
 
-class Form_iu_pe_set_pe(QtWidgets.QWidget):
+class Form_iu_set_pe(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.vbox = QtWidgets.QVBoxLayout()
@@ -25,6 +25,30 @@ class Form_iu_pe_set_pe(QtWidgets.QWidget):
             '   упорном рычаге 27.' + \
             '\n\nНажать кнопку ПРИНЯТЬ для продолжения')
         self.text.setFont(QtGui.QFont('Segoi UI', 13))
+        self.text.setWordWrap(True)
+        self.lbl = QtWidgets.QLabel()
+        self.lbl.setPixmap(self.pixmap)
+        self.vbox.addWidget(self.lbl)
+        self.vbox.addWidget(self.text)
+        self.vbox.addStretch(1)
+        self.setLayout(self.vbox)
+
+
+class Form_iu_set_dp(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.vbox = QtWidgets.QVBoxLayout()
+        self.pixmap = QtGui.QPixmap('exam_iu\\img_iu_dp.png')
+        self.pixmap.setDevicePixelRatio(1.05)
+        self.text = QtWidgets.QLabel('<p>Установка датчика положения на исполнительное устройство:</p>' + \
+                                     '<p> а) снять верхнюю крышку 4 исполнительного устройства</p>' + \
+                                     '<p> б) установить преобразователь линейных перемещений 5 на верхнем корпусе. ' + \
+                                     'При этом палец 21, ввернутый в рычаг, установленный на выходном валу ' + \
+                                     'исполнительного устройства, должен войти в паз толкателя 20, на котором ' + \
+                                     'закреплены ферритовые кольца. Закрепить корпус преобразователя линейных ' + \
+                                     'перемещений.</p>' + \
+                                     '<p><br>Нажать кнопку ПРИНЯТЬ для продолжения</p>')
+        self.text.setFont(QtGui.QFont('Segoi UI', 14))
         self.text.setWordWrap(True)
         self.lbl = QtWidgets.QLabel()
         self.lbl.setPixmap(self.pixmap)
@@ -214,7 +238,7 @@ class Form_iu_dp_check(QtWidgets.QWidget):
         self.text = QtWidgets.QLabel()
 
         self.pa3 = ScaledDevice(width=200, height=250, arr_x=100, arr_y=115, arr_r=35, min_a=270,
-                                max_a=-22.5, min_v=0.8, max_v=2.4, mark_prim=8, mark_sec=2, mark_ter=1,
+                                max_a=-22.5, min_v=0, max_v=2.6, mark_prim=13, mark_sec=2, mark_ter=1,
                                 f_mark='{: >.1f}', f_text='{:>5.3f} А')
         self.pa3.caption.setText('PA3')
         self.pa3.text.setAlignment(QtCore.Qt.AlignRight)
@@ -227,15 +251,15 @@ class Form_iu_dp_check(QtWidgets.QWidget):
         self.tachometer.caption.setText('Тахометр')
         self.tachometer.setValue(0)
 
-        self.indicator = ScaledDevice(width=200, height=250, arr_x=100, arr_y=410, arr_r=270, arr_length=40, min_a=106,
+        self.indicator = ScaledDevice(width=230, height=250, arr_x=100, arr_y=410, arr_r=270, arr_length=40, min_a=106,
                                       max_a=74, min_v=0, max_v=10, mark_prim=10, mark_sec=2, mark_ter=1,
-                                      f_mark='{:.0f}', f_text='Позиция: {:>3.1f}')
+                                      f_mark='{:.0f}', f_text='Позиция: {: >4.1f}')
         self.indicator.caption.setText('Указатель\nнагрузки')
         self.indicator.setValue(0)
 
         self.dp = ScaledDevice(width=320, height=250, arr_x=160, arr_y=610, arr_r=470, arr_length=40, min_a=106,
                                max_a=74, min_v=14, max_v=26, mark_prim=6, mark_sec=2, mark_ter=5,
-                               f_mark='{:.0f}', f_text='Частота: {:>5.3f} кГц')
+                               f_mark='{:.0f}', f_text='Частота: {: >6.3f} кГц')
         self.dp.caption.setText('Показания ДП')
         self.dp.setValue(0)
 
