@@ -67,7 +67,8 @@ class OwenOutputModule(OwenModule):
 
     def update(self):
         if self.active:
-            Maybe(self.value)(self._pack_data)(self._write_data)(self._emit_updated)(self._write_done).or_else(
+            Maybe(self.value)(self._pack_data)(self._write_data)(self._read_data)(self._check_data)(self._emit_updated)(
+                self._write_done).or_else(
                 self._emit_warning)
 
     def _emit_updated(self, data):
@@ -137,6 +138,18 @@ class DO32(OwenOutputModule):
     def _write_data(self, pack):
         return self.port.execute(self.dev, cst.WRITE_MULTIPLE_REGISTERS, 97, output_value=pack)
 
+    def _read_data(self, data):
+        self.thread().msleep(2)
+        return self.port.execute(self.dev, cst.READ_HOLDING_REGISTERS, 97, 2)
+
+    def _check_data(self, data):
+        v = [0] * 32
+        for i in range(16):
+            v[i] = bitwise.get(data[1], i)
+            v[i + 16] = bitwise.get(data[0], i)
+        if v == self.value:
+            return v
+        return None
 
 
 class AO8I(OwenOutputModule):
@@ -151,3 +164,10 @@ class AO8I(OwenOutputModule):
     def _write_data(self, data):
         return self.port.execute(self.dev, cst.WRITE_MULTIPLE_REGISTERS, 0, output_value=data)
 
+    def _read_data(self, data):
+        return self.port.execute(self.dev, cst.READ_HOLDING_REGISTERS, 0, 8)
+
+    def _check_data(self, data):
+        if list(data) == self.value:
+            return data
+        return None
