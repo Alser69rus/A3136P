@@ -10,11 +10,11 @@ except Exception:
 
 
 class Menu(QtWidgets.QWidget):
-    def __init__(self, title='', parent=None):
+    def __init__(self, title='', parent=None, col=1):
         super().__init__(parent)
-
+        self.col = col
         self.bigbox = QtWidgets.QVBoxLayout()
-        self.vbox = QtWidgets.QVBoxLayout()
+        self.vbox = QtWidgets.QGridLayout()
         self.hbox = QtWidgets.QHBoxLayout()
         self.table = QtWidgets.QWidget()
         self.btnArea = QtWidgets.QWidget()
@@ -39,10 +39,12 @@ class Menu(QtWidgets.QWidget):
 
     def set_lst(self, lst):
         self.list = lst[:]
+        i = 0
 
         for elem in lst:
-            self.vbox.addWidget(elem)
+            self.vbox.addWidget(elem, i // self.col, i % self.col)
             elem.mouse_entry.connect(self.on_btn_select)
+            i += 1
 
         self.reset()
 

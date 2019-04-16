@@ -211,16 +211,16 @@ class Server(QtCore.QObject):
 
 
     @QtCore.pyqtSlot(bool, bool)
-    def connect_pchv(self, value=True, forward=True):
+    def connect_pchv(self, start=True, forward=True):
         self.do2.value[0] = True
         if forward:
-            self.do2.value[1] = value
+            self.do2.value[1] = start
             self.do2.value[2] = False
         else:
             self.do2.value[1] = False
-            self.do2.value[2] = value
+            self.do2.value[2] = start
         self.do2.setActive()
-        self.pchv.setActive(value)
+        self.pchv.setActive(start)
 
     @QtCore.pyqtSlot(bool)
     def connect_pe(self, value=True):

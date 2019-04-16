@@ -16,6 +16,9 @@ class ExamIUPE(QtCore.QState):
         super().__init__(parent)
         global com
         com = self
+        self.dev_type = ''
+        self.reverse = False
+        self.speed = 500
         self.u1 = 0
         self.u2 = 0
         self.i1 = 0
@@ -178,7 +181,15 @@ class Install0(QtCore.QState):
     def onEntry(self, e):
         global com
         com.frm_main.disconnectmenu()
-
+        com.dev_type = com.frm_main.select_iu.dev_type
+        if com.dev_type in ['ЭГУ104Л', 'ЭГУ102', 'ЭГУ110', 'ЭГУ114', 'ЭГУ116']:
+            com.reverse = True
+        else:
+            com.reverse = False
+        if com.dev_type == 'ЭГУ102':
+            com.speed = 350
+        else:
+            com.speed = 500
         com.indicator.setArrowVisible(False, False)
         com.indicator.text.setVisible(False)
         com.freq.setClear(2)
@@ -253,7 +264,7 @@ class ConnectPchv(QtCore.QState):
     def onEntry(self, e):
         global com
         com.pchv.setActive(True)
-        com.opc.connect_pchv()
+        com.opc.connect_pchv(True, com.reverse)
 
 
 class ConnectPe(QtCore.QState):
@@ -271,7 +282,7 @@ class StartPCHV(QtCore.QState):
 
     def onEntry(self, e):
         global com
-        com.pchv.speed = 500
+        com.pchv.speed = com.speed
 
 
 class SetCurrent0(QtCore.QState):

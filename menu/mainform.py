@@ -4,6 +4,8 @@ from PyQt5.QtCore import pyqtSlot
 
 import menu.btnPanel as btnPanel
 import menu.mnuMain as mnumain
+from menu.auth import Auth
+from menu.mnuSelectIU import SelectIU
 import menu.mnuUI as mnuui
 import exam_iu.frm_iu
 
@@ -30,6 +32,8 @@ class MainForm(QtWidgets.QWidget):
 
         self.mnu_main = mnumain.MainMenu()
         self.mnu_iu = mnuui.mnuIU()
+        self.auth = Auth()
+        self.select_iu = SelectIU()
 
         self.exam_iu_pe_set_pe = exam_iu.frm_iu.Form_iu_set_pe()
         self.exam_iu_pe_set_dp = exam_iu.frm_iu.Form_iu_set_dp()
@@ -39,8 +43,11 @@ class MainForm(QtWidgets.QWidget):
         self.exam_iu_pe_inst4 = exam_iu.frm_iu.Form_iu_inst4()
         self.exam_iu_pe_check = exam_iu.frm_iu.Form_iu_pe_check()
         self.exam_iu_dp_check = exam_iu.frm_iu.Form_iu_dp_check()
+        self.exam_iu_pressure=exam_iu.frm_iu.FormIUPressureCheck()
 
         self.stl = QtWidgets.QStackedLayout()
+        self.stl.addWidget(self.auth)
+        self.stl.addWidget(self.select_iu)
         self.stl.addWidget(self.mnu_main)
         self.stl.addWidget(self.mnu_iu)
         self.stl.addWidget(self.exam_iu_pe_set_pe)
@@ -51,6 +58,7 @@ class MainForm(QtWidgets.QWidget):
         self.stl.addWidget(self.exam_iu_pe_inst4)
         self.stl.addWidget(self.exam_iu_pe_check)
         self.stl.addWidget(self.exam_iu_dp_check)
+        self.stl.addWidget(self.exam_iu_pressure)
 
         self.table.setLayout(self.stl)
         self._currentmenu = None
@@ -73,6 +81,7 @@ class MainForm(QtWidgets.QWidget):
             self.disconnectmenu()
         self._currentmenu = value
         self.stl.setCurrentWidget(value)
+        self._currentmenu.encoder_value = self.opc.freq.value[2]
         self.connectmenu()
 
     def connectmenu(self):

@@ -6,6 +6,7 @@ import opc.opc2
 import menu.mainform
 import exam_iu.exam_iu_pe
 import exam_iu.exam_iu_dp
+from exam_iu.exam_iu import ExamIU
 
 com = None
 
@@ -40,8 +41,14 @@ class Main(QtCore.QObject):
         self.menu = QState(self.stm)
         self.menu_main = MenuMain(self.menu)
         self.menu_iu = MenuIU(self.menu)
+        self.exam_iu_pe_select = ExamIUPESelect(self.stm)
         self.exam_iu_pe = exam_iu.exam_iu_pe.ExamIUPE(self.stm, self.opc, self.form)
+        self.exam_iu_dp_select = ExamIUPESelect(self.stm)
         self.exam_iu_dp = exam_iu.exam_iu_dp.ExamIUDP(self.stm, self.opc, self.form)
+        self.exam_iu_auth = ExamIUAuth(self.stm)
+        self.exam_iu_select = ExamIUSelect(self.stm)
+        self.exam_iu = ExamIU(self.stm, self.opc, self.form)
+
         self.state_close = QtCore.QFinalState(self.stm)
 
         self.stm.setInitialState(self.state_init)
@@ -51,10 +58,24 @@ class Main(QtCore.QObject):
         self.menu_main.addTransition(self.form.mnu_main.btnIU.clicked, self.menu_iu)
         self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_back.clicked, self.menu_main)
         self.menu_iu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
-        self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_PE_tune.clicked, self.exam_iu_pe)
-        self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_DP_tune.clicked, self.exam_iu_dp)
+        self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_PE_tune.clicked, self.exam_iu_pe_select)
+        self.exam_iu_pe_select.addTransition(self.form.select_iu.btn_ok, self.exam_iu_pe)
+        self.exam_iu_pe_select.addTransition(self.form.select_iu.btn_back, self.menu_iu)
+        self.exam_iu_pe_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
+        self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_DP_tune.clicked, self.exam_iu_dp_select)
+        self.exam_iu_dp_select.addTransition(self.form.select_iu.btn_ok, self.exam_iu_dp)
+        self.exam_iu_dp_select.addTransition(self.form.select_iu.btn_back, self.menu_iu)
+        self.exam_iu_dp_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
         self.exam_iu_pe.addTransition(self.exam_iu_pe.finished, self.menu_iu)
         self.exam_iu_dp.addTransition(self.exam_iu_dp.finished, self.menu_iu)
+        self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_exam.clicked, self.exam_iu_auth)
+        self.exam_iu_auth.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
+        self.exam_iu_auth.addTransition(self.form.auth.btn_back, self.menu_iu)
+        self.exam_iu_auth.addTransition(self.form.auth.btn_ok, self.exam_iu_select)
+        self.exam_iu_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
+        self.exam_iu_select.addTransition(self.form.select_iu.btn_back, self.menu_iu)
+        self.exam_iu_select.addTransition(self.form.select_iu.btn_ok, self.exam_iu)
+        self.exam_iu.addTransition(self.exam_iu.finished, self.menu_iu)
 
         self.opc.started.connect(self.stm.start)
         self.opc.start()
@@ -80,6 +101,7 @@ class StateInit(QtCore.QState):
         com.opc.pa1.setActive(False)
         com.opc.pa2.setActive(False)
         com.opc.pa3.setActive(False)
+
         com.form.mnu_main.reset()
         com.form.mnu_iu.reset()
         com.success.emit()
@@ -94,6 +116,30 @@ class MenuIU(QtCore.QState):
     def onEntry(self, QEvent):
         com.form.currentmenu = com.form.mnu_iu
         com.form.mnu_iu.reset()
+
+
+class ExamIUPESelect(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.form.currentmenu = com.form.select_iu
+        com.form.currentmenu.reset()
+
+
+class ExamIUDPSelect(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.form.currentmenu = com.form.select_iu
+        com.form.currentmenu.reset()
+
+
+class ExamIUAuth(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.form.currentmenu = com.form.auth
+        com.form.currentmenu.reset()
+
+
+class ExamIUSelect(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.form.currentmenu = com.form.select_iu
+        com.form.currentmenu.reset()
 
 
 if __name__ == '__main__':

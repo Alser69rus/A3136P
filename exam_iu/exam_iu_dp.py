@@ -17,6 +17,8 @@ class ExamIUDP(QtCore.QState):
         super().__init__(parent)
         global com
         com = self
+        self.speed = 500
+        self.reverse = False
         self.f1 = 0
         self.f2 = 0
         self.f3 = 0
@@ -182,7 +184,15 @@ class Install0(QtCore.QState):
     def onEntry(self, e):
         global com
         com.frm_main.disconnectmenu()
-
+        com.dev_type = com.frm_main.select_iu.dev_type
+        if com.dev_type in ['ЭГУ104Л', 'ЭГУ102', 'ЭГУ110', 'ЭГУ114', 'ЭГУ116']:
+            com.reverse = True
+        else:
+            com.reverse = False
+        if com.dev_type == 'ЭГУ102':
+            com.speed = 350
+        else:
+            com.speed = 500
         com.indicator.setArrowVisible(True, False)
         com.indicator.text.setVisible(False)
         com.frm.dp.setArrowVisible(True, False)
@@ -251,7 +261,7 @@ class ConnectDev(QtCore.QState):
     def onEntry(self, e):
         global com
         com.pchv.setActive(True)
-        com.opc.connect_pchv()
+        com.opc.connect_pchv(True, com.reverse)
         com.ao.value[2] = 0
         com.ao.setActive()
         com.opc.connect_pe()
@@ -283,7 +293,7 @@ class SetPos0(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.pchv.set_speed(500)
+        com.pchv.set_speed(com.speed)
         com.text.setText('<p>Ожидайте.</p><p>Производится кратковременный запуск двигателя для установки'
                          ' индикатора нагрузки в положение "0"</p>')
 
@@ -334,7 +344,7 @@ class StartPCHV(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.pchv.set_speed(500)
+        com.pchv.set_speed(com.speed)
         com.text.setText('<p>Ожидайте</p><p>Производится установка скорости вращения вала исполнительного' + \
                          ' устройства 500 об/мин.</p>')
 

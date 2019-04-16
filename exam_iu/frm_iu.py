@@ -283,9 +283,56 @@ class Form_iu_dp_check(QtWidgets.QWidget):
         self.text.setAlignment(QtCore.Qt.AlignTop)
 
 
+class FormIUPressureCheck(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.vbox = QtWidgets.QVBoxLayout()
+        self.hbox = QtWidgets.QHBoxLayout()
+        self.text = QtWidgets.QLabel()
+
+        self.pressure = ScaledDevice(width=300, height=330, arr_x=150, arr_y=160, arr_r=70, min_a=270,
+                                     max_a=-22.5, min_v=0, max_v=1.6, mark_prim=16, mark_sec=5, mark_ter=1,
+                                     f_mark='{: >.1f}', f_text='{:>5.3f} МПа')
+        self.pressure.caption.setText('Давление')
+        self.pressure.text.setAlignment(QtCore.Qt.AlignRight)
+        self.pressure.setArrowVisible(True, False)
+        self.pressure.setValue(0)
+
+        self.tachometer = ScaledDevice(width=330, height=330, arr_x=170, arr_y=250, arr_r=100, min_a=180, max_a=36,
+                                       min_v=0, max_v=1600, mark_prim=8, mark_sec=2, mark_ter=5, f_mark='{:3.0f}',
+                                       f_text='{:>3.0f} об/мин')
+        self.tachometer.caption.setText('Тахометр')
+        self.tachometer.setValue(0)
+
+        self.timer = ScaledDevice(width=300, height=330, arr_x=150, arr_y=160, arr_r=60, min_a=90,
+                                  max_a=-240, min_v=0, max_v=600, mark_prim=6, mark_sec=2, mark_ter=5,
+                                  f_mark='{:.0f}', f_text='Осталось: {: >3.0f} сек')
+        self.timer.caption.setText('Таймер')
+        self.timer.setArrowVisible(True,False)
+        self.timer.setValue(0)
+
+        self.panel = QtWidgets.QWidget()
+
+        self.hbox.addWidget(self.pressure)
+        self.hbox.addWidget(self.tachometer)
+        self.hbox.addWidget(self.timer)
+        self.panel.setLayout(self.hbox)
+
+        self.vbox.addWidget(self.panel)
+        self.vbox.addWidget(self.text)
+        self.setLayout(self.vbox)
+
+        self.panel.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+
+        self.text.setFont(QtGui.QFont('Segoi UI', 14))
+        self.text.setWordWrap(True)
+        self.text.setText('Запуск вращения вала ИУ на скорости 500 об/мин\n')
+        self.text.setAlignment(QtCore.Qt.AlignTop)
+
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-    win = Form_iu_dp_check()
+    win = FormIUPressureCheck()
     win.show()
     print(win.width(), win.height())
     app.exec_()
