@@ -7,8 +7,6 @@ class ExamIUPE(QtCore.QState):
     """Установка поворотного электромагнита на исполнительное устройство"""
     success = QtCore.pyqtSignal()
     fail = QtCore.pyqtSignal()
-    br2_changed = QtCore.pyqtSignal(float)
-    br3_changed = QtCore.pyqtSignal(float)
     btnBack = None
     btnOk = None
 
@@ -23,8 +21,6 @@ class ExamIUPE(QtCore.QState):
         self.u2 = 0
         self.i1 = 0
         self.i2 = 0
-        self.br2 = 0
-        self.br3 = 0
         self.opc = server
         self.frm_main = form
         self.frm = self.frm_main.exam_iu_pe_check
@@ -38,25 +34,26 @@ class ExamIUPE(QtCore.QState):
         self.pa3 = self.opc.pa3
         self.pa3.changed.connect(self.frm.pa3.setValue, QtCore.Qt.QueuedConnection)
         self.freq = self.opc.freq
-        self.freq.changed.connect(self.on_freq_change, QtCore.Qt.QueuedConnection)
         self.pida = self.opc.pida
         self.pidc = self.opc.pidc
         self.indicator = self.frm.indicator
         self.pida.task_changed.connect(self.indicator.setTask, QtCore.Qt.QueuedConnection)
-        self.br2_changed.connect(self.indicator.setValue, QtCore.Qt.QueuedConnection)
+        self.opc.br2_changed.connect(self.indicator.setValue, QtCore.Qt.QueuedConnection)
         com.btnBack = self.frm_main.btnPanel.btnBack.clicked
         com.btnOk = self.frm_main.btnPanel.btnOk.clicked
         self.ao = self.opc.ao
 
         # Обработка ошибок и возврат по нажатию НАЗАД
         self.error = Error(self)
+        self.stop_pid=StopPid(self)
         self.stop_PCHV = StopPCHV(self)
         self.wait_stop_pchv = WaitStopPCHV(self)
         self.disconnect_devices = DisconnectDevices(self)
         self.finish = Finish(self)
         self.addTransition(com.opc.error, self.error)
-        self.error.addTransition(self.stop_PCHV)
-        self.addTransition(com.btnBack, self.stop_PCHV)
+        self.error.addTransition(self.stop_pid)
+        self.addTransition(com.btnBack, self.stop_pid)
+        self.stop_pid.addTransition(self.stop_PCHV)
         self.stop_PCHV.addTransition(self.wait_stop_pchv)
         self.wait_stop_pchv.addTransition(self.pchv.updated, self.wait_stop_pchv)
         self.wait_stop_pchv.addTransition(self.success, self.disconnect_devices)
@@ -97,7 +94,7 @@ class ExamIUPE(QtCore.QState):
         self.reset_br2.addTransition(self.freq.cleared, self.set_current_13)
         self.set_current_13.addTransition(self.pidc.task_reached, self.show_pos_2)
         self.show_pos_2.addTransition(self.tune_pos_2)
-        self.tune_pos_2.addTransition(self.br3_changed, self.tune_pos_2)
+        self.tune_pos_2.addTransition(self.opc.br3_changed, self.tune_pos_2)
 
         # Установка тока 2 А и позиции 8
         self.set_current_20 = SetCurrent20(self)
@@ -106,7 +103,7 @@ class ExamIUPE(QtCore.QState):
         self.tune_pos_2.addTransition(self.btnOk, self.set_current_20)
         self.set_current_20.addTransition(self.pidc.task_reached, self.show_pos_8)
         self.show_pos_8.addTransition(self.tune_pos_8)
-        self.tune_pos_8.addTransition(self.br3_changed, self.tune_pos_8)
+        self.tune_pos_8.addTransition(self.opc.br3_changed, self.tune_pos_8)
 
         # Отображение результатов проверки и рекомендаций по настройке
         self.check_result = CheckResult(self)
@@ -121,28 +118,23 @@ class ExamIUPE(QtCore.QState):
 
         self.setInitialState(self.install_0)
 
-    def on_freq_change(self):
-        v = self.freq.value[0]
-        if v != self.br2:
-            self.br2 = v
-            self.br2_changed.emit(v)
-        v = self.freq.value[2]
-        if v != self.br3:
-            self.br3 = v
-            self.br3_changed.emit(v)
-
 
 class Error(QtCore.QState):
     def onEntry(self, e):
         pass
 
 
+class StopPid(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.pida.setActive(False)
+        com.pidc.setTask(0)
+
+
 class StopPCHV(QtCore.QState):
     def onEntry(self, e):
         global com
         com.pchv.stop()
-        com.ao.value[2] = 0
-        com.ao.setActive()
 
 
 class WaitStopPCHV(QtCore.QState):
@@ -155,10 +147,7 @@ class WaitStopPCHV(QtCore.QState):
 class DisconnectDevices(QtCore.QState):
     def onEntry(self, e):
         global com
-        com.opc.do2.value = [0] * 32
-        com.opc.ao.value = [0] * 8
-        com.opc.do2.setActive()
-        com.opc.ao.setActive()
+        com.opc.do2.setValue([0] * 32)
 
 
 class Finish(QtCore.QFinalState):
@@ -171,6 +160,7 @@ class Finish(QtCore.QFinalState):
         com.opc.pa1.setActive(False)
         com.opc.pa2.setActive(False)
         com.opc.pa3.setActive(False)
+        com.pidc.setActive(False)
         com.frm_main.connectmenu()
         com.pchv.setActive(False)
 
@@ -193,8 +183,6 @@ class Install0(QtCore.QState):
         com.indicator.setArrowVisible(False, False)
         com.indicator.text.setVisible(False)
         com.freq.setClear(2)
-        com.br2 = com.freq.value[0]
-        com.br3 = com.freq.value[2]
         com.opc.ai.setActive(False)
         com.opc.di.setActive(True)
         com.opc.pv1.setActive(False)
@@ -272,8 +260,7 @@ class ConnectPe(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.ao.value[2] = 0
-        com.ao.setActive()
+        com.ao.setValue(0, 2)
         com.opc.connect_pe()
 
 
@@ -341,8 +328,7 @@ class TunePos2(QtCore.QState):
 
     def onEntry(self, e):
         global com
-        com.ao.value[2] = com.u1 + com.br3
-        com.ao.setActive()
+        com.ao.setValue(com.u1 + com.opc.br3, 2)
         com.i1 = com.pa3.value
 
 
@@ -363,8 +349,7 @@ class TunePos8(QtCore.QState):
 
     def onEntry(self, e):
         global com
-        com.ao.value[2] = com.u2 + com.br3
-        com.ao.setActive()
+        com.ao.setValue(com.u2 + com.opc.br3, 2)
         com.i2 = com.pa3.value
 
 
@@ -374,8 +359,8 @@ class CheckResult(QtCore.QState):
     def onEntry(self, e):
         global com
         com.pidc.setTask(0)
-        res1 = 'НОРМА' if 1.25 <= com.i1 <= 1.35 else '<font color="red">НЕ НОРМА<font color="black">'
-        res2 = 'НОРМА' if 1.95 <= com.i2 <= 2.05 else '<font color="red">НЕ НОРМА<font color="black">'
+        res1 = '<font color="green">НОРМА<font color="black">' if 1.25 <= com.i1 <= 1.35 else '<font color="red">НЕ НОРМА<font color="black">'
+        res2 = '<font color="green">НОРМА<font color="black">' if 1.95 <= com.i2 <= 2.05 else '<font color="red">НЕ НОРМА<font color="black">'
         if 1.25 <= com.i1 <= 1.35 and 1.95 <= com.i2 <= 2.05:
             res3 = 'Настройка не требуется.'
         else:

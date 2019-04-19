@@ -7,9 +7,6 @@ class ExamIUDP(QtCore.QState):
     """Установка поворотного электромагнита на исполнительное устройство"""
     success = QtCore.pyqtSignal()
     fail = QtCore.pyqtSignal()
-    br2_changed = QtCore.pyqtSignal(float)
-    br3_changed = QtCore.pyqtSignal(float)
-    dp_changed = QtCore.pyqtSignal(float)
     btnBack = None
     btnOk = None
 
@@ -22,9 +19,6 @@ class ExamIUDP(QtCore.QState):
         self.f1 = 0
         self.f2 = 0
         self.f3 = 0
-        self.dp = 0
-        self.br2 = 0
-        self.br3 = 0
         self.opc = server
         self.frm_main = form
         self.frm = self.frm_main.exam_iu_dp_check
@@ -38,13 +32,12 @@ class ExamIUDP(QtCore.QState):
         self.pa3 = self.opc.pa3
         self.pa3.changed.connect(self.frm.pa3.setValue, QtCore.Qt.QueuedConnection)
         self.freq = self.opc.freq
-        self.freq.changed.connect(self.on_freq_change, QtCore.Qt.QueuedConnection)
         self.pida = self.opc.pida
         self.pidc = self.opc.pidc
         self.indicator = self.frm.indicator
         self.pida.task_changed.connect(self.indicator.setTask, QtCore.Qt.QueuedConnection)
-        self.br2_changed.connect(self.indicator.setValue, QtCore.Qt.QueuedConnection)
-        self.dp_changed.connect(self.frm.dp.setValue, QtCore.Qt.QueuedConnection)
+        self.opc.br2_changed.connect(self.indicator.setValue, QtCore.Qt.QueuedConnection)
+        self.opc.dp_changed.connect(self.frm.dp.setValue, QtCore.Qt.QueuedConnection)
         com.btnBack = self.frm_main.btnPanel.btnBack.clicked
         com.btnOk = self.frm_main.btnPanel.btnOk.clicked
         self.ao = self.opc.ao
@@ -106,7 +99,7 @@ class ExamIUDP(QtCore.QState):
         self.start_pchv.addTransition(self.pchv.speed_reached, self.set_pos8)
         self.set_pos8.addTransition(self.pidc.task_reached, self.reset_br3)
         self.reset_br3.addTransition(self.freq.cleared, self.tune_current)
-        self.tune_current.addTransition(self.br3_changed, self.tune_current)
+        self.tune_current.addTransition(self.opc.br3_changed, self.tune_current)
         self.tune_current.addTransition(self.btnOk, self.measure_f2)
 
         # Результаты проверки
@@ -122,24 +115,17 @@ class ExamIUDP(QtCore.QState):
 
         self.setInitialState(self.install_0)
 
-    def on_freq_change(self):
-        v = self.freq.value[0]
-        if v != self.br2:
-            self.br2 = v
-            self.br2_changed.emit(v)
-        v = self.freq.value[2]
-        if v != self.br3:
-            self.br3 = v
-            self.br3_changed.emit(v)
-        v = self.freq.value[7]
-        if v != self.dp:
-            self.dp = v
-            self.dp_changed.emit(v)
-
 
 class Error(QtCore.QState):
     def onEntry(self, e):
         pass
+
+
+class StopPid(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.pida.setActive(False)
+        com.pidc.setTask(0)
 
 
 class StopPCHV(QtCore.QState):
@@ -159,9 +145,7 @@ class DisconnectDevices(QtCore.QState):
     def onEntry(self, e):
         global com
         com.opc.do2.value = [0] * 32
-        com.opc.ao.value = [0] * 8
         com.opc.do2.setActive()
-        com.opc.ao.setActive()
 
 
 class Finish(QtCore.QFinalState):
@@ -175,6 +159,7 @@ class Finish(QtCore.QFinalState):
         com.opc.pa2.setActive(False)
         com.opc.pa3.setActive(False)
         com.pchv.setActive(False)
+        com.pidc.setActive(False)
         com.frm_main.connectmenu()
 
 
@@ -197,8 +182,6 @@ class Install0(QtCore.QState):
         com.indicator.text.setVisible(False)
         com.frm.dp.setArrowVisible(True, False)
         com.freq.setClear(2)
-        com.br2 = com.freq.value[0]
-        com.br3 = com.freq.value[2]
         com.opc.ai.setActive(False)
         com.opc.di.setActive(True)
         com.opc.pv1.setActive(False)
@@ -210,9 +193,6 @@ class Install0(QtCore.QState):
         com.f1 = 0
         com.f2 = 0
         com.f3 = 0
-        com.dp = 0
-        com.br2 = com.freq.value[0]
-        com.br3 = com.freq.value[2]
 
 
 class Install1(QtCore.QState):
@@ -262,8 +242,7 @@ class ConnectDev(QtCore.QState):
         global com
         com.pchv.setActive(True)
         com.opc.connect_pchv(True, com.reverse)
-        com.ao.value[2] = 0
-        com.ao.setActive()
+        com.ao.setValue(0, 2)
         com.opc.connect_pe()
         com.opc.connect_dp()
 
@@ -285,7 +264,7 @@ class MeasureF3(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.f3 = com.dp
+        com.f3 = com.opc.dp
 
 
 class SetPos0(QtCore.QState):
@@ -378,8 +357,7 @@ class TuneCurrent(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.ao.value[2] = com.u + com.br3
-        com.ao.setActive()
+        com.ao.setValue(com.u + com.opc.br3, 2)
 
 
 class MeasureF2(QtCore.QState):
@@ -387,7 +365,7 @@ class MeasureF2(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.f2 = com.dp
+        com.f2 = com.opc.dp
 
 
 class SetCurrent0(QtCore.QState):

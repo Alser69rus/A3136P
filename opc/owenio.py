@@ -81,6 +81,13 @@ class OwenOutputModule(OwenModule):
         self.setActive(False)
         return data
 
+    def setValue(self, value, n=-1):
+        if n >= 0:
+            self.value[n] = value
+        else:
+            self.value = value
+        self.setActive()
+
 
 class DI16(OwenInputModule):
     def __init__(self, port=None, dev=None, name='DI', parent=None):
@@ -136,6 +143,7 @@ class DO32(OwenOutputModule):
         return pack
 
     def _write_data(self, pack):
+        self.thread().msleep(2)
         return self.port.execute(self.dev, cst.WRITE_MULTIPLE_REGISTERS, 97, output_value=pack)
 
     def _read_data(self, data):
@@ -162,10 +170,13 @@ class AO8I(OwenOutputModule):
         return [int(i) for i in data]
 
     def _write_data(self, data):
+        self.thread().msleep(2)
         return self.port.execute(self.dev, cst.WRITE_MULTIPLE_REGISTERS, 0, output_value=data)
 
     def _read_data(self, data):
-        return self.port.execute(self.dev, cst.READ_HOLDING_REGISTERS, 0, 8)
+        self.thread().msleep(2)
+        v = self.port.execute(self.dev, cst.READ_HOLDING_REGISTERS, 0, 8)
+        return v
 
     def _check_data(self, data):
         if list(data) == self.value:

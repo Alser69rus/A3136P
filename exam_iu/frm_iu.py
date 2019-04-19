@@ -305,7 +305,7 @@ class FormIUPressureCheck(QtWidgets.QWidget):
         self.tachometer.setValue(0)
 
         self.timer = ScaledDevice(width=300, height=330, arr_x=150, arr_y=160, arr_r=60, min_a=90,
-                                  max_a=-240, min_v=0, max_v=600, mark_prim=6, mark_sec=2, mark_ter=5,
+                                  max_a=-240, min_v=0, max_v=60, mark_prim=6, mark_sec=2, mark_ter=5,
                                   f_mark='{:.0f}', f_text='Осталось: {: >3.0f} сек')
         self.timer.caption.setText('Таймер')
         self.timer.setArrowVisible(True,False)

@@ -10,6 +10,11 @@ class SelectIU(Menu):
     def __init__(self, parent=None):
         super().__init__('Выбор типа исполнительного устройства', parent, col=3)
         self.dev_type = ''
+        self.dir = (False, False)
+        self.speed = (300, 500, 1000, 500, 500)
+        self.pressure = (0.6, 1.0)
+        self.current = (1.15, 1.35, 1.95, 2.15)
+        self.freq = (20.0, 24.0)
 
         self.btn_iu_104 = Btn('ЭГУ104')
         self.btn_iu_104R = Btn('ЭГУ104П')
@@ -41,4 +46,59 @@ class SelectIU(Menu):
     @QtCore.pyqtSlot()
     def on_select(self):
         self.dev_type = self.sender().text()
+        if self.dev_type == 'ЭГУ104':
+            self.dir = (False, True)
+            self.speed = (300, 300, 1000, 500, 500)
+            self.pressure = (0.8, 1.0)
+            self.current = (1.15, 1.35, 1.95, 2.15)
+            self.freq = (20.0, 24.0)
+        if self.dev_type == 'ЭГУ104П':
+            self.dir = (False, False)
+            self.speed = (300, 300, 1000, 500, 500)
+            self.pressure = (0.8, 1.0)
+            self.current = (1.15, 1.35, 1.95, 2.15)
+            self.freq = (20.0, 24.0)
+        if self.dev_type == 'ЭГУ104Л':
+            self.dir = (True, True)
+            self.speed = (300, 300, 1000, 500, 500)
+            self.pressure = (0.8, 1.0)
+            self.current = (1.15, 1.35, 1.95, 2.15)
+            self.freq = (20.0, 24.0)
+        if self.dev_type == 'ЭГУ104 - 01П':
+            self.dir = (True, True)
+            self.speed = (300, 300, 1000, 500, 500)
+            self.pressure = (0.8, 1.0)
+            self.current = (1.15, 1.35, 1.95, 2.15)
+            self.freq = (20.0, 24.0)
+        if self.dev_type == 'ЭГУ102':
+            self.dir = (True, True)
+            self.speed = (300, 300, 750, 500, 500)
+            self.pressure = (0.6, 0.8)
+            self.current = (1.1, 1.4, 1.9, 2.3)
+            self.freq = None
+        if self.dev_type == 'ЭГУ106М':
+            self.dir = (True, True)
+            self.speed = (300, 300, 750, 500, 500)
+            self.pressure = (0.6, 0.8)
+            self.current = (1.1, 1.4, 1.9, 2.3)
+            self.freq = None
+        if self.dev_type == 'ЭГУ110':
+            self.dir = (True, False)
+            self.speed = (400, 400, 1500, 500, 700)
+            self.pressure = (0.5, 0.6)
+            self.current = (1.15, 1.35, 1.95, 2.15)
+            self.freq = (20.0, 24.0)
+        if self.dev_type == 'ЭГУ114':
+            self.dir = (True, True)
+            self.speed = (300, 300, 1400, 500, 500)
+            self.pressure = (0.6, 0.8)
+            self.current = (1.1, 1.4, 1.9, 2.3)
+            self.freq = None
+        if self.dev_type == 'ЭГУ116':
+            self.dir = (True, True)
+            self.speed = (300, 300, 1400, 500, 500)
+            self.pressure = (0.6, 0.8)
+            self.current = (1.1, 1.4, 1.9, 2.3)
+            self.freq = None
+
         self.btn_ok.emit()

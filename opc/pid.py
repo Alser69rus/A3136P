@@ -68,6 +68,5 @@ class PID(QtCore.QObject):
 
     @QtCore.pyqtSlot(bool)
     def setActive(self, value=True):
-        if self.active != value:
-            self.active = value
-            self.active_change.emit(value)
+        self.active = value
+        self.active_change.emit(value)

@@ -32,7 +32,9 @@ class M7084(QtCore.QObject):
         self._enable_value = True
 
     def _read_data(self, port):
-        return port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
+        v = port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
+        self.thread().msleep(2)
+        return v
 
     def _unpack_data(self, data):
         value = [0] * 8
@@ -42,7 +44,9 @@ class M7084(QtCore.QObject):
         return value
 
     def _clear(self, port, n):
-        return port.execute(self.dev, cst.WRITE_SINGLE_COIL, 512 + n, output_value=1)
+        v = port.execute(self.dev, cst.WRITE_SINGLE_COIL, 512 + n, output_value=1)
+        self.thread().msleep(2)
+        return v
 
     def _clear_done(self, data, n):
         data = list(data)
@@ -54,10 +58,14 @@ class M7084(QtCore.QObject):
 
     def _enable(self, data, n, value):
         data = bitwise.override(data, n, value)
-        return self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 489, output_value=data)
+        v = self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 489, output_value=data)
+        self.thread().msleep(2)
+        return v
 
     def _read_enable(self, port):
-        return port.execute(self.dev, cst.READ_INPUT_REGISTERS, 489, 1)
+        v=port.execute(self.dev, cst.READ_INPUT_REGISTERS, 489, 1)
+        self.thread().msleep(2)
+        return v
 
     def _enable_done(self, data):
         self._enable_cmd = False

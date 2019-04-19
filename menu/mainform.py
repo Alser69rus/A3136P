@@ -25,6 +25,8 @@ class MainForm(QtWidgets.QWidget):
         self.statusbar = QtWidgets.QStatusBar()
         self.btnPanel.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         self.statusbar.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        self.opc.error.connect(self.statusbar.showMessage)
+        # self.opc.warning.connect(self.statusbar.showMessage)
         self.vbox.addWidget(self.table)
         self.vbox.addWidget(self.btnPanel)
         self.vbox.addWidget(self.statusbar)

@@ -64,8 +64,8 @@ class Worker1(Worker):
         self.ai.off = [0, -0.4, 0, 0, 0, 0, 0, 0]
         self.ai.eps = [1, 0.001, 1, 1, 1, 1, 1, 1]
         self.di = owenio.DI16(self.port, 9)
-        self.do1 = owenio.DO32(self.port, 1)
-        self.do2 = owenio.DO32(self.port, 5)
+        self.do1 = owenio.DO32(self.port, 1,name='DO1')
+        self.do2 = owenio.DO32(self.port, 5,name='DO2')
         self.ao = owenio.AO8I(self.port, 6)
 
         self.pv1 = ElMultimeter(self.port, 11, k=0.01, eps=0.01, name='PV1')
@@ -75,7 +75,7 @@ class Worker1(Worker):
         self.pa3 = ElMultimeter(self.port, 23, k=0.001, eps=0.001, name='PA3')
 
         self.pida = PID(1, 5, -0.25, 0.1)
-        self.pidc = PID(10, 50, -2.5, 0.005)
+        self.pidc = PID(10, 50, -2.5, 0.01)
 
         self.dev = [self.ai, self.di, self.do1, self.do2, self.ao, self.pv1, self.pv2, self.pa1, self.pa2, self.pa3]
         for dev in self.dev:
@@ -127,6 +127,10 @@ class Server(QtCore.QObject):
     btnDown_clicked = QtCore.pyqtSignal()
     btnOk_clicked = QtCore.pyqtSignal()
     btnBack_clicked = QtCore.pyqtSignal()
+    dp_changed = QtCore.pyqtSignal(float)
+    br2_changed = QtCore.pyqtSignal(float)
+    br3_changed = QtCore.pyqtSignal(float)
+    pressure_change = QtCore.pyqtSignal(float)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -156,6 +160,10 @@ class Server(QtCore.QObject):
         self.pchv = self.workers[1].pchv
         self.gen = self.workers[2].gen
         self.freq = self.workers[3].freq
+        self.br2 = self.freq.value[0]
+        self.br3 = self.freq.value[2]
+        self.dp = self.freq.value[7]
+        self.pressure = self.ai.value[1]
 
         self.ai.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
         self.di.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
@@ -168,14 +176,16 @@ class Server(QtCore.QObject):
         self.pa2.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
         self.pa3.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
         self.gen.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
-        self.freq.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
+        self.freq.warning.connect(self.on_error, QtCore.Qt.QueuedConnection)
         self.pchv.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
         self.pchv.alarmed.connect(self.error, QtCore.Qt.QueuedConnection)
         self.pa3.updated.connect(self.on_pa3_update, QtCore.Qt.QueuedConnection)
-        self.freq.updated.connect(self.on_frec_update, QtCore.Qt.QueuedConnection)
+        self.freq.updated.connect(self.on_freq_update, QtCore.Qt.QueuedConnection)
+        self.freq.changed.connect(self.on_freq_change, QtCore.Qt.QueuedConnection)
         self.ao.changed.connect(self.on_ao_change, QtCore.Qt.QueuedConnection)
         self.pida.changed.connect(self.setCurrent, QtCore.Qt.QueuedConnection)
         self.pidc.changed.connect(self.setCurrent, QtCore.Qt.QueuedConnection)
+        self.ai.changed.connect(self.on_ai_change, QtCore.Qt.QueuedConnection)
 
     def start(self):
         print('Запуск сервера')
@@ -186,12 +196,9 @@ class Server(QtCore.QObject):
     def stop(self):
         self.pchv.stop()
         self.thread().msleep(1000)
-        self.do1.value = [0] * 32
-        self.do1.setActive()
-        self.do2.value = [0] * 32
-        self.do2.setActive()
-        self.ao.value = [0] * 8
-        self.ao.setActive()
+        self.do1.setValue([0] * 32)
+        self.do2.setValue([0] * 32)
+        self.ao.setValue([0] * 8)
         self.thread().msleep(1000)
 
         for worker in self.workers:
@@ -209,42 +216,38 @@ class Server(QtCore.QObject):
     def on_error(self, msg):
         self.error.emit(msg)
 
-
     @QtCore.pyqtSlot(bool, bool)
-    def connect_pchv(self, start=True, forward=True):
+    def connect_pchv(self, start=True, reverse=True):
         self.do2.value[0] = True
-        if forward:
-            self.do2.value[1] = start
-            self.do2.value[2] = False
+        if reverse:
+            self.do2.setValue(False, 1)
+            self.do2.setValue(start, 2)
         else:
-            self.do2.value[1] = False
-            self.do2.value[2] = start
-        self.do2.setActive()
+            self.do2.setValue(start, 1)
+            self.do2.setValue(False, 2)
         self.pchv.setActive(start)
 
     @QtCore.pyqtSlot(bool)
     def connect_pe(self, value=True):
-        self.do2.value[4] = value
-        self.do2.value[5] = value
-        self.do2.value[15] = value
-        self.do2.setActive()
+        self.do2.setValue(value, 4)
+        self.do2.setValue(value, 5)
+        self.do2.setValue(value, 15)
 
     @QtCore.pyqtSlot(bool)
     def connect_gen(self, value=True):
         self.do2.value[9:15] = [value] * 6
-        self.do2.setActive()
+        self.do2.setValue(value, 14)
 
     @QtCore.pyqtSlot(bool)
     def connect_dp(self, value=True):
-        self.do2.value[15] = value
-        self.do2.setActive()
+        self.do2.setValue(value, 15)
 
     @QtCore.pyqtSlot()
     def on_pa3_update(self):
         self.pidc.setVin(self.pa3.value)
 
     @QtCore.pyqtSlot()
-    def on_frec_update(self):
+    def on_freq_update(self):
         self.pida.setVin(self.freq.value[0])
 
     @QtCore.pyqtSlot()
@@ -257,8 +260,29 @@ class Server(QtCore.QObject):
         v = int(value)
         if v < 0: v = 0
         if v > 1000: v = 1000
-        self.ao.value[2] = v
-        self.ao.setActive()
+        self.ao.setValue(v, 2)
+
+    @QtCore.pyqtSlot()
+    def on_freq_change(self):
+        v = self.freq.value[0]
+        if v != self.br2:
+            self.br2 = v
+            self.br2_changed.emit(v)
+        v = self.freq.value[2]
+        if v != self.br3:
+            self.br3 = v
+            self.br3_changed.emit(v)
+        v = self.freq.value[7]
+        if v != self.dp:
+            self.dp = v
+            self.dp_changed.emit(v)
+
+    @QtCore.pyqtSlot()
+    def on_ai_change(self):
+        v = self.ai.value[1]
+        if self.pressure != v:
+            self.pressure = v
+            self.pressure_change.emit(v)
 
 
 if __name__ == '__main__':
