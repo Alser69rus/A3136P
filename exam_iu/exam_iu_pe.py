@@ -22,6 +22,7 @@ class ExamIUPE(QtCore.QState):
         self.i1 = 0
         self.i2 = 0
         self.opc = server
+        self.current = server.current
         self.frm_main = form
         self.frm = self.frm_main.exam_iu_pe_check
         self.text = self.frm.text
@@ -45,7 +46,7 @@ class ExamIUPE(QtCore.QState):
 
         # Обработка ошибок и возврат по нажатию НАЗАД
         self.error = Error(self)
-        self.stop_pid=StopPid(self)
+        self.stop_pid = StopPid(self)
         self.stop_PCHV = StopPCHV(self)
         self.wait_stop_pchv = WaitStopPCHV(self)
         self.disconnect_devices = DisconnectDevices(self)
@@ -127,8 +128,8 @@ class Error(QtCore.QState):
 class StopPid(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.pida.setActive(False)
-        com.pidc.setTask(0)
+        # com.current.setActive('pidc',0)
+        com.current.setActive('manual', 10)
 
 
 class StopPCHV(QtCore.QState):
@@ -163,6 +164,7 @@ class Finish(QtCore.QFinalState):
         com.pidc.setActive(False)
         com.frm_main.connectmenu()
         com.pchv.setActive(False)
+        # com.current.setActive(False)
 
 
 class Install0(QtCore.QState):
@@ -260,7 +262,7 @@ class ConnectPe(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.ao.setValue(0, 2)
+        com.current.setActive('manual', 0)
         com.opc.connect_pe()
 
 
@@ -278,7 +280,7 @@ class SetCurrent0(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.text.setText('<p>Ожидайте. <br>Выполняется установка тока 0 А в силовой цепи.</p>')
-        com.pidc.setTask(0)
+        com.current.setActive('pidc', 0)
 
 
 class SetCurrent13(QtCore.QState):
@@ -286,7 +288,7 @@ class SetCurrent13(QtCore.QState):
 
     def onEntry(self, QEvent):
         com.text.setText('<p>Ожидайте.<br>Выполняется установка тока 1,3 А в силовой цепи.</p>')
-        com.pidc.setTask(1.3)
+        com.current.setActive('pidc', 1.3)
 
 
 class SetCurrent20(QtCore.QState):
@@ -294,7 +296,7 @@ class SetCurrent20(QtCore.QState):
 
     def onEntry(self, QEvent):
         com.text.setText('<p>Ожидайте.<br>Выполняется установка тока 2,0 А в силовой цепи.</p>')
-        com.pidc.setTask(2.0)
+        com.current.setActive('pidc', 2.0)
 
 
 class ResetBr2(QtCore.QState):
@@ -316,8 +318,9 @@ class ShowPos2(QtCore.QState):
 
     def onEntry(self, e):
         global com
-        com.u1 = com.ao.value[2]
-        com.freq.setClear(2)
+        # com.u1 = com.ao.value[2]
+        # com.freq.setClear(2)]
+        com.current.setActive('br3')
         com.text.setText('<p>При помощи поворота рукоятки BR3 отрегулируйте ток силовой цепи ' + \
                          'таким образом, чтобы указатель нагрузки на выходном валу ИУ находился на ' + \
                          'позиции 2</p><p>Нажмите ПРИНЯТЬ для продолжения</p>')
@@ -328,7 +331,6 @@ class TunePos2(QtCore.QState):
 
     def onEntry(self, e):
         global com
-        com.ao.setValue(com.u1 + com.opc.br3, 2)
         com.i1 = com.pa3.value
 
 
@@ -337,8 +339,9 @@ class ShowPos8(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.u2 = com.ao.value[2]
-        com.freq.setClear(2)
+        # com.u2 = com.ao.value[2]
+        #         # com.freq.setClear(2)
+        com.current.setActive('br3')
         com.text.setText('<p>При помощи поворота рукоятки BR3 отрегулируйте ток силовой цепи ' + \
                          'таким образом, чтобы указатель нагрузки на выходном валу ИУ находился на ' + \
                          'позиции 8.</p><p>Нажмите ПРИНЯТЬ для продолжения</p>')
@@ -349,7 +352,7 @@ class TunePos8(QtCore.QState):
 
     def onEntry(self, e):
         global com
-        com.ao.setValue(com.u2 + com.opc.br3, 2)
+        # com.ao.setValue(com.u2 + com.opc.br3, 2)
         com.i2 = com.pa3.value
 
 
@@ -358,7 +361,8 @@ class CheckResult(QtCore.QState):
 
     def onEntry(self, e):
         global com
-        com.pidc.setTask(0)
+        # com.pidc.setTask(0)
+        com.current.setActive('pidc', 0)
         res1 = '<font color="green">НОРМА<font color="black">' if 1.25 <= com.i1 <= 1.35 else '<font color="red">НЕ НОРМА<font color="black">'
         res2 = '<font color="green">НОРМА<font color="black">' if 1.95 <= com.i2 <= 2.05 else '<font color="red">НЕ НОРМА<font color="black">'
         if 1.25 <= com.i1 <= 1.35 and 1.95 <= com.i2 <= 2.05:
@@ -381,7 +385,7 @@ class TuneI1(QtCore.QState):
         if 1.25 <= com.i1 <= 1.35:
             com.success.emit()
         else:
-            com.pidc.setTask(1.3)
+            com.current.setActive('pidc', 1.3)
 
         com.text.setText('''При помощи винта 25 отрегулируйте натяжение пружины 31 
         чтобы стрелка указателя силового вала ИУ встала на позицию 2. 
@@ -401,7 +405,7 @@ class TuneI2(QtCore.QState):
         if 1.95 <= com.i2 <= 2.05:
             com.success.emit()
         else:
-            com.pidc.setTask(2.0)
+            com.current.setActive('pidc', 2.0)
 
         com.text.setText(
             '<p>Изменяя положение рычага 17 относительно привалочной плоскости поворотного электромагнита ' + \

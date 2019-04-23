@@ -124,8 +124,7 @@ class Error(QtCore.QState):
 class StopPid(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.pida.setActive(False)
-        com.pidc.setTask(0)
+        com.current.setActive('pidc', 0)
 
 
 class StopPCHV(QtCore.QState):
@@ -159,7 +158,7 @@ class Finish(QtCore.QFinalState):
         com.opc.pa2.setActive(False)
         com.opc.pa3.setActive(False)
         com.pchv.setActive(False)
-        com.pidc.setActive(False)
+        # com.pidc.setActive(False)
         com.frm_main.connectmenu()
 
 
@@ -242,7 +241,7 @@ class ConnectDev(QtCore.QState):
         global com
         com.pchv.setActive(True)
         com.opc.connect_pchv(True, com.reverse)
-        com.ao.setValue(0, 2)
+        com.current.setActive('manual', 10)
         com.opc.connect_pe()
         com.opc.connect_dp()
 
@@ -282,7 +281,7 @@ class WaitPos0(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.pidc.setTask(0)
+        com.current.setActive('pidc', 0)
 
 
 class ResetBr2(QtCore.QState):
@@ -331,7 +330,7 @@ class StartPCHV(QtCore.QState):
 class SetPos8(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.pidc.setTask(2)
+        com.current.setActive('pidc', 2.0)
         com.text.setText('<p>Ожидайте.</p><p>Производится предварительная установка тока в силовой цепи' + \
                          ' поворотного электромагнита</p>')
 
@@ -341,8 +340,9 @@ class ResetBr3(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.u = com.ao.value[2]
-        com.freq.setClear(2)
+        # com.u = com.ao.value[2]
+        # com.freq.setClear(2)
+        com.current.setActive('br3')
         com.text.setText('<p>Поворотом рукоятки энкодера BR3 установите ток в силовой цепи таким образом, чтобы ' + \
                          'указатель нагрузки исполнительного устройства находился на позиции "10"</p>' + \
                          '<p><font color="red">Внимание!!! Будьте осторожны и старайтесь не повышать ток в силовой' + \
@@ -357,7 +357,8 @@ class TuneCurrent(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.ao.setValue(com.u + com.opc.br3, 2)
+        # com.ao.setValue(com.u + com.opc.br3, 2)
+        pass
 
 
 class MeasureF2(QtCore.QState):
@@ -373,7 +374,7 @@ class SetCurrent0(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.pidc.setTask(0)
+        com.current.setActive('pidc', 0)
         com.text.setText('<p>Ожидайте.</p><p>Производится отключение силовой цепи</p>')
 
 

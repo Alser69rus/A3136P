@@ -11,6 +11,102 @@ from opc.owenpchv import Pchv
 from opc.pid import PID
 
 
+class Current(QtCore.QObject):
+    def __init__(self, pida=None, pidc=None, freq=None, ao=None, parent=None):
+        super().__init__(parent)
+        self.pida = pida
+        self.pidc = pidc
+        self.freq = freq
+        self.ao = ao
+        self.active = False
+        self.pida_value = pida.u
+        self.pidc_value = pidc.u
+        self.br3_value = freq.value[2]
+        self.br3_zero = freq.value[2]
+        self.manual_value = 0
+        freq.updated.connect(self.on_freq_update, QtCore.Qt.QueuedConnection)
+        pida.changed.connect(self.set_pida, QtCore.Qt.QueuedConnection)
+        pidc.changed.connect(self.set_pidc, QtCore.Qt.QueuedConnection)
+        pida.task_reached.connect(self.on_task_reached, QtCore.Qt.QueuedConnection)
+        pidc.task_reached.connect(self.on_task_reached, QtCore.Qt.QueuedConnection)
+        ao.updated.connect(self.on_ao_update, QtCore.Qt.QueuedConnection)
+
+    def setActive(self, value, task=-1):
+        self.active = value
+        if 'pida' == value:
+            self.pida.setActive(True)
+            self.pidc.setActive(False)
+            self.pida_value = self.pida.u
+            if task >= 0: self.pida.setTask(task)
+        elif 'pidc' == value:
+            self.pida.setActive(False)
+            self.pidc.setActive(True)
+            self.pidc_value = self.pidc.u
+            if task >= 0: self.pidc.setTask(task)
+        elif 'br3' == value:
+            self.pida.setActive(False)
+            self.pidc.setActive(False)
+            if task >= 0:
+                self.br3_zero = self.freq.value[2] - task
+            else:
+                self.br3_zero = self.freq.value[2] - self.ao.value[2]
+        elif 'manual' == value:
+            self.pida.setActive(False)
+            self.pidc.setActive(False)
+            if task >= 0: self.set_manual(task)
+        else:
+            self.active = False
+            self.pida.setActive(False)
+            self.pidc.setActive(False)
+            self.ao.setActive(False)
+        self.ao.setActive()
+
+    @QtCore.pyqtSlot(float)
+    def set_pida(self, value):
+        self.pida_value = value
+
+    @QtCore.pyqtSlot(float)
+    def set_pidc(self, value):
+        self.pidc_value = value
+
+    @QtCore.pyqtSlot(float)
+    def set_manual(self, value):
+        self.manual_value = value
+
+    @QtCore.pyqtSlot(float)
+    def set_br3(self, value):
+        self.br3_value = value
+
+    @QtCore.pyqtSlot()
+    def on_freq_update(self):
+        v = self.freq.value[2]
+        if v != self.br3_value:
+            self.set_br3(v)
+
+    @QtCore.pyqtSlot()
+    def on_ao_update(self):
+        if 'pida' == self.active:
+            self.setValue(self.pida_value)
+        elif 'pidc' == self.active:
+            self.setValue(self.pidc_value)
+        elif 'br3' == self.active:
+            self.setValue(self.br3_value - self.br3_zero)
+        elif 'manual' == self.active:
+            self.setValue(self.manual_value)
+        else:
+            self.ao.setActive(False)
+
+    @QtCore.pyqtSlot(float)
+    def setValue(self, value):
+        v = round(value)
+        if v < 0: v = 0
+        if v > 1000: v = 1000
+        self.ao.setValue(v, 2)
+
+    def on_task_reached(self):
+        self.setActive(False)
+
+
 class Worker(QtCore.QObject):
     """opc-сервер"""
     finished = QtCore.pyqtSignal()
@@ -64,8 +160,8 @@ class Worker1(Worker):
         self.ai.off = [0, -0.4, 0, 0, 0, 0, 0, 0]
         self.ai.eps = [1, 0.001, 1, 1, 1, 1, 1, 1]
         self.di = owenio.DI16(self.port, 9)
-        self.do1 = owenio.DO32(self.port, 1,name='DO1')
-        self.do2 = owenio.DO32(self.port, 5,name='DO2')
+        self.do1 = owenio.DO32(self.port, 1, name='DO1')
+        self.do2 = owenio.DO32(self.port, 5, name='DO2')
         self.ao = owenio.AO8I(self.port, 6)
 
         self.pv1 = ElMultimeter(self.port, 11, k=0.01, eps=0.01, name='PV1')
@@ -74,8 +170,8 @@ class Worker1(Worker):
         self.pa2 = ElMultimeter(self.port, 22, name='PA2')
         self.pa3 = ElMultimeter(self.port, 23, k=0.001, eps=0.001, name='PA3')
 
-        self.pida = PID(1, 5, -0.25, 0.1)
-        self.pidc = PID(10, 50, -2.5, 0.01)
+        self.pida = PID(0.7, 4, -0.25, 0.1)
+        self.pidc = PID(7, 40, -2.5, 0.01)
 
         self.dev = [self.ai, self.di, self.do1, self.do2, self.ao, self.pv1, self.pv2, self.pa1, self.pa2, self.pa3]
         for dev in self.dev:
@@ -164,6 +260,7 @@ class Server(QtCore.QObject):
         self.br3 = self.freq.value[2]
         self.dp = self.freq.value[7]
         self.pressure = self.ai.value[1]
+        self.current = Current(self.pida, self.pidc, self.freq, self.ao)
 
         self.ai.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
         self.di.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
@@ -176,15 +273,13 @@ class Server(QtCore.QObject):
         self.pa2.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
         self.pa3.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
         self.gen.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
-        self.freq.warning.connect(self.on_error, QtCore.Qt.QueuedConnection)
+        self.freq.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
         self.pchv.warning.connect(self.on_warning, QtCore.Qt.QueuedConnection)
         self.pchv.alarmed.connect(self.error, QtCore.Qt.QueuedConnection)
         self.pa3.updated.connect(self.on_pa3_update, QtCore.Qt.QueuedConnection)
         self.freq.updated.connect(self.on_freq_update, QtCore.Qt.QueuedConnection)
         self.freq.changed.connect(self.on_freq_change, QtCore.Qt.QueuedConnection)
         self.ao.changed.connect(self.on_ao_change, QtCore.Qt.QueuedConnection)
-        self.pida.changed.connect(self.setCurrent, QtCore.Qt.QueuedConnection)
-        self.pidc.changed.connect(self.setCurrent, QtCore.Qt.QueuedConnection)
         self.ai.changed.connect(self.on_ai_change, QtCore.Qt.QueuedConnection)
 
     def start(self):
@@ -254,13 +349,6 @@ class Server(QtCore.QObject):
     def on_ao_change(self):
         self.pida.setVout(self.ao.value[2])
         self.pidc.setVout(self.ao.value[2])
-
-    @QtCore.pyqtSlot(float)
-    def setCurrent(self, value):
-        v = int(value)
-        if v < 0: v = 0
-        if v > 1000: v = 1000
-        self.ao.setValue(v, 2)
 
     @QtCore.pyqtSlot()
     def on_freq_change(self):

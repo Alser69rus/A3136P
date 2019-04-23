@@ -83,6 +83,7 @@ class M7084(QtCore.QObject):
     def _emit_warning(self, data, error):
         self.error = error
         self.warning.emit('{} warning: {}'.format(self.name, self.error))
+        self.thread().msleep(20)
         return data
 
     def update(self):
