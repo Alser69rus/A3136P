@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtWidgets
+﻿from PyQt5 import QtCore, QtWidgets
 import time
 
 com = None
@@ -17,6 +17,7 @@ class ExamIU(QtCore.QState):
         com = self
 
         self.opc = server
+        self.current = server.current
         self.frm_main = form
         self.btnOk = self.frm_main.btnPanel.btnOk.clicked
         self.btnBack = self.frm_main.btnPanel.btnBack.clicked
@@ -105,24 +106,49 @@ class ExamIU(QtCore.QState):
         self.wait_timer.addTransition(self.pchv.updated, self.wait_timer)
 
         # Замер давлений
-        self.set_speed_pressure1 = SetSpeedPressure1(self)
-        self.measure_p1 = MesureP1(self)
-        self.set_speed_pressure2 = SetSpeedPressure2(self)
-        self.measure_p2 = MesureP2(self)
         self.print_result = PrintResult(self)
+        self.set_speed_pressure1 = SetSpeed(self)
+        self.measure_p1 = MesureP(self)
+        self.set_speed_pressure2 = SetSpeed(self)
+        self.measure_p2 = MesureP(self)
+        self.select_p3_i1 = SelectP3I1(self)
+        self.stop_pchv1 = StopPCHV(self)
+        self.connect_pchv_reverse = ConnectPchvReverse(self)
+        self.set_speed_pressure3 = SetSpeed(self)
+        self.measure_p3 = MesureP(self)
+        self.set_speed_pressure4 = SetSpeed(self)
+        self.measure_p4 = MesureP(self)
+        self.stop_pchv2 = StopPCHV(self)
+        self.connect_pchv2 = ConnectPchv(self)
         self.wait_timer.addTransition(self.success, self.set_speed_pressure1)
         self.set_speed_pressure1.addTransition(self.pchv.speed_reached, self.measure_p1)
         self.measure_p1.addTransition(self.success, self.set_speed_pressure2)
+        self.measure_p1.addTransition(self.ai.updated, self.measure_p1)
         self.set_speed_pressure2.addTransition(self.pchv.speed_reached, self.measure_p2)
-        self.measure_p2.addTransition(self.success, self.print_result)
-        self.measure_p2.addTransition(self.fail, self.print_result)
-        self.print_result.addTransition(self)
+        self.measure_p2.addTransition(self.ai.updated, self.measure_p2)
+        self.measure_p2.addTransition(self.success, self.select_p3_i1)
+        self.select_p3_i1.addTransition(self.success, self.print_result)
+        self.select_p3_i1.addTransition(self.fail, self.stop_pchv1)
+        self.stop_pchv1.addTransition(self.pchv.break_on, self.connect_pchv_reverse)
+        self.connect_pchv_reverse.addTransition(self.opc.do2.updated, self.set_speed_pressure3)
+        self.set_speed_pressure3.addTransition(self.pchv.speed_reached, self.measure_p3)
+        self.measure_p3.addTransition(self.success, self.set_speed_pressure4)
+        self.measure_p3.addTransition(self.ai.updated,self.measure_p3)
+        self.set_speed_pressure4.addTransition(self.pchv.speed_reached, self.measure_p4)
+        self.measure_p4.addTransition(self.success, self.stop_pchv2)
+        self.measure_p4.addTransition(self.ai.updated,self.measure_p4)
+        self.stop_pchv2.addTransition(self.pchv.break_on, self.connect_pchv2)
+        self.connect_pchv2.addTransition(self.opc.do2.updated, self.print_result)
+
+        self.print_result.addTransition(self.stop_pid)
 
         self.setInitialState(self.install_0)
         self.time = 0
         self.iu = com.frm_main.select_iu
         self.count = 0
         self.value = 0
+        self.p = []
+        self.speed_idx = 0
 
 
 class Error(QtCore.QState):
@@ -133,8 +159,7 @@ class Error(QtCore.QState):
 class StopPid(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.pida.setActive(False)
-        com.pidc.setTask(0)
+        com.current.setActive('pidc', 0)
 
 
 class StopPCHV(QtCore.QState):
@@ -228,7 +253,24 @@ class ConnectDev(QtCore.QState):
         global com
         com.pchv.setActive(True)
         com.opc.connect_pchv(True, com.iu.dir[0])
-        com.ao.setValue(0, 2)
+        com.current.setActive('manual', 10)
+
+
+class ConnectPchvReverse(QtCore.QState):
+    """Подключение ПЧВ в обратном направлении"""
+
+    def onEntry(self, QEvent):
+        global com
+        com.opc.connect_pchv(True, com.iu.dir[1])
+        com.speed_idx = 1
+
+
+class ConnectPchv(QtCore.QState):
+    """Подключение ПЧВ в прямом направлении"""
+
+    def onEntry(self, QEvent):
+        global com
+        com.opc.connect_pchv(True, com.iu.dir[0])
 
 
 class Prepare(QtCore.QState):
@@ -240,6 +282,7 @@ class Prepare(QtCore.QState):
         com.time = time.time()
         com.pchv.speed = com.iu.speed[0]
         com.clock.setValue(com.clock.max_v)
+        com.p = []
 
 
 class WaitTimer(QtCore.QState):
@@ -249,62 +292,58 @@ class WaitTimer(QtCore.QState):
         global com
         t = com.clock.max_v + com.time - time.time()
         com.clock.setValue(t)
-        com.text1.setText('<p>Ожидайте.<br>Выполняется прокачка регулятора перед началом '
+        com.text1.setText('<p>Ожидайте.<br>Выполняется прогрев исполнительного устройства перед началом '
                           'испытания.</p><p>Осталось {: 3.0f} мин {: 2.0f} сек</p>'.format(t // 60, t % 60))
-        if t <= 0: com.success.emit()
+        if t <= 0:
+            com.speed_idx = 1
+            com.success.emit()
 
 
-class SetSpeedPressure1(QtCore.QState):
+class SetSpeed(QtCore.QState):
     """Установка скорости1 для проверки давления"""
 
     def onEntry(self, QEvent):
         global com
-        com.pchv.speed = com.iu.speed[1]
+        com.pchv.speed = com.iu.speed[com.speed_idx]
         com.text1.setText('<p>Ожидайте.<br>Выполняется установка скорости вращения '
-                          '{: 4.0f}</p>'.format(com.iu.speed[1]))
+                          '{: 4.0f}</p>'.format(com.iu.speed[com.speed_idx]))
         com.count = 0
         com.value = 0
 
 
-class MesureP1(QtCore.QState):
-    """Измерение давления 1"""
+class MesureP(QtCore.QState):
+    """Измерение давления"""
 
     def onEntry(self, QEvent):
         com.count += 1
         com.value += com.opc.pressure
-        if com.count >= 23:
-            com.p1 = com.value / com.count
+        com.text1.setText('<p>Ожидайте.<br>Выполняется измерение давления в аккумуляторе<br>'
+                          'Давление: {: 5.3f} МПа, измерение завершено на: {:.0%}</p>'.format(com.value/com.count,
+                                                                                              com.count / 23))
+        if com.count == 23:
+            com.p.append(com.value / com.count)
+            com.speed_idx += 1
             com.success.emit()
 
 
-class SetSpeedPressure2(QtCore.QState):
-    """Установка скорости2 для проверки давления"""
+class SelectP3I1(QtCore.QState):
+    """Выбор измерение давления 3 или тока 1"""
 
     def onEntry(self, QEvent):
         global com
-        com.pchv.speed = com.iu.speed[2]
-        com.text1.setText('<p>Ожидайте.<br>Выполняется установка скорости вращения '
-                          '{: 4.0f}</p>'.format(com.iu.speed[2]))
-        com.count = 0
-        com.value = 0
+        if com.iu.dir[0] == com.iu.dir[1]:
+            com.success.emit()
+        else:
+            com.fail.emit()
 
 
-class MesureP2(QtCore.QState):
-    """Измерение давления 2"""
-
+class SetSpeedPe(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.count += 1
-        com.value += com.opc.pressure
-        if com.count >= 23:
-            com.p2 = com.value / com.count
-            if com.dir[0] == com.dir[1]:
-                com.success.emit()
-            else:
-                com.fail.emit()
+        com.speed_idx = 3
 
 
 class PrintResult(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        print(com.p1, com.p2)
+        print(com.p)

@@ -20,6 +20,7 @@ class ExamIUDP(QtCore.QState):
         self.f2 = 0
         self.f3 = 0
         self.opc = server
+        self.current=server.current
         self.frm_main = form
         self.frm = self.frm_main.exam_iu_dp_check
         self.text = self.frm.text
@@ -98,8 +99,8 @@ class ExamIUDP(QtCore.QState):
         self.measure_f1.addTransition(self.start_pchv)
         self.start_pchv.addTransition(self.pchv.speed_reached, self.set_pos8)
         self.set_pos8.addTransition(self.pidc.task_reached, self.reset_br3)
-        self.reset_br3.addTransition(self.freq.cleared, self.tune_current)
-        self.tune_current.addTransition(self.opc.br3_changed, self.tune_current)
+        self.reset_br3.addTransition(self.tune_current)
+        #self.tune_current.addTransition(self.opc.br3_changed, self.tune_current)
         self.tune_current.addTransition(self.btnOk, self.measure_f2)
 
         # Результаты проверки
@@ -314,7 +315,7 @@ class MeasureF1(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.f1 = com.dp
+        com.f1 = com.opc.dp
 
 
 class StartPCHV(QtCore.QState):

@@ -83,6 +83,7 @@ class Pchv(QtCore.QObject):
             self.ref = 0
             self.stop()
         else:
+            self.stw = bitwise.override(self.stw, 8, 0)
             ref = int(speed * 16384 / self.max_speed)
             if ref < 0:
                 ref = 0
@@ -122,8 +123,8 @@ class Pchv(QtCore.QObject):
             self.break_on.emit(br)
 
         speed_reached = bitwise.get(stw, 8)
-        if self.on_task != speed_reached:
-            self.speed_reached.emit(speed_reached)
+        if speed_reached:
+            self.speed_reached.emit(True)
 
         return stw
 
