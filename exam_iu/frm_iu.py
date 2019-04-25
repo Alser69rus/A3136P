@@ -1,4 +1,4 @@
-﻿from PyQt5 import QtCore, QtWidgets, QtGui
+﻿from PyQt5 import QtCore, QtWidgets, QtGui, QtPrintSupport
 from PyQt5.QtCore import pyqtSlot as pyqtSlot
 
 import guielement.scale as scale
@@ -308,7 +308,7 @@ class FormIUPressureCheck(QtWidgets.QWidget):
                                   max_a=-240, min_v=0, max_v=60, mark_prim=6, mark_sec=2, mark_ter=5,
                                   f_mark='{:.0f}', f_text='Осталось: {: >3.0f} сек')
         self.timer.caption.setText('Таймер')
-        self.timer.setArrowVisible(True,False)
+        self.timer.setArrowVisible(True, False)
         self.timer.setValue(0)
 
         self.panel = QtWidgets.QWidget()
@@ -328,6 +328,12 @@ class FormIUPressureCheck(QtWidgets.QWidget):
         self.text.setWordWrap(True)
         self.text.setText('Запуск вращения вала ИУ на скорости 500 об/мин\n')
         self.text.setAlignment(QtCore.Qt.AlignTop)
+
+
+class FormPrint(QtPrintSupport.QPrintPreviewWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.fitToWidth()
 
 
 if __name__ == '__main__':

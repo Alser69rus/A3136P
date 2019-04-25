@@ -1,4 +1,4 @@
-﻿from PyQt5 import QtWidgets, QtCore, QtGui
+﻿from PyQt5 import QtWidgets, QtCore, QtGui, QtPrintSupport
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import pyqtSlot
 
@@ -45,7 +45,8 @@ class MainForm(QtWidgets.QWidget):
         self.exam_iu_pe_inst4 = exam_iu.frm_iu.Form_iu_inst4()
         self.exam_iu_pe_check = exam_iu.frm_iu.Form_iu_pe_check()
         self.exam_iu_dp_check = exam_iu.frm_iu.Form_iu_dp_check()
-        self.exam_iu_pressure=exam_iu.frm_iu.FormIUPressureCheck()
+        self.exam_iu_pressure = exam_iu.frm_iu.FormIUPressureCheck()
+        self.frm_print = exam_iu.frm_iu.FormPrint()
 
         self.stl = QtWidgets.QStackedLayout()
         self.stl.addWidget(self.auth)
@@ -61,6 +62,8 @@ class MainForm(QtWidgets.QWidget):
         self.stl.addWidget(self.exam_iu_pe_check)
         self.stl.addWidget(self.exam_iu_dp_check)
         self.stl.addWidget(self.exam_iu_pressure)
+
+        self.stl.addWidget(self.frm_print)
 
         self.table.setLayout(self.stl)
         self._currentmenu = None

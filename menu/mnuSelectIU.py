@@ -45,6 +45,7 @@ class SelectIU(Menu):
 
     @QtCore.pyqtSlot()
     def on_select(self):
+
         self.dev_type = self.sender().text()
         if self.dev_type == 'ЭГУ104':
             self.dir = (False, True)

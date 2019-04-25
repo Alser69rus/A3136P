@@ -1,5 +1,6 @@
-﻿from PyQt5 import QtCore, QtWidgets
+﻿from PyQt5 import QtCore, QtWidgets, QtPrintSupport, QtGui
 import time
+import datetime
 
 com = None
 
@@ -19,6 +20,7 @@ class ExamIU(QtCore.QState):
         self.opc = server
         self.current = server.current
         self.frm_main = form
+        self.auth = form.auth
         self.btnOk = self.frm_main.btnPanel.btnOk.clicked
         self.btnBack = self.frm_main.btnPanel.btnBack.clicked
         self.pchv = self.opc.pchv
@@ -106,7 +108,7 @@ class ExamIU(QtCore.QState):
         self.wait_timer.addTransition(self.pchv.updated, self.wait_timer)
 
         # Замер давлений
-        self.print_result = PrintResult(self)
+
         self.set_speed_pressure1 = SetSpeed(self)
         self.measure_p1 = MeasureP(self)
         self.set_speed_pressure2 = SetSpeed(self)
@@ -160,7 +162,6 @@ class ExamIU(QtCore.QState):
         self.set_pos8.addTransition(self.pida.task_reached, self.measure_i2)
         self.measure_i2.addTransition(self.pa3.updated, self.measure_i2)
 
-
         # Измерение частоты ДП
         self.show_frm3 = ShowFrm3(self)
         self.set_speed_dp = SetSpeed(self)
@@ -180,11 +181,16 @@ class ExamIU(QtCore.QState):
         self.measure_f2.addTransition(self.freq.updated, self.measure_f2)
         self.measure_f2.addTransition(self.success, self.set_current0)
         self.set_current0.addTransition(self.stop_pchv3)
+
+        # печать протокола
+        self.print_result = PrintResult(self)
+        self.frm_main.frm_print.paintRequested.connect(self.print_result.preview)
         self.stop_pchv3.addTransition(self.print_result)
+        self.print_result.addTransition(self.btnOk, self.stop_pid)
 
         # переменные для хранения результатов измерений
-        self.print_result.addTransition(self.stop_pid)
-        self.setInitialState(self.install_0)
+        # self.setInitialState(self.install_0)
+        self.setInitialState(self.print_result)
         self.time = 0
         self.iu = com.frm_main.select_iu
         self.count = 0
@@ -478,6 +484,145 @@ class MeasureF(QtCore.QState):
 class PrintResult(QtCore.QState):
     def onEntry(self, QEvent):
         global com
+        com.pr = [0.6, 0.8, 0.9, 1.2]
+        com.cur = [1.0, 2.0]
+        com.f_dp = [23.5, 15.6]
+        com.frm_main.frm_print.updatePreview()
+        com.frm_main.stl.setCurrentWidget(com.frm_main.frm_print)
+        # com.frm_main.frm_print.print()
+        wr = QtGui.QPdfWriter('test.pdf')
+        self.preview(wr)
         print(com.pr)
         print(com.cur)
         print(com.f_dp)
+
+    def preview(self, printer):
+        global com
+        V_SPACE = 62
+        # V_SPACE = 20
+
+        layout = QtGui.QPageLayout()
+        layout.setPageSize(QtGui.QPageSize(QtGui.QPageSize.A4))
+        layout.setOrientation(QtGui.QPageLayout.Portrait)
+        # layout.setMargins(20, 10, 5, 15, QtPrintSupport.QPrinter.Millimeter)
+        printer.setPageLayout(layout)
+        printer.setResolution(300)
+        painter = QtGui.QPainter()
+
+        painter.begin(printer)
+        color = QtGui.QColor(QtCore.Qt.black)
+        pen = QtGui.QPen(color)
+        brush = QtGui.QBrush(color)
+        font = QtGui.QFont('Segoi ui', 10)
+        header_font = QtGui.QFont('Segoi ui', 14)
+        painter.setPen(pen)
+        painter.setBrush(brush)
+        protocol_num = 1
+        protocol_date = datetime.datetime.today().strftime('%d-%m-%Y')
+
+        # Заголовок
+        # x, y = 200, 30
+        x, y = 625, 94
+        painter.setFont(header_font)
+        painter.drawText(x, y, 'Протокол испытания № {: <3d} от  {}'.format(protocol_num, protocol_date))
+        painter.setFont(font)
+        # Шапка
+        # x = 50
+        x = 156
+        y += V_SPACE * 2.5
+        painter.drawText(x, y, 'Тип исполнительного устройства: {}'.format(com.iu.dev_type))
+        y += V_SPACE
+        painter.drawText(x, y, 'Зав. № {}     Дата изготовления: {}'.format(com.auth.num, com.auth.date))
+        y += V_SPACE
+        painter.drawText(x, y, 'Тепловоз № {}     Секция: {}'.format(com.auth.locomotive, com.auth.section))
+        # Шапка таблицы
+        y += V_SPACE * 2.5
+        # w = [0, 400, 520, 620]
+        w = [0, 1250, 1625, 1937]
+
+
+        def print_row(row):
+            nonlocal x, y
+            for i, v in enumerate(row):
+                painter.drawText(x + w[i], y, v)
+            y += V_SPACE
+
+        print_row(['Параметр', 'Норма', 'Факт', 'Результат'])
+        y += V_SPACE
+        # y += 20
+        name = '1. Давление масла на скорости {} об/мин, МПа'.format(com.iu.speed[1])
+        norm = 'не менее {: >3.1f}'.format(com.iu.pressure[0])
+        print_row([name, norm, '', ''])
+        name = '     - при левом вращении' if com.iu.dir[0] else '     - при правом вращении'
+        norm = ''
+        fact = '{: <4.1f}'.format(com.pr[0])
+        res = 'норма' if com.pr[0] >= com.iu.pressure[0] else 'НЕ НОРМА'
+        print_row([name, norm, fact, res])
+        if com.iu.dir[0] != com.iu.dir[1]:
+            name = '     - при левом вращении' if com.iu.dir[1] else '     - при правом вращении'
+            norm = ''
+            fact = '{: <4.1f}'.format(com.pr[2])
+            res = 'норма' if com.pr[2] >= com.iu.pressure[0] else 'НЕ НОРМА'
+            print_row([name, norm, fact, res])
+
+        name = '2. Давление масла на скорости {} об/мин, МПа'.format(com.iu.speed[2])
+        norm = 'не менее {: >3.1f}'.format(com.iu.pressure[1])
+        print_row([name, norm, '', ''])
+        name = '     - при левом вращении' if com.iu.dir[0] else '     - при правом вращении'
+        norm = ''
+        fact = '{: <4.1f}'.format(com.pr[1])
+        res = 'норма' if com.pr[1] >= com.iu.pressure[1] else 'НЕ НОРМА'
+        print_row([name, norm, fact, res])
+        if com.iu.dir[0] != com.iu.dir[1]:
+            name = '     - при левом вращении' if com.iu.dir[1] else '     - при правом вращении'
+            norm = ''
+            fact = '{: <4.1f}'.format(com.pr[3])
+            res = 'норма' if com.pr[3] >= com.iu.pressure[1] else 'НЕ НОРМА'
+            print_row([name, norm, fact, res])
+
+        name = '3. Проверка тока ПЭ на позиции "2", А'
+        norm = '{:4.3f}-{:4.3f}'.format(com.iu.current[0], com.iu.current[1])
+        fact = '{: <4.3f}'.format(com.cur[0])
+        res = 'норма' if com.iu.current[0] <= com.cur[0] <= com.iu.current[1] else 'НЕ НОРМА'
+        print_row([name, norm, fact, res])
+
+        name = '4. Проверка тока ПЭ на позиции "8", А'
+        norm = '{:4.3f}-{:4.3f}'.format(com.iu.current[2], com.iu.current[3])
+        fact = '{: <4.3f}'.format(com.cur[1])
+        res = 'норма' if com.iu.current[2] <= com.cur[1] <= com.iu.current[3] else 'НЕ НОРМА'
+        print_row([name, norm, fact, res])
+
+        if not (com.iu.freq is None):
+            name = '5. Проверка сигнала ДП на позиции "1", кГц'
+            if com.f_dp[0] > com.f_dp[1]:
+                norm = 'не менее 24'
+                res = 'норма' if com.f_dp[0] >= com.iu.freq[1] else 'НЕ НОРМА'
+            else:
+                norm = 'не более 20'
+                res = 'норма' if com.f_dp[0] <= com.iu.freq[0] else 'НЕ НОРМА'
+            fact = '{: <6.3f}'.format(com.f_dp[0])
+
+            print_row([name, norm, fact, res])
+
+            name = '6. Проверка сигнала ДП на позиции "9", кГц'
+            if com.f_dp[0] < com.f_dp[1]:
+                norm = 'не менее 24'
+                res = 'норма' if com.f_dp[1] >= com.iu.freq[1] else 'НЕ НОРМА'
+            else:
+                norm = 'не более 20'
+                res = 'норма' if com.f_dp[1] <= com.iu.freq[0] else 'НЕ НОРМА'
+            fact = '{: <6.3f}'.format(com.f_dp[1])
+
+            print_row([name, norm, fact, res])
+
+        painter.setFont(header_font)
+        y += V_SPACE * 2.5
+        painter.drawText(x, y, 'Испытание провел:')
+        painter.drawText(x + 312, y, '{: >50}    {}'.format(com.auth.name1, '_' * 20))
+        # painter.drawText(x + 100, y, '{: >50}    {}'.format(com.auth.name1, '_' * 20))
+
+        y += V_SPACE * 2
+        painter.drawText(x, y, 'Испытание проверил:')
+        painter.drawText(x + 312, y, '{: >50}    {}'.format(com.auth.name2, '_' * 20))
+
+        painter.end()
