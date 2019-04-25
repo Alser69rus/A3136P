@@ -170,7 +170,7 @@ class Worker1(Worker):
         self.pa2 = ElMultimeter(self.port, 22, name='PA2')
         self.pa3 = ElMultimeter(self.port, 23, k=0.001, eps=0.001, name='PA3')
 
-        self.pida = PID(0.7, 4, -0.25, 0.1)
+        self.pida = PID(0.7, 4, -0.25, 0.2)
         self.pidc = PID(7, 40, -2.5, 0.01)
 
         self.dev = [self.ai, self.di, self.do1, self.do2, self.ao, self.pv1, self.pv2, self.pa1, self.pa2, self.pa3]

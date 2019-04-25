@@ -20,7 +20,7 @@ class ExamIUDP(QtCore.QState):
         self.f2 = 0
         self.f3 = 0
         self.opc = server
-        self.current=server.current
+        self.current = server.current
         self.frm_main = form
         self.frm = self.frm_main.exam_iu_dp_check
         self.text = self.frm.text
@@ -100,7 +100,7 @@ class ExamIUDP(QtCore.QState):
         self.start_pchv.addTransition(self.pchv.speed_reached, self.set_pos8)
         self.set_pos8.addTransition(self.pidc.task_reached, self.reset_br3)
         self.reset_br3.addTransition(self.tune_current)
-        #self.tune_current.addTransition(self.opc.br3_changed, self.tune_current)
+        # self.tune_current.addTransition(self.opc.br3_changed, self.tune_current)
         self.tune_current.addTransition(self.btnOk, self.measure_f2)
 
         # Результаты проверки
@@ -273,7 +273,7 @@ class SetPos0(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.pchv.set_speed(com.speed)
-        com.text.setText('<p>Ожидайте.</p><p>Производится кратковременный запуск двигателя для установки'
+        com.text.setText('<p>Ожидайте.<br>Производится кратковременный запуск двигателя для установки'
                          ' индикатора нагрузки в положение "0"</p>')
 
 
@@ -283,6 +283,7 @@ class WaitPos0(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.current.setActive('pidc', 0)
+        com.text.setText('<p>Ожидайте.<br>Производится установка тока 0 А в силовой цепи</p>')
 
 
 class ResetBr2(QtCore.QState):
@@ -293,6 +294,7 @@ class ResetBr2(QtCore.QState):
         com.freq.setClear(0)
         com.indicator.setArrowVisible(True, False)
         com.indicator.text.setVisible(True)
+        com.text.setText('<p>Ожидайте.<br>Производитсясброс датчика угла</p>')
 
 
 class ShowF1(QtCore.QState):
