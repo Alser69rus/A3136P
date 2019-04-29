@@ -289,6 +289,7 @@ class SetCurrent13(QtCore.QState):
     def onEntry(self, QEvent):
         com.text.setText('<p>Ожидайте.<br>Выполняется установка тока 1,3 А в силовой цепи.</p>')
         com.current.setActive('pidc', 1.3)
+        self.indicator.setTask(2)
 
 
 class SetCurrent20(QtCore.QState):
@@ -297,6 +298,7 @@ class SetCurrent20(QtCore.QState):
     def onEntry(self, QEvent):
         com.text.setText('<p>Ожидайте.<br>Выполняется установка тока 2,0 А в силовой цепи.</p>')
         com.current.setActive('pidc', 2.0)
+        self.indicator.setTask(8)
 
 
 class ResetBr2(QtCore.QState):
@@ -332,6 +334,7 @@ class TunePos2(QtCore.QState):
     def onEntry(self, e):
         global com
         com.i1 = com.pa3.value
+        self.indicator.setTask(2)
 
 
 class ShowPos8(QtCore.QState):
@@ -341,6 +344,7 @@ class ShowPos8(QtCore.QState):
         global com
         # com.u2 = com.ao.value[2]
         #         # com.freq.setClear(2)
+        self.indicator.setTask(8)
         com.current.setActive('br3')
         com.text.setText('<p>При помощи поворота рукоятки BR3 отрегулируйте ток силовой цепи ' + \
                          'таким образом, чтобы указатель нагрузки на выходном валу ИУ находился на ' + \
