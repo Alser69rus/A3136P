@@ -49,6 +49,11 @@ class Main(QtCore.QObject):
         self.exam_iu_select = ExamIUSelect(self.stm)
         self.exam_iu = ExamIU(self.stm, self.opc, self.form)
 
+        self.menu_bu = MenuBU(self.stm)
+        self.exam_bu_auth = ExamBUAuth(self.stm)
+        self.exam_bu_select = ExamBUSelect(self.stm)
+        self.check_bu = CheckBU(self.stm)
+
         self.state_close = QtCore.QFinalState(self.stm)
 
         self.stm.setInitialState(self.state_init)
@@ -76,6 +81,17 @@ class Main(QtCore.QObject):
         self.exam_iu_select.addTransition(self.form.select_iu.btn_back, self.menu_iu)
         self.exam_iu_select.addTransition(self.form.select_iu.btn_ok, self.exam_iu)
         self.exam_iu.addTransition(self.exam_iu.finished, self.menu_iu)
+
+        self.menu_main.addTransition(self.form.mnu_main.btnBU.clicked, self.menu_bu)
+        self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_back.clicked, self.menu_main)
+        self.menu_bu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
+        self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_exam.clicked, self.exam_bu_auth)
+        self.exam_bu_auth.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
+        self.exam_bu_auth.addTransition(self.form.auth.btn_back, self.menu_bu)
+        self.exam_bu_auth.addTransition(self.form.auth.btn_ok, self.exam_bu_select)
+        self.exam_bu_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
+        self.exam_bu_select.addTransition(self.form.select_bu.btn_back, self.menu_bu)
+        self.exam_bu_select.addTransition(self.form.select_bu.btn_ok, self.check_bu)
 
         self.opc.started.connect(self.stm.start)
         self.opc.start()
@@ -118,6 +134,12 @@ class MenuIU(QtCore.QState):
         com.form.mnu_iu.reset()
 
 
+class MenuBU(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.form.currentmenu = com.form.mnu_bu
+        com.form.mnu_bu.reset()
+
+
 class ExamIUPESelect(QtCore.QState):
     def onEntry(self, QEvent):
         com.form.currentmenu = com.form.select_iu
@@ -136,10 +158,28 @@ class ExamIUAuth(QtCore.QState):
         com.form.currentmenu.reset()
 
 
+class ExamBUAuth(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.form.currentmenu = com.form.auth
+        com.form.currentmenu.reset()
+
+
 class ExamIUSelect(QtCore.QState):
     def onEntry(self, QEvent):
         com.form.currentmenu = com.form.select_iu
         com.form.currentmenu.reset()
+
+
+class ExamBUSelect(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.form.currentmenu = com.form.select_bu
+        com.form.currentmenu.reset()
+        com.form.check_bu.reset()
+
+
+class CheckBU(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.form.currentmenu = com.form.check_bu
 
 
 if __name__ == '__main__':

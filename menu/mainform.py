@@ -6,8 +6,11 @@ import menu.btnPanel as btnPanel
 import menu.mnuMain as mnumain
 from menu.auth import Auth
 from menu.mnuSelectIU import SelectIU
-import menu.mnuUI as mnuui
+import menu.mnuIU as mnuiu
 import exam_iu.frm_iu
+from menu.mnuBU import MnuBU
+from menu.mnuSelectBU import SelectBU
+from menu.mnuBUCheck import CheckBU
 
 
 class MainForm(QtWidgets.QWidget):
@@ -33,9 +36,12 @@ class MainForm(QtWidgets.QWidget):
         self.setLayout(self.vbox)
 
         self.mnu_main = mnumain.MainMenu()
-        self.mnu_iu = mnuui.mnuIU()
+        self.mnu_iu = mnuiu.mnuIU()
+        self.mnu_bu = MnuBU()
         self.auth = Auth()
         self.select_iu = SelectIU()
+        self.check_bu = CheckBU()
+        self.select_bu = SelectBU(form=self.check_bu)
 
         self.exam_iu_pe_set_pe = exam_iu.frm_iu.Form_iu_set_pe()
         self.exam_iu_pe_set_dp = exam_iu.frm_iu.Form_iu_set_dp()
@@ -62,6 +68,9 @@ class MainForm(QtWidgets.QWidget):
         self.stl.addWidget(self.exam_iu_pe_check)
         self.stl.addWidget(self.exam_iu_dp_check)
         self.stl.addWidget(self.exam_iu_pressure)
+        self.stl.addWidget(self.mnu_bu)
+        self.stl.addWidget(self.select_bu)
+        self.stl.addWidget(self.check_bu)
 
         self.stl.addWidget(self.frm_print)
 

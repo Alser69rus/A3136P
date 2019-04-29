@@ -7,7 +7,7 @@ import menu.btn as btn
 import menu.caption as caption
 import menu.template as template
 import menu.mnuMain as mnuMain
-import menu.mnuUI as mnuUI
+import menu.mnuIU as mnuUI
 import menu.btnPanel as btnPanel
 import menu.mainform as mainform
 
