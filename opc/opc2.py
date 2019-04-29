@@ -188,7 +188,7 @@ class Worker2(Worker):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
         self.pchv = Pchv(self.port, dev=2, max_speed=1565, fb_k=1.258)
         self.dev = [self.pchv]
-        self.pchv.setActive()
+        self.pchv.setActive(False)
 
 
 class Worker3(Worker):

@@ -8,6 +8,7 @@ class PID(QtCore.QObject):
     changed = QtCore.pyqtSignal(float)
     task_reached = QtCore.pyqtSignal()
     active_change = QtCore.pyqtSignal(bool)
+    timeout = QtCore.pyqtSignal()
 
     def __init__(self, kp, ki, kd, eps=0, parent=None):
         super().__init__(parent)
@@ -24,6 +25,9 @@ class PID(QtCore.QObject):
         self.v_in = 0
         self.last_e = []
         self.eps = eps
+        self.timer = QtCore.QTimer()
+        self.timer.setSingleShot(True)
+        self.timer.timeout.connect(self.timeout)
 
     def update(self):
         t = time.perf_counter()
@@ -70,3 +74,9 @@ class PID(QtCore.QObject):
     def setActive(self, value=True):
         self.active = value
         self.active_change.emit(value)
+        if value:
+            # if self.timer.isActive():
+            #     self.timer.stop()
+            self.timer.start(60000)
+        # else:
+        #     self.timer.stop()

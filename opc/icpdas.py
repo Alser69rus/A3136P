@@ -44,8 +44,9 @@ class M7084(QtCore.QObject):
         return value
 
     def _clear(self, port, n):
+        self.thread().msleep(5)
         v = port.execute(self.dev, cst.WRITE_SINGLE_COIL, 512 + n, output_value=1)
-        self.thread().msleep(2)
+        self.thread().msleep(100)
         return v
 
     def _clear_done(self, data, n):
@@ -59,7 +60,7 @@ class M7084(QtCore.QObject):
     def _enable(self, data, n, value):
         data = bitwise.override(data, n, value)
         v = self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 489, output_value=data)
-        self.thread().msleep(2)
+        self.thread().msleep(100)
         return v
 
     def _read_enable(self, port):

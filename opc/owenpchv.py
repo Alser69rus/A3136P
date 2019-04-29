@@ -122,8 +122,8 @@ class Pchv(QtCore.QObject):
         if self.breaking != br:
             self.break_on.emit(br)
 
-        speed_reached = bitwise.get(stw, 8)
-        if speed_reached:
+        # speed_reached = bitwise.get(stw, 8)
+        if self.task - 5 <= self.speed <= self.task + 5:
             self.speed_reached.emit(True)
 
         return stw

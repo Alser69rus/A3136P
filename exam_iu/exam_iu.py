@@ -1,5 +1,5 @@
 ﻿from PyQt5 import QtCore, QtWidgets, QtPrintSupport, QtGui
-import time
+import time, os
 import datetime
 
 com = None
@@ -147,6 +147,8 @@ class ExamIU(QtCore.QState):
         self.set_pos0 = SetPos0(self)
         self.reset_br2 = ResetBr2(self)
         self.set_pos2 = SetPos(self)
+        self.pos_timeout_1 = PosTimeout(self)
+        self.pos_timeout_2 = PosTimeout(self)
         self.measure_i1 = MeasureI(self)
         self.set_pos8 = SetPos(self)
         self.measure_i2 = MeasureI(self)
@@ -157,40 +159,52 @@ class ExamIU(QtCore.QState):
         self.set_pos0.addTransition(self.pidc.task_reached, self.reset_br2)
         self.reset_br2.addTransition(self.freq.cleared, self.set_pos2)
         self.set_pos2.addTransition(self.pida.task_reached, self.measure_i1)
+        self.set_pos2.addTransition(self.pida.timeout, self.pos_timeout_1)
+        self.pos_timeout_1.addTransition(self.set_pos8)
         self.measure_i1.addTransition(self.pa3.updated, self.measure_i1)
         self.measure_i1.addTransition(self.success, self.set_pos8)
         self.set_pos8.addTransition(self.pida.task_reached, self.measure_i2)
+        self.set_pos8.addTransition(self.pida.timeout, self.pos_timeout_2)
         self.measure_i2.addTransition(self.pa3.updated, self.measure_i2)
 
         # Измерение частоты ДП
         self.show_frm3 = ShowFrm3(self)
         self.set_speed_dp = SetSpeed(self)
         self.set_pos1 = SetPos(self)
+        self.pos_timeout_3 = PosTimeout(self)
         self.measure_f1 = MeasureF(self)
         self.set_pos9 = SetPos(self)
+        self.pos_timeout_4 = PosTimeout(self)
         self.measure_f2 = MeasureF(self)
         self.set_current0 = SetPos0(self)
         self.stop_pchv3 = StopPCHV(self)
+        self.pos_timeout_2.addTransition(self.show_frm3)
         self.measure_i2.addTransition(self.success, self.show_frm3)
         self.show_frm3.addTransition(self.set_speed_dp)
         self.set_speed_dp.addTransition(self.pchv.speed_reached, self.set_pos1)
         self.set_pos1.addTransition(self.pida.task_reached, self.measure_f1)
+        self.set_pos1.addTransition(self.pida.timeout, self.pos_timeout_3)
+        self.pos_timeout_3.addTransition(self.set_pos9)
         self.measure_f1.addTransition(self.freq.updated, self.measure_f1)
         self.measure_f1.addTransition(self.success, self.set_pos9)
         self.set_pos9.addTransition(self.pida.task_reached, self.measure_f2)
+        self.set_pos9.addTransition(self.pida.timeout, self.pos_timeout_4)
+        self.pos_timeout_4.addTransition(self.set_current0)
         self.measure_f2.addTransition(self.freq.updated, self.measure_f2)
         self.measure_f2.addTransition(self.success, self.set_current0)
         self.set_current0.addTransition(self.stop_pchv3)
 
         # печать протокола
         self.print_result = PrintResult(self)
+        self.disconnect_devices2 = DisconnectDevices(self)
         self.frm_main.frm_print.paintRequested.connect(self.print_result.preview)
-        self.stop_pchv3.addTransition(self.print_result)
+        self.stop_pchv3.addTransition(self.pchv.break_on, self.disconnect_devices2)
+        self.disconnect_devices2.addTransition(self.print_result)
         self.print_result.addTransition(self.btnOk, self.stop_pid)
 
         # переменные для хранения результатов измерений
-        # self.setInitialState(self.install_0)
-        self.setInitialState(self.print_result)
+        self.setInitialState(self.install_0)
+        # self.setInitialState(self.print_result)
         self.time = 0
         self.iu = com.frm_main.select_iu
         self.count = 0
@@ -204,6 +218,8 @@ class ExamIU(QtCore.QState):
         self.pos_idx = 0
         self.br2_zero = 0
         self.f_dp = []
+        self.num = 0
+        self.note = ''
 
 
 class Error(QtCore.QState):
@@ -233,6 +249,7 @@ class WaitStopPCHV(QtCore.QState):
 class DisconnectDevices(QtCore.QState):
     def onEntry(self, e):
         global com
+        com.pchv.setActive(False)
         com.opc.do2.setValue([0] * 32)
 
 
@@ -343,6 +360,7 @@ class Prepare(QtCore.QState):
         com.clock.setValue(com.clock.max_v)
         com.pr = []
         com.cur = []
+        com.note = ''
 
 
 class WaitTimer(QtCore.QState):
@@ -439,6 +457,26 @@ class SetPos(QtCore.QState):
         com.count = 0
 
 
+class PosTimeout(QtCore.QState):
+    """Если ПИД не может выставить позицию"""
+
+    def onEntry(self, QEvent):
+        global com
+        if com.pos_idx == 0:
+            com.cur.append(0)
+            com.note += 'Не удалось выполнить измерения на позиции "2". Требуется проверка поворотного электромагнита.\n'
+        elif com.pos_idx == 1:
+            com.cur.append(0)
+            com.note += 'Не удалось выполнить измерения на позиции "8". Требуется проверка поворотного электромагнита.\n'
+        elif com.pos_idx == 2:
+            com.f_dp.append(0)
+            com.note += 'Не удалось выполнить измерения на позиции "1". Требуется проверка поворотного электромагнита.\n'
+        elif com.pos_idx == 3:
+            com.f_dp.append(0)
+            com.note += 'Не удалось выполнить измерения на позиции "9". Требуется проверка поворотного электромагнита.\n'
+        com.pos_idx += 1
+
+
 class MeasureI(QtCore.QState):
     """Измерение тока"""
 
@@ -484,17 +522,34 @@ class MeasureF(QtCore.QState):
 class PrintResult(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.pr = [0.6, 0.8, 0.9, 1.2]
-        com.cur = [1.0, 2.0]
-        com.f_dp = [23.5, 15.6]
+        settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
+        settings.setIniCodec('UTF-8')
+        protocol_path = settings.value('protocol/path', 'c:\\протоколы\\')
+        settings.setValue('protocol/path', protocol_path)
+        last_date = settings.value('protocol/date', '01-01-2019')
+        com.num = int(settings.value('protocol/num', 0))
+        today = datetime.datetime.today()
+        month = int(str(last_date).split('-')[1])
+        if month != today.month:
+            com.num = 0
+        com.num += 1
+        protocol_path += '{0}-{1}\\'.format(today.year, today.month)
+        if not os.path.exists(protocol_path):
+            os.makedirs(protocol_path)
+        protocol_path += 'N {4} {2}-{1}-{0} ИУ {3} завN {5} {6}.pdf'.format(today.year, today.month,
+                                                                            today.day, com.iu.dev_type,
+                                                                            com.num, com.auth.num,
+                                                                            com.auth.date)
         com.frm_main.frm_print.updatePreview()
         com.frm_main.stl.setCurrentWidget(com.frm_main.frm_print)
-        # com.frm_main.frm_print.print()
-        wr = QtGui.QPdfWriter('test.pdf')
+        wr = QtGui.QPdfWriter(protocol_path)
         self.preview(wr)
         print(com.pr)
         print(com.cur)
         print(com.f_dp)
+
+        settings.setValue('protocol/num', com.num)
+        settings.setValue('protocol/date', today.strftime('%d-%m-%Y'))
 
     def preview(self, printer):
         global com
@@ -517,7 +572,7 @@ class PrintResult(QtCore.QState):
         header_font = QtGui.QFont('Segoi ui', 14)
         painter.setPen(pen)
         painter.setBrush(brush)
-        protocol_num = 1
+        protocol_num = com.num
         protocol_date = datetime.datetime.today().strftime('%d-%m-%Y')
 
         # Заголовок
@@ -539,7 +594,6 @@ class PrintResult(QtCore.QState):
         y += V_SPACE * 2.5
         # w = [0, 400, 520, 620]
         w = [0, 1250, 1625, 1937]
-
 
         def print_row(row):
             nonlocal x, y
@@ -614,6 +668,10 @@ class PrintResult(QtCore.QState):
             fact = '{: <6.3f}'.format(com.f_dp[1])
 
             print_row([name, norm, fact, res])
+
+        if com.note:
+            y += V_SPACE * 2.5
+            painter.drawText(x, y, 'Примечание:\n' + com.note)
 
         painter.setFont(header_font)
         y += V_SPACE * 2.5

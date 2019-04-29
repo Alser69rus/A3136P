@@ -64,7 +64,10 @@ class Auth(Menu):
     @QtCore.pyqtSlot()
     def on_select(self):
         sender = self.sender()
-        operators = open('Сотрудники.txt').read().split()
+        settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
+        settings.setIniCodec('UTF-8')
+        operators = settings.value('employees')
+
         dialog = QtWidgets.QInputDialog(self)
         dialog.setFont(QtGui.QFont('Segoi Ui', 16))
 

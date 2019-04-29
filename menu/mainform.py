@@ -26,7 +26,7 @@ class MainForm(QtWidgets.QWidget):
         self.btnPanel.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         self.statusbar.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         self.opc.error.connect(self.statusbar.showMessage)
-        # self.opc.warning.connect(self.statusbar.showMessage)
+        self.opc.warning.connect(self.on_warning)
         self.vbox.addWidget(self.table)
         self.vbox.addWidget(self.btnPanel)
         self.vbox.addWidget(self.statusbar)
@@ -121,3 +121,6 @@ class MainForm(QtWidgets.QWidget):
             self.btnPanel.on_down_clicked()
         if self.opc.di.value[5]:
             self.btnPanel.on_ok_clicked()
+
+    def on_warning(self, msg):
+        self.statusbar.showMessage(msg, 500)
