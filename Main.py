@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QState as QState
 
@@ -54,6 +54,7 @@ class Main(QtCore.QObject):
         self.menu_bu = MenuBU(self.stm)
         self.exam_bu_auth = ExamBUAuth(self.stm)
         self.exam_bu_select = ExamBUSelect(self.stm)
+        self.prepare_check_bu = PrepareCheckBU(self.stm)
         self.check_bu = CheckBU(self.stm)
         self.exam_bu = Exam_bu(self.stm, self.opc, self.form)
         com.exam_bu = self.exam_bu
@@ -95,7 +96,13 @@ class Main(QtCore.QObject):
         self.exam_bu_auth.addTransition(self.form.auth.btn_ok, self.exam_bu_select)
         self.exam_bu_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
         self.exam_bu_select.addTransition(self.form.select_bu.btn_back, self.menu_bu)
-        self.exam_bu_select.addTransition(self.form.select_bu.btn_ok, self.check_bu)
+        self.exam_bu_select.addTransition(self.form.select_bu.btn_ok, self.prepare_check_bu)
+        self.prepare_check_bu.addTransition(self.check_bu)
+        self.form.check_bu.btn_ok.connect(self.check_bu.init_exam_bu)
+        self.check_bu.addTransition(self.form.check_bu.btn_back, self.menu_bu)
+        self.check_bu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
+        self.check_bu.addTransition(com.success, self.exam_bu)
+        self.exam_bu.addTransition(self.exam_bu.finished, self.check_bu)
 
         self.opc.started.connect(self.stm.start)
         self.opc.start()
@@ -190,10 +197,26 @@ class ExamBUSelect(QtCore.QState):
         com.form.check_bu.reset()
 
 
+class PrepareCheckBU(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.form.check_bu.dev_type = com.form.select_bu.dev_type
+        com.exam_bu.dev_type = com.form.select_bu.dev_type
+        com.form.check_bu.reset()
+
+
 class CheckBU(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.form.currentmenu = com.form.check_bu
+
+    @QtCore.pyqtSlot(str)
+    def init_exam_bu(self, btn):
+        global com
+        if btn == 'Подготовка':
+            com.exam_bu.setInitialState(com.exam_bu.prepare)
+
+        com.success.emit()
 
 
 if __name__ == '__main__':

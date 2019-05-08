@@ -12,13 +12,30 @@ class SelectBU(Menu):
         self.dev_type = ''
         self.form = form
 
-        self.btn_bu_3_06 = Btn('30T3-06')
-        self.btn_bu_3_07 = Btn('30Т3-07')
-        self.btn_bu_3_04 = Btn('30Т3-04')
+        self.btn_bu_3_06 = Btn('ЭРЧМ30T3-06')
+        self.btn_bu_3_07 = Btn('ЭРЧМ30Т3-07')
+        self.btn_bu_3_04 = Btn('ЭРЧМ30Т3-04')
+        self.btn_bu_3_08 = Btn('ЭРЧМ30Т3-08')
+        self.btn_bu_3_08_01 = Btn('ЭРЧМ30Т3-08-01')
+        self.btn_bu_3_02 = Btn('ЭРЧМ30Т3-02')
+        self.btn_bu_3_05 = Btn('ЭРЧМ30Т3-05')
+        self.btn_bu_3_10 = Btn('ЭРЧМ30Т3-10')
+        self.btn_bu_3_10_01 = Btn('ЭРЧМ30Т3-10-01')
+        self.btn_bu_3_12 = Btn('ЭРЧМ30Т3-12')
+        self.btn_bu_3_12_01 = Btn('ЭРЧМ30Т3-12-01')
+        self.btn_bu_3_12_02 = Btn('ЭРЧМ30Т3-12-02')
+        self.btn_bu_3_12_03 = Btn('ЭРЧМ30Т3-12-03')
+        self.btn_bu_4_01 = Btn('ЭРЧМ30Т4-01')
+        self.btn_bu_4_02 = Btn('ЭРЧМ30Т4-02')
+        self.btn_bu_4_02_01 = Btn('ЭРЧМ30Т4-02-01')
+        self.btn_bu_4_03 = Btn('ЭРЧМ30Т4-03')
 
         self.btn_bu_back = Btn('Назад')
 
-        lst = [self.btn_bu_3_04, self.btn_bu_3_06, self.btn_bu_3_07]
+        lst = [self.btn_bu_3_02, self.btn_bu_3_04, self.btn_bu_3_05, self.btn_bu_3_06, self.btn_bu_3_07,
+               self.btn_bu_3_08, self.btn_bu_3_08_01, self.btn_bu_3_10, self.btn_bu_3_10_01, self.btn_bu_3_12,
+               self.btn_bu_3_12_01, self.btn_bu_3_12_02, self.btn_bu_3_12_03, self.btn_bu_4_01, self.btn_bu_4_02,
+               self.btn_bu_4_02_01, self.btn_bu_4_03]
         for dev in lst:
             dev.clicked.connect(self.on_select)
         lst.append(self.btn_bu_back)
@@ -29,26 +46,4 @@ class SelectBU(Menu):
     @QtCore.pyqtSlot()
     def on_select(self):
         self.dev_type = self.sender().text()
-        frm = self.form
-        vis = []
-        if self.dev_type == '30T3-06':
-
-            vis = [frm.btn_di, frm.btn_fi1, frm.btn_f12, frm.btn_fi3, frm.btn_power, frm.btn_ai1,
-                   frm.btn_ai2, frm.btn_ai3, frm.btn_di_r, frm.btn_fi1_r, frm.btn_power_r]
-
-        elif self.dev_type == '30Т3-07':
-            vis = [frm.btn_di, frm.btn_fi1, frm.btn_f12, frm.btn_fi3, frm.btn_power, frm.btn_ai1,
-                   frm.btn_ai2, frm.btn_ai3]
-        elif self.dev_type == '30Т3-04':
-            vis = [frm.btn_di, frm.btn_fi1, frm.btn_f12, frm.btn_fi3, frm.btn_power, frm.btn_ai1,
-                   frm.btn_ai2, frm.btn_ai3]
-
-        for elem in frm.list:
-            if elem != frm.btn_bu_back and elem != frm.btn_prepare:
-                elem.setEnabled(False)
-                if elem in vis:
-                    elem.setVisible(True)
-                else:
-                    elem.setVisible(False)
-
         self.btn_ok.emit()

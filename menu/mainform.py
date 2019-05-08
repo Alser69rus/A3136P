@@ -40,8 +40,8 @@ class MainForm(QtWidgets.QWidget):
         self.mnu_bu = MnuBU()
         self.auth = Auth()
         self.select_iu = SelectIU()
+        self.select_bu = SelectBU()
         self.check_bu = CheckBU()
-        self.select_bu = SelectBU(form=self.check_bu)
 
         self.exam_iu_pe_set_pe = exam_iu.frm_iu.Form_iu_set_pe()
         self.exam_iu_pe_set_dp = exam_iu.frm_iu.Form_iu_set_dp()
