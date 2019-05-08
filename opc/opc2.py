@@ -322,6 +322,15 @@ class Server(QtCore.QObject):
             self.do2.setValue(False, 2)
         self.pchv.setActive(start)
 
+    @QtCore.pyqtSlot(bool, bool)
+    def connect_bu_power(self, value=True, reserve=False):
+        if reserve:
+            self.do1.setValue(False, 24)
+            self.do1.setValue(value, 25)
+        else:
+            self.do1.setValue(value, 24)
+            self.do1.setValue(False, 25)
+
     @QtCore.pyqtSlot(bool)
     def connect_pe(self, value=True):
         self.do2.setValue(value, 4)

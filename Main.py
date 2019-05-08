@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QState as QState
 
@@ -7,6 +7,7 @@ import menu.mainform
 import exam_iu.exam_iu_pe
 import exam_iu.exam_iu_dp
 from exam_iu.exam_iu import ExamIU
+from exam_bu.exam_bu_prog import Exam_bu
 
 com = None
 
@@ -16,6 +17,7 @@ class Communicate(QtCore.QObject):
     fail = QtCore.pyqtSignal()
     opc = None
     form = None
+    exam_bu = None
 
 
 class Main(QtCore.QObject):
@@ -53,6 +55,8 @@ class Main(QtCore.QObject):
         self.exam_bu_auth = ExamBUAuth(self.stm)
         self.exam_bu_select = ExamBUSelect(self.stm)
         self.check_bu = CheckBU(self.stm)
+        self.exam_bu = Exam_bu(self.stm, self.opc, self.form)
+        com.exam_bu = self.exam_bu
 
         self.state_close = QtCore.QFinalState(self.stm)
 
@@ -125,53 +129,62 @@ class StateInit(QtCore.QState):
 
 class MenuMain(QtCore.QState):
     def onEntry(self, QEvent):
+        global com
         com.form.currentmenu = com.form.mnu_main
 
 
 class MenuIU(QtCore.QState):
     def onEntry(self, QEvent):
+        global com
         com.form.currentmenu = com.form.mnu_iu
         com.form.mnu_iu.reset()
 
 
 class MenuBU(QtCore.QState):
     def onEntry(self, QEvent):
+        global com
         com.form.currentmenu = com.form.mnu_bu
         com.form.mnu_bu.reset()
 
 
 class ExamIUPESelect(QtCore.QState):
     def onEntry(self, QEvent):
+        global com
         com.form.currentmenu = com.form.select_iu
         com.form.currentmenu.reset()
 
 
 class ExamIUDPSelect(QtCore.QState):
     def onEntry(self, QEvent):
+        global com
         com.form.currentmenu = com.form.select_iu
         com.form.currentmenu.reset()
 
 
 class ExamIUAuth(QtCore.QState):
     def onEntry(self, QEvent):
+        global com
         com.form.currentmenu = com.form.auth
         com.form.currentmenu.reset()
 
 
 class ExamBUAuth(QtCore.QState):
     def onEntry(self, QEvent):
+        global com
         com.form.currentmenu = com.form.auth
         com.form.currentmenu.reset()
 
 
 class ExamIUSelect(QtCore.QState):
     def onEntry(self, QEvent):
+        global com
         com.form.currentmenu = com.form.select_iu
         com.form.currentmenu.reset()
 
 
 class ExamBUSelect(QtCore.QState):
     def onEntry(self, QEvent):
+        global com
         com.form.currentmenu = com.form.select_bu
         com.form.currentmenu.reset()
         com.form.check_bu.reset()
@@ -179,6 +192,7 @@ class ExamBUSelect(QtCore.QState):
 
 class CheckBU(QtCore.QState):
     def onEntry(self, QEvent):
+        global com
         com.form.currentmenu = com.form.check_bu
 
 
