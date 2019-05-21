@@ -73,10 +73,10 @@ class Auth(Menu):
 
         if sender == self.btn_name1:
             dialog.setComboBoxItems(operators)
-            dialog.setComboBoxEditable(True)
+            dialog.setComboBoxEditable(False)
         if sender == self.btn_name2:
             dialog.setComboBoxItems(operators)
-            dialog.setComboBoxEditable(True)
+            dialog.setComboBoxEditable(False)
 
         result = dialog.exec()
         if result == QtWidgets.QDialog.Accepted:

@@ -60,6 +60,13 @@ class Generator(QtCore.QObject):
             self.active = value
             self.active_change.emit(value)
 
+    def setValue(self, value, n=-1):
+        if n >= 0:
+            self.value[n] = value
+        else:
+            self.value = value
+        self.setActive()
+
     def update(self):
         if self.active:
             Maybe(self.value)(self._pack_data)(self._write_data)(self._emit_updated)(self._write_done).or_else(

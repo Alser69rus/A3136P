@@ -13,9 +13,7 @@ class CheckBU(Menu):
 
         self.btn_prepare = Btn('Подготовка')
         self.btn_di = Btn('Проверка дискретных входов')
-        self.btn_fi1 = Btn('Проверка канала ЧВХ1 - ДЧД')
-        self.btn_f12 = Btn('Проверка канала ЧВХ2 - ДЧТК')
-        self.btn_fi3 = Btn('Проверка канала ЧВХ3- ДП')
+        self.btn_fi = Btn('Проверка частотных входов')
         self.btn_power = Btn('Проверка ШИМ силового канала')
         self.btn_ai1 = Btn('Проверка канала АВХ1 - ДДН')
         self.btn_ai2 = Btn('Проверка канала АВХ2 - ДДМ')
@@ -26,7 +24,7 @@ class CheckBU(Menu):
 
         self.btn_bu_back = Btn('Завершение испытаний')
 
-        lst = [self.btn_prepare, self.btn_di, self.btn_fi1, self.btn_f12, self.btn_fi3, self.btn_power, self.btn_ai1,
+        lst = [self.btn_prepare, self.btn_di, self.btn_fi, self.btn_power, self.btn_ai1,
                self.btn_ai2, self.btn_ai3, self.btn_di_r, self.btn_fi1_r, self.btn_power_r, self.btn_bu_back]
         self.set_lst(lst)
 
@@ -38,13 +36,13 @@ class CheckBU(Menu):
         super().reset()
         vis = []
         if self.dev_type == 'ЭРЧМ30T3-06':
-            vis = [self.btn_di, self.btn_fi1, self.btn_f12, self.btn_fi3, self.btn_power, self.btn_ai1,
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai1,
                    self.btn_ai2, self.btn_ai3, self.btn_di_r, self.btn_fi1_r, self.btn_power_r]
         elif self.dev_type == 'ЭРЧМ30Т3-07':
-            vis = [self.btn_di, self.btn_fi1, self.btn_f12, self.btn_fi3, self.btn_power, self.btn_ai1,
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai1,
                    self.btn_ai2, self.btn_ai3]
         elif self.dev_type == 'ЭРЧМ30Т3-04':
-            vis = [self.btn_di, self.btn_fi1, self.btn_f12, self.btn_fi3, self.btn_power, self.btn_ai1,
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai1,
                    self.btn_ai2, self.btn_ai3]
 
         for elem in self.list:

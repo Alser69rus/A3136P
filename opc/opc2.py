@@ -331,6 +331,33 @@ class Server(QtCore.QObject):
             self.do1.setValue(value, 24)
             self.do1.setValue(False, 25)
 
+    def connect_bu_di_power(self, value=True, voltage=75):
+        if voltage == 110:
+            self.do1.value = self.do1.value[:16] + [0, 0, 0, value, 0, 0] + self.do1.value[22:]
+            self.do1.setValue(False, 27)
+        elif voltage == -110:
+            self.do1.value = self.do1.value[:16] + [0, 0, value, 0, 0, 0] + self.do1.value[22:]
+            self.do1.setValue(True, 27)
+        elif voltage == 75:
+            self.do1.value = self.do1.value[:16] + [0, 0, 0, value, 0, value] + self.do1.value[22:]
+            self.do1.setValue(False, 27)
+        elif voltage == 48:
+            self.do1.value = self.do1.value[:16] + [value, 0, 0, 0, 0, 0] + self.do1.value[22:]
+            self.do1.setValue(False, 27)
+        elif voltage == 24:
+            self.do1.value = self.do1.value[:16] + [0, value, 0, 0, 0, 0] + self.do1.value[22:]
+            self.do1.setValue(False, 27)
+        else:
+            self.do1.value = self.do1.value[:16] + [0, 0, 0, 0, 0, 0] + self.do1.value[22:]
+            self.do1.setValue(False, 27)
+
+        if value:
+            self.do1.setValue(True, 22)
+            self.do1.setValue(True, 20)
+        else:
+            self.do1.setValue(False, 22)
+            self.do1.setValue(False, 20)
+
     @QtCore.pyqtSlot(bool)
     def connect_pe(self, value=True):
         self.do2.setValue(value, 4)

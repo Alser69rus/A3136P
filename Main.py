@@ -215,6 +215,12 @@ class CheckBU(QtCore.QState):
         global com
         if btn == 'Подготовка':
             com.exam_bu.setInitialState(com.exam_bu.prepare)
+        elif btn == 'Проверка дискретных входов':
+            com.exam_bu.setInitialState(com.exam_bu.di_check)
+        elif btn == 'Проверка частотных входов':
+            com.exam_bu.setInitialState(com.exam_bu.fi_check)
+        elif btn == 'Проверка ШИМ силового канала':
+            com.exam_bu.setInitialState(com.exam_bu.shim_check)
 
         com.success.emit()
 
