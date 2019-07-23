@@ -86,8 +86,9 @@ class ExamIUDP(QtCore.QState):
         self.measure_f1 = MeasureF1(self)
         self.measure_f3.addTransition(self.set_pos_0)
         self.set_pos_0.addTransition(self.pchv.speed_reached, self.wait_pos_0)
-        self.wait_pos_0.addTransition(self.reset_br2)
-        self.reset_br2.addTransition(self.show_f1)
+        self.wait_pos_0.addTransition(self.wait_pos_0.done, self.reset_br2)
+        self.wait_pos_0.addTransition(self.pa3.updated, self.wait_pos_0)
+        self.reset_br2.addTransition(self.freq.updated, self.show_f1)
         self.show_f1.addTransition(self.btnOk, self.measure_f1)
 
         # Запуск ПЧВ и установка в позицию 10
@@ -125,7 +126,7 @@ class Error(QtCore.QState):
 class StopPid(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.current.setActive('pidc', 0)
+        com.current.setActive('manual', 0)
 
 
 class StopPCHV(QtCore.QState):
@@ -242,7 +243,7 @@ class ConnectDev(QtCore.QState):
         global com
         com.pchv.setActive(True)
         com.opc.connect_pchv(True, com.reverse)
-        com.current.setActive('manual', 10)
+        com.current.setActive('manual', 0)
         com.opc.connect_pe()
         com.opc.connect_dp()
 
@@ -279,11 +280,14 @@ class SetPos0(QtCore.QState):
 
 class WaitPos0(QtCore.QState):
     """Установка позиции 0"""
+    done = QtCore.pyqtSignal()
 
     def onEntry(self, QEvent):
         global com
         com.current.setActive('manual', 0)
         com.text.setText('<p>Ожидайте.<br>Производится установка тока 0 А в силовой цепи</p>')
+        if com.pa3.value < 0.9:
+            self.done.emit()
 
 
 class ResetBr2(QtCore.QState):

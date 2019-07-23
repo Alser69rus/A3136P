@@ -86,13 +86,14 @@ class ExamIUPE(QtCore.QState):
         self.set_current_0 = SetCurrent0(self)
         self.reset_br2 = ResetBr2(self)
         self.start_PCHV.addTransition(self.pchv.speed_reached, self.set_current_0)
-        self.set_current_0.addTransition(self.ao.updated,self.reset_br2)
+        self.set_current_0.addTransition(self.set_current_0.done, self.reset_br2)
+        self.set_current_0.addTransition(self.pa3.updated, self.set_current_0)
 
         # Установка тока 1,3 А и позиции 2
         self.set_current_13 = SetCurrent13(self)
         self.show_pos_2 = ShowPos2(self)
         self.tune_pos_2 = TunePos2(self)
-        self.reset_br2.addTransition(self.freq.updated,self.set_current_13)
+        self.reset_br2.addTransition(self.freq.updated, self.set_current_13)
         self.set_current_13.addTransition(self.pidc.task_reached, self.show_pos_2)
         self.show_pos_2.addTransition(self.tune_pos_2)
         self.tune_pos_2.addTransition(self.opc.br3_changed, self.tune_pos_2)
@@ -129,7 +130,7 @@ class StopPid(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         # com.current.setActive('pidc',0)
-        com.current.setActive('manual', 10)
+        com.current.setActive('manual', 0)
 
 
 class StopPCHV(QtCore.QState):
@@ -276,12 +277,14 @@ class StartPCHV(QtCore.QState):
 
 class SetCurrent0(QtCore.QState):
     """установка тока 0 А в силовой цепи"""
+    done = QtCore.pyqtSignal()
 
     def onEntry(self, QEvent):
         global com
         com.text.setText('<p>Ожидайте. <br>Выполняется установка тока 0 А в силовой цепи.</p>')
         com.current.setActive('manual', 0)
-        com.freq.setClear(0)
+        if com.pa3.value < 0.9:
+            self.done.emit()
 
 
 class SetCurrent13(QtCore.QState):
@@ -392,14 +395,14 @@ class TuneI1(QtCore.QState):
         else:
             com.current.setActive('pidc', 1.3)
 
-        com.text.setText('<p>При помощи винта 25 отрегулируйте натяжение пружины 31 ' 
-        'чтобы стрелка указателя силового вала ИУ встала на позицию 2.</p>'
-        '<p>Если натяжением пружины не получается отрегулировать позицию указателя, '
-        'пружину следует заменить и выполнить повторную проверку.</p>'
-        '<Если заменой пружины невозможно исправить проблему, необходимо заменить'
-        'поворотный электромагнит, а неисправный отдать в ремонт.</p><br>'
-        '<p>Нажмите НАЗАД для прекращения проверки и выхода в меню<br>'
-        'Нажмите ПРИНЯТЬ для продолжения проверки</p>')
+        com.text.setText('<p>При помощи винта 25 отрегулируйте натяжение пружины 31 '
+                         'чтобы стрелка указателя силового вала ИУ встала на позицию 2.</p>'
+                         '<p>Если натяжением пружины не получается отрегулировать позицию указателя, '
+                         'пружину следует заменить и выполнить повторную проверку.</p>'
+                         '<Если заменой пружины невозможно исправить проблему, необходимо заменить'
+                         'поворотный электромагнит, а неисправный отдать в ремонт.</p><br>'
+                         '<p>Нажмите НАЗАД для прекращения проверки и выхода в меню<br>'
+                         'Нажмите ПРИНЯТЬ для продолжения проверки</p>')
 
 
 class TuneI2(QtCore.QState):

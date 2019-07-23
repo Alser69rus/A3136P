@@ -2,8 +2,14 @@
 import modbus_tk.defines as cst
 import opc.bitwise as bitwise
 from opc.monad import Maybe
+from typing import List, Tuple, Any
 
-SOFTWARE_CLEAR = True
+SOFTWARE_CLEAR: bool = True
+
+
+def to_signed32(n: int) -> float:
+    n = n & 0xffffffff
+    return n | (-(n & 0x80000000))
 
 
 class M7084(QtCore.QObject):
@@ -16,90 +22,93 @@ class M7084(QtCore.QObject):
     enabled = QtCore.pyqtSignal()
     cleared = QtCore.pyqtSignal()
 
-    def __init__(self, port=None, dev=1, name='Частотомер', parent=None):
+    def __init__(self, port=None, dev: int = 1, name: str = 'Частотомер', parent=None):
         super().__init__(parent)
         self.name = name
         self.port = port
         self.dev = dev
-        self.value = [0] * 8
-        self.k = [1] * 8
-        self.off = [0] * 8
-        self.eps = [1] * 8
+        self.value: List[float] = [0.0] * 8
+        self.raw_value: List[float] = [0.0] * 8
+        self.data: List[int] = [0] * 16
+        self.zero: List[float] = [0] * 8
+        self.k: List[float] = [1.0] * 8
+        self.off: List[float] = [0] * 8
+        self.eps: List[float] = [1] * 8
         self.error = None
-        self.active = False
-        self._clear_cmd = False
-        self._clear_ch = 0
-        self._enable_cmd = False
-        self._enable_ch = 0
-        self._enable_value = True
-        self.zero_value = [0] * 8
+        self.active: bool = False
+        self._clear_cmd: bool = False
+        self._clear_ch: int = 0
+        self._enable_cmd: bool = False
+        self._enable_ch: int = 0
+        self._enable_value: bool = True
 
-    def _read_data(self, port):
-        v = port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
+    def _read_data(self) -> Tuple[int]:
+        v = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
         self.thread().msleep(2)
         return v
 
-    def _unpack_data(self, data):
-        value = [0] * 8
+    def _unpack_data(self) -> List[float]:
+        value: list = [0] * 8
         for i in range(8):
-            value[i] = data[i * 2] + 65536 * data[i * 2 + 1]
-            value[i] = bitwise.to_signed32(value[i])
-
+            value[i] = self.data[i * 2] + 65536 * self.data[i * 2 + 1]
+            value[i] = to_signed32(value[i])
+            value[i] = value[i] * self.k[i] + self.off[i]
         return value
 
-    def _clear(self, port, n):
-        self.thread().msleep(5)
-        v = port.execute(self.dev, cst.WRITE_SINGLE_COIL, 512 + n, output_value=1)
-        self.thread().msleep(100)
-        return v
+    def _unpack_value(self) -> List[float]:
+        return [self.raw_value[i] - self.zero[i] for i in range(8)]
 
-    def _clear_done(self, data, n):
-        data = list(data)
-        if SOFTWARE_CLEAR or data[n * 2] == 0 and data[n * 2 + 1] == 0:
+    def _clear(self) -> bool:
+        try:
+            self.thread().msleep(5)
+            self.port.execute(self.dev, cst.WRITE_SINGLE_COIL, 512 + self._clear_ch, output_value=1)
+            self.thread().msleep(5)
             self._clear_cmd = False
+            self.active = True
             self.cleared.emit()
-            self.changed.emit()
-        return data
+            return True
+        except Exception as e:
+            self.error = e
+            self.warning.emit(f'{self.name} warning clear err: {self.error}')
+            self.thread().msleep(20)
+            return False
 
-    def _enable(self, data, n, value):
-        data = bitwise.override(data, n, value)
-        v = self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 489, output_value=data)
-        self.thread().msleep(100)
-        return v
-
-    def _read_enable(self, port):
-        v = port.execute(self.dev, cst.READ_INPUT_REGISTERS, 489, 1)
-        self.thread().msleep(2)
-        return v
-
-    def _enable_done(self, data):
-        self._enable_cmd = False
-        self.enabled.emit()
-        return data
-
-    def _emit_updated(self, data):
-        value = [data[i] * self.k[i] + self.off[i]- self.zero_value[i] for i in range(8)]
-        if any([abs(value[i] - self.value[i]) > self.eps[i] for i in range(8)]):
-            self.value = value
-            self.changed.emit()
-        self.updated.emit()
-        #print('upd',self.value)
-        return data
-
-    def _emit_warning(self, data, error):
-        self.error = error
-        self.warning.emit('{} warning: {}'.format(self.name, self.error))
-        self.thread().msleep(20)
-        return data
+    def _enable(self) -> bool:
+        try:
+            v = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 489, 1)
+            self.thread().msleep(5)
+            data = bitwise.override(v, self._enable_ch, self._enable_value)
+            self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 489, output_value=data)
+            self.thread().msleep(5)
+            self._enable_cmd = False
+            self.enabled.emit()
+            return True
+        except Exception as e:
+            self.error = e
+            self.warning.emit(f'{self.name} warning enable err: {self.error}')
+            self.thread().msleep(20)
+            return False
 
     def update(self):
         if self._clear_cmd:
-            Maybe(self.port)(self._clear, self._clear_ch).ret(self.port)(self._read_data)(self._clear_done,
-                                                                                          self._clear_ch)
+            self._clear()
+
         if self._enable_cmd:
-            Maybe(self.port)(self._read_enable)(self._enable, self._enable_ch, self._enable_value)(self._enable_done)
+            self._enable()
+
         if self.active:
-            Maybe(self.port)(self._read_data)(self._unpack_data)(self._emit_updated).or_else(self._emit_warning)
+            try:
+                self.data = self._read_data()
+                self.raw_value = self._unpack_data()
+                value = self._unpack_value()
+                if value != self.value:
+                    self.changed.emit()
+                self.value = value
+                self.updated.emit()
+            except Exception as e:
+                self.error = e
+                self.warning.emit(f'{self.name} warning read err: {self.error}')
+                self.thread().msleep(20)
 
     @QtCore.pyqtSlot(bool)
     def setActive(self, value=True):
@@ -108,17 +117,17 @@ class M7084(QtCore.QObject):
             self.active_change.emit(value)
 
     @QtCore.pyqtSlot(int, bool)
-    def setEnable(self, n, value):
+    def setEnable(self, n: int, value: bool):
         self._enable_ch = n
         self._enable_value = value
         self._enable_cmd = True
 
     @QtCore.pyqtSlot(int)
-    def setClear(self, n):
+    def setClear(self, n: int) -> None:
         if SOFTWARE_CLEAR:
-            self.zero_value[n] = self.zero_value[n]+self.value[n]
-            self.value[n]=0
-            #print('reset ',self.zero_value,self.zero_value)
+            self.zero[n] = self.raw_value[n]
+            self.value[n] = 0
+            self.cleared.emit()
         else:
             self._clear_ch = n
             self._clear_cmd = True
