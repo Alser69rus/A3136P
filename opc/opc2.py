@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtWidgets
+﻿from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QThread
 import serial
 from modbus_tk import modbus_rtu
@@ -171,7 +171,7 @@ class Worker1(Worker):
         self.pa3 = ElMultimeter(self.port, 23, k=0.001, eps=0.001, name='PA3')
 
         self.pida = PID(0.7, 4, -0.25, 0.2)
-        self.pidc = PID(7, 40, -2.5, 0.01)
+        self.pidc = PID(10, 50, -2.5, 0.02)
 
         self.dev = [self.ai, self.di, self.do1, self.do2, self.ao, self.pv1, self.pv2, self.pa1, self.pa2, self.pa3]
         for dev in self.dev:
@@ -231,7 +231,7 @@ class Server(QtCore.QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.pool = []
-        self.workers = [Worker1('COM1', 38400), Worker2('COM2', 38400), Worker3('COM3', 115200), Worker4('COM7', 38400)]
+        self.workers = [Worker1('COM1', 38400), Worker2('COM2', 38400), Worker3('COM4', 115200), Worker4('COM7', 38400)]
         for worker in self.workers:
             thread = QThread()
             worker.moveToThread(thread)

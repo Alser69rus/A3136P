@@ -1,7 +1,9 @@
-from PyQt5 import QtCore
+﻿from PyQt5 import QtCore
 import modbus_tk.defines as cst
 import opc.bitwise as bitwise
 from opc.monad import Maybe
+
+SOFTWARE_CLEAR = True
 
 
 class M7084(QtCore.QObject):
@@ -30,6 +32,7 @@ class M7084(QtCore.QObject):
         self._enable_cmd = False
         self._enable_ch = 0
         self._enable_value = True
+        self.zero_value = [0] * 8
 
     def _read_data(self, port):
         v = port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
@@ -41,6 +44,7 @@ class M7084(QtCore.QObject):
         for i in range(8):
             value[i] = data[i * 2] + 65536 * data[i * 2 + 1]
             value[i] = bitwise.to_signed32(value[i])
+
         return value
 
     def _clear(self, port, n):
@@ -51,7 +55,7 @@ class M7084(QtCore.QObject):
 
     def _clear_done(self, data, n):
         data = list(data)
-        if data[n * 2] == 0 and data[n * 2 + 1] == 0:
+        if SOFTWARE_CLEAR or data[n * 2] == 0 and data[n * 2 + 1] == 0:
             self._clear_cmd = False
             self.cleared.emit()
             self.changed.emit()
@@ -64,7 +68,7 @@ class M7084(QtCore.QObject):
         return v
 
     def _read_enable(self, port):
-        v=port.execute(self.dev, cst.READ_INPUT_REGISTERS, 489, 1)
+        v = port.execute(self.dev, cst.READ_INPUT_REGISTERS, 489, 1)
         self.thread().msleep(2)
         return v
 
@@ -74,11 +78,12 @@ class M7084(QtCore.QObject):
         return data
 
     def _emit_updated(self, data):
-        value = [data[i] * self.k[i] + self.off[i] for i in range(8)]
+        value = [data[i] * self.k[i] + self.off[i]- self.zero_value[i] for i in range(8)]
         if any([abs(value[i] - self.value[i]) > self.eps[i] for i in range(8)]):
             self.value = value
             self.changed.emit()
         self.updated.emit()
+        #print('upd',self.value)
         return data
 
     def _emit_warning(self, data, error):
@@ -110,5 +115,10 @@ class M7084(QtCore.QObject):
 
     @QtCore.pyqtSlot(int)
     def setClear(self, n):
-        self._clear_ch = n
-        self._clear_cmd = True
+        if SOFTWARE_CLEAR:
+            self.zero_value[n] = self.zero_value[n]+self.value[n]
+            self.value[n]=0
+            #print('reset ',self.zero_value,self.zero_value)
+        else:
+            self._clear_ch = n
+            self._clear_cmd = True

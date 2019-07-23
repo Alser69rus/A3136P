@@ -15,17 +15,16 @@ class CheckBU(Menu):
         self.btn_di = Btn('Проверка дискретных входов')
         self.btn_fi = Btn('Проверка частотных входов')
         self.btn_power = Btn('Проверка ШИМ силового канала')
-        self.btn_ai1 = Btn('Проверка канала АВХ1 - ДДН')
-        self.btn_ai2 = Btn('Проверка канала АВХ2 - ДДМ')
-        self.btn_ai3 = Btn('Проверка канала АВХ3 - ДТ')
+        self.btn_ai = Btn('Проверка аналоговых входов')
+
         self.btn_di_r = Btn('Проверка резервного канала дискретных входов')
         self.btn_fi1_r = Btn('Проверка резервного канала ДЧД')
         self.btn_power_r = Btn('Проверка резервного канала ШИМ')
 
         self.btn_bu_back = Btn('Завершение испытаний')
 
-        lst = [self.btn_prepare, self.btn_di, self.btn_fi, self.btn_power, self.btn_ai1,
-               self.btn_ai2, self.btn_ai3, self.btn_di_r, self.btn_fi1_r, self.btn_power_r, self.btn_bu_back]
+        lst = [self.btn_prepare, self.btn_di, self.btn_fi, self.btn_power, self.btn_ai,
+               self.btn_di_r, self.btn_fi1_r, self.btn_power_r, self.btn_bu_back]
         self.set_lst(lst)
 
         self.btn_bu_back.clicked.connect(self.btn_back)
@@ -36,14 +35,33 @@ class CheckBU(Menu):
         super().reset()
         vis = []
         if self.dev_type == 'ЭРЧМ30T3-06':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai1,
-                   self.btn_ai2, self.btn_ai3, self.btn_di_r, self.btn_fi1_r, self.btn_power_r]
+            # vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai,
+            #        self.btn_di_r, self.btn_fi1_r, self.btn_power_r]
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-07':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai1,
-                   self.btn_ai2, self.btn_ai3]
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-04':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai1,
-                   self.btn_ai2, self.btn_ai3]
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т3-08':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т3-08-01':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т3-02':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т3-05':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т3-10':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т3-10-01':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т4-01':
+            vis = [self.btn_di, self.btn_fi, self.btn_power]
+        elif self.dev_type == 'ЭРЧМ30Т4-02':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т4-02-01':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т4-03':
+            vis = [self.btn_di, self.btn_fi, self.btn_power]
 
         for elem in self.list:
             if elem != self.btn_bu_back and elem != self.btn_prepare:

@@ -86,8 +86,8 @@ class ExamIUDP(QtCore.QState):
         self.measure_f1 = MeasureF1(self)
         self.measure_f3.addTransition(self.set_pos_0)
         self.set_pos_0.addTransition(self.pchv.speed_reached, self.wait_pos_0)
-        self.wait_pos_0.addTransition(self.pidc.task_reached, self.reset_br2)
-        self.reset_br2.addTransition(self.freq.cleared, self.show_f1)
+        self.wait_pos_0.addTransition(self.reset_br2)
+        self.reset_br2.addTransition(self.show_f1)
         self.show_f1.addTransition(self.btnOk, self.measure_f1)
 
         # Запуск ПЧВ и установка в позицию 10
@@ -112,7 +112,7 @@ class ExamIUDP(QtCore.QState):
         self.set_current_0.addTransition(self.set_speed_0)
         self.set_speed_0.addTransition(self.pchv.break_on, self.show_result)
         self.show_result.addTransition(self.btnOk, self.tune_dp)
-        self.tune_dp.addTransition(self.btnOk, self.measure_f2)
+        self.tune_dp.addTransition(self.btnOk, self.measure_f1)
 
         self.setInitialState(self.install_0)
 
@@ -282,7 +282,7 @@ class WaitPos0(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.current.setActive('pidc', 0)
+        com.current.setActive('manual', 0)
         com.text.setText('<p>Ожидайте.<br>Производится установка тока 0 А в силовой цепи</p>')
 
 
@@ -334,7 +334,7 @@ class SetPos8(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.current.setActive('pidc', 2.0)
-        com.text.setText('<p>Ожидайте.</p><p>Производится предварительная установка тока в силовой цепи' + \
+        com.text.setText('<p>Ожидайте.</p><p>Производится предварительная установка тока 2 A в силовой цепи' + \
                          ' поворотного электромагнита</p>')
 
 
@@ -377,7 +377,7 @@ class SetCurrent0(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.current.setActive('pidc', 0)
+        com.current.setActive('manual', 0)
         com.text.setText('<p>Ожидайте.</p><p>Производится отключение силовой цепи</p>')
 
 

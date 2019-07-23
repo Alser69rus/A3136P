@@ -6,6 +6,7 @@ import opc.opc2
 import menu.mainform
 import exam_iu.exam_iu_pe
 import exam_iu.exam_iu_dp
+from exam_iu.exam_iu_2 import ExamIU2
 from exam_iu.exam_iu import ExamIU
 from exam_bu.exam_bu_prog import Exam_bu
 
@@ -49,7 +50,8 @@ class Main(QtCore.QObject):
         self.exam_iu_dp = exam_iu.exam_iu_dp.ExamIUDP(self.stm, self.opc, self.form)
         self.exam_iu_auth = ExamIUAuth(self.stm)
         self.exam_iu_select = ExamIUSelect(self.stm)
-        self.exam_iu = ExamIU(self.stm, self.opc, self.form)
+        self.exam_iu_old = ExamIU(self.stm, self.opc, self.form)
+        self.exam_iu = ExamIU2(self.stm, self.opc, self.form)
 
         self.menu_bu = MenuBU(self.stm)
         self.exam_bu_auth = ExamBUAuth(self.stm)
@@ -78,7 +80,7 @@ class Main(QtCore.QObject):
         self.exam_iu_dp_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
         self.exam_iu_pe.addTransition(self.exam_iu_pe.finished, self.menu_iu)
         self.exam_iu_dp.addTransition(self.exam_iu_dp.finished, self.menu_iu)
-        self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_exam.clicked, self.exam_iu_auth)
+        self.menu_iu.addTransition(self.form.mnu_iu.btn_iu_exam_2.clicked, self.exam_iu_auth)
         self.exam_iu_auth.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
         self.exam_iu_auth.addTransition(self.form.auth.btn_back, self.menu_iu)
         self.exam_iu_auth.addTransition(self.form.auth.btn_ok, self.exam_iu_select)
@@ -221,6 +223,8 @@ class CheckBU(QtCore.QState):
             com.exam_bu.setInitialState(com.exam_bu.fi_check)
         elif btn == 'Проверка ШИМ силового канала':
             com.exam_bu.setInitialState(com.exam_bu.shim_check)
+        elif btn == 'Проверка аналоговых входов':
+            com.exam_bu.setInitialState(com.exam_bu.ai_check)
 
         com.success.emit()
 
@@ -230,4 +234,4 @@ if __name__ == '__main__':
     main = Main()
     print('Старт')
 
-    app.exec_()
+    sys.exit(app.exec_())

@@ -156,8 +156,8 @@ class ExamIU(QtCore.QState):
         self.connect_pchv2.addTransition(self.opc.do2.updated, self.show_frm2)
         self.show_frm2.addTransition(self.set_speed_pe)
         self.set_speed_pe.addTransition(self.pchv.speed_reached, self.set_pos0)
-        self.set_pos0.addTransition(self.pidc.task_reached, self.reset_br2)
-        self.reset_br2.addTransition(self.freq.cleared, self.set_pos2)
+        self.set_pos0.addTransition(self.reset_br2)
+        self.reset_br2.addTransition(self.set_pos2)
         self.set_pos2.addTransition(self.pida.task_reached, self.measure_i1)
         self.set_pos2.addTransition(self.pida.timeout, self.pos_timeout_1)
         self.pos_timeout_1.addTransition(self.set_pos8)
@@ -197,7 +197,7 @@ class ExamIU(QtCore.QState):
         # печать протокола
         self.print_result = PrintResult(self)
         self.disconnect_devices2 = DisconnectDevices(self)
-        self.frm_main.frm_print.paintRequested.connect(self.print_result.preview)
+        # self.frm_main.frm_print.paintRequested.connect(self.print_result.preview)
         self.stop_pchv3.addTransition(self.pchv.break_on, self.disconnect_devices2)
         self.disconnect_devices2.addTransition(self.print_result)
         self.print_result.addTransition(self.btnOk, self.stop_pid)
@@ -431,8 +431,8 @@ class SetPos0(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com
-        com.current.setActive('pidc', 0)
-        com.text.setText('<p>Ожидайте.<br>Выполняется установка тока 0 А в силовой цепи.</p>')
+        com.current.setActive('manual', 0)
+        com.text.setText('<p>Ожидайте.<br>Выполняется установка тока 0,8 А в силовой цепи.</p>')
 
 
 class ResetBr2(QtCore.QState):
