@@ -143,7 +143,15 @@ class Worker(QtCore.QObject):
         return serial.Serial(port_name, baud_rate, *args, **kwargs)
 
     def modbus_master(self, serial_port, *args, **kwargs):
-        return modbus_rtu.RtuMaster(serial_port, *args, **kwargs)
+        master=None
+        try:
+            master = modbus_rtu.RtuMaster(serial_port, *args, **kwargs)
+            return master
+        except Exception:
+
+            if not (master is None):
+                master._serial.close()
+            raise
 
     def set_timeout(self, master, timeout):
         master.set_timeout(timeout)
@@ -204,7 +212,7 @@ class Worker3(Worker):
 class Worker4(Worker):
     """сервер частотомера"""
 
-    def __init__(self, port=None, baud=9600, timeout=0.05, parent=None):
+    def __init__(self, port=None, baud=9600, timeout=0.1, parent=None):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
         self.freq = M7084(self.port, 3)
         self.freq.k = [0.0078125, 0.0078125, 1, 1, 0, 1, 1, 0.001]

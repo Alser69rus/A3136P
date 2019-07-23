@@ -112,7 +112,10 @@ class Pchv(QtCore.QObject):
         alarm = stw & 0b1111000011011000
         if alarm:
             msg = self.err_msg(stw)
-            self.alarmed.emit(msg)
+            if not (msg.count('лпо') or msg.count('напряжение')):
+                self.alarmed.emit(msg)
+            else:
+                self.warning.emit(msg)
 
         ready = stw & 3
         if self.ready != ready:

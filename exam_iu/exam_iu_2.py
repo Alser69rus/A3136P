@@ -474,7 +474,7 @@ class ExtractRes(QtCore.QState):
             data_f = [(v[1], v[2]) for v in data_a]
             ai, bi = MNK(data_i)
             af, bf = MNK(data_f)
-            data.arr_average.append((ai * a + bi,a, af * a + bf))
+            data.arr_average.append((ai * a + bi, a, af * a + bf))
 
         if data.arr_average[1][0] == 0:
             data.note += 'Не удалось установить вал регулятора в позицию "1";'
@@ -522,10 +522,10 @@ class PrintResult(QtCore.QState):
         if month != today.month:
             data.num = 0
         data.num += 1
-        protocol_path += f'{today.year}-{today.month}\\'
+        protocol_path += f'{today.year:0>4}-{today.month:0>2}\\'
         if not os.path.exists(protocol_path):
             os.makedirs(protocol_path)
-        protocol_path += f'N {data.num} {today.day}-{today.month}-{today.year} ИУ {iu.dev_type} завN' + \
+        protocol_path += f'N {data.num} {today.day:0>2}-{today.month:0>2}-{today.year:0>4} ИУ {iu.dev_type} завN' + \
                          f' {frm_main.auth.num} {frm_main.auth.date}.pdf'
 
         frm_main.frm_print.updatePreview()
@@ -598,7 +598,7 @@ class PrintResult(QtCore.QState):
             for xx in range(0, self.WIDTH - self.OFF_X * 2, int(self.K_X / 10)):
                 QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.lightGray)), 1)
                 painter.drawLine(x + self.OFF_X + xx, y + self.HEIGHT - self.OFF_Y - 5,
-                                 x + self.OFF_X + xx, y + 2*self.OFF_Y)
+                                 x + self.OFF_X + xx, y + 2 * self.OFF_Y)
                 QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.black)), 4)
                 painter.drawLine(x + self.OFF_X + xx, y + self.HEIGHT - self.OFF_Y + 5,
                                  x + self.OFF_X + xx, y + self.HEIGHT - self.OFF_Y - 5)
@@ -608,7 +608,8 @@ class PrintResult(QtCore.QState):
             for yy in range(1, 11):
                 QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.lightGray)), 1)
                 painter.drawLine(x + self.OFF_X + 5, y + self.HEIGHT - self.OFF_Y - yy * self.K_Y,
-                                 x + self.OFF_X + self.WIDTH - 2*self.OFF_X, y + self.HEIGHT - self.OFF_Y - yy * self.K_Y)
+                                 x + self.OFF_X + self.WIDTH - 2 * self.OFF_X,
+                                 y + self.HEIGHT - self.OFF_Y - yy * self.K_Y)
                 QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.black)), 4)
                 painter.drawLine(x + self.OFF_X - 5, y + self.HEIGHT - self.OFF_Y - yy * self.K_Y,
                                  x + self.OFF_X + 5, y + self.HEIGHT - self.OFF_Y - yy * self.K_Y)
@@ -619,13 +620,13 @@ class PrintResult(QtCore.QState):
             painter.drawText(x + self.WIDTH - 30, y + self.HEIGHT - 5, 'I, A')
             i1, a1, i2, a2 = 1.3, 2.0, 2.0, 8.0
             QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.green)), 1)
-            painter.drawLine(x + self.OFF_X + (i1 - 0.05-self.OFF_I) * self.K_X,
+            painter.drawLine(x + self.OFF_X + (i1 - 0.05 - self.OFF_I) * self.K_X,
                              y + self.HEIGHT - self.OFF_Y - a1 * self.K_Y,
-                             x + self.OFF_X + (i2 - 0.05-self.OFF_I) * self.K_X,
+                             x + self.OFF_X + (i2 - 0.05 - self.OFF_I) * self.K_X,
                              y + self.HEIGHT - self.OFF_Y - a2 * self.K_Y)
-            painter.drawLine(x + self.OFF_X + (i1 + 0.05-self.OFF_I) * self.K_X,
+            painter.drawLine(x + self.OFF_X + (i1 + 0.05 - self.OFF_I) * self.K_X,
                              y + self.HEIGHT - self.OFF_Y - a1 * self.K_Y,
-                             x + self.OFF_X + (i2 + 0.05-self.OFF_I) * self.K_X,
+                             x + self.OFF_X + (i2 + 0.05 - self.OFF_I) * self.K_X,
                              y + self.HEIGHT - self.OFF_Y - a2 * self.K_Y)
 
             painter.setPen(QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.blue)), 1))
@@ -634,19 +635,19 @@ class PrintResult(QtCore.QState):
             painter.setPen(QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.red)), 8))
             painter.drawPolyline(*points2)
 
-            #painter.drawRect(x + self.WIDTH - 300, y,
+            # painter.drawRect(x + self.WIDTH - 300, y,
             #                 x + self.WIDTH, y + 200)
             painter.setPen(QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.red)), 8))
             painter.drawLine(x + self.WIDTH - 40, y + 250, x + self.WIDTH, y + 250)
             painter.setPen(QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.blue)), 4))
             painter.drawLine(x + self.WIDTH - 40, y + 300, x + self.WIDTH, y + 300)
             painter.setPen(QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.green)), 4))
-            painter.drawLine(x + self.WIDTH - 40, y + 350, x + self.WIDTH , y + 350)
+            painter.drawLine(x + self.WIDTH - 40, y + 350, x + self.WIDTH, y + 350)
 
             painter.setPen(QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.black)), 2))
-            painter.drawText(x + self.WIDTH +20, y + 250, 'Рабочая характеристика')
-            painter.drawText(x + self.WIDTH +20, y + 300, 'Данные измерений')
-            painter.drawText(x + self.WIDTH +20, y + 350, 'Норм. характеристика')
+            painter.drawText(x + self.WIDTH + 20, y + 250, 'Рабочая характеристика')
+            painter.drawText(x + self.WIDTH + 20, y + 300, 'Данные измерений')
+            painter.drawText(x + self.WIDTH + 20, y + 350, 'Норм. характеристика')
 
             y += 1300
 
