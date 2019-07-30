@@ -3,12 +3,6 @@ import time
 from dataclasses import dataclass, field
 
 com = None
-GR_HEIGHT = 300
-GR_WIDTH = 800
-GR_MX = 15
-GR_MY = 100
-GR_OFX = 40
-GR_OFY = 20
 
 
 @dataclass
@@ -16,8 +10,12 @@ class BU:
     dev_type: str
     prepare: bool = False
     prepare_r: bool = False
-    di_res: str = ''
-    di_note: str = ''
+
+    di_res: list = field(default_factory=list)
+    di_min: int = 0
+    di_max: int = 0
+    di_reg: str = ''
+
     fi_res: str = ''
     fi_note: str = ''
     shim_res: str = ''
@@ -40,6 +38,13 @@ bu = BU('')
 
 
 class Form(QtWidgets.QWidget):
+    GR_HEIGHT = 300
+    GR_WIDTH = 800
+    GR_MX = 15
+    GR_MY = 100
+    GR_OFX = 40
+    GR_OFY = 20
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.arr = []
@@ -69,18 +74,39 @@ class Form(QtWidgets.QWidget):
         if self.arr:
             painter = QtGui.QPainter(self)
             QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.black)), 1)
-            points = [QtCore.QPointF(GR_OFX + i[0] * GR_MX, GR_HEIGHT - GR_OFY - i[1] * GR_MY) for i in self.arr]
-            painter.drawLine(GR_OFX, GR_HEIGHT - GR_OFY + 5, GR_OFX, GR_OFY)
-            painter.drawLine(GR_OFX - 5, GR_HEIGHT - GR_OFY, GR_WIDTH - GR_OFX, GR_HEIGHT - GR_OFY)
-            for x in range(0, GR_WIDTH - GR_OFX * 2, GR_MX * 5):
-                painter.drawLine(GR_OFX + x, GR_HEIGHT - GR_OFY + 5, GR_OFX + x, GR_HEIGHT - GR_OFY - 5)
-                painter.drawText(GR_OFX + x - 5, GR_HEIGHT - 2, '{:.0f}'.format(x / GR_MX))
+            points = [QtCore.QPointF(self.GR_OFX + i[0] * self.GR_MX,
+                                     self.GR_HEIGHT - self.GR_OFY - i[1] * self.GR_MY)
+                      for i in self.arr]
+            painter.drawLine(self.GR_OFX,
+                             self.GR_HEIGHT - self.GR_OFY + 5,
+                             self.GR_OFX,
+                             self.GR_OFY)
+            painter.drawLine(self.GR_OFX - 5,
+                             self.GR_HEIGHT - self.GR_OFY,
+                             self.GR_WIDTH - self.GR_OFX,
+                             self.GR_HEIGHT - self.GR_OFY)
+            for x in range(0, self.GR_WIDTH - self.GR_OFX * 2, self.GR_MX * 5):
+                painter.drawLine(self.GR_OFX + x,
+                                 self.GR_HEIGHT - self.GR_OFY + 5,
+                                 self.GR_OFX + x,
+                                 self.GR_HEIGHT - self.GR_OFY - 5)
+                painter.drawText(self.GR_OFX + x - 5,
+                                 self.GR_HEIGHT - 2,
+                                 f'{x / self.GR_MX:.0f}')
             for y in range(1, 6):
-                painter.drawLine(GR_OFX - 5, GR_HEIGHT - GR_OFY - y * GR_MY / 2, GR_OFX + 5,
-                                 GR_HEIGHT - GR_OFY - y * GR_MY / 2)
-                painter.drawText(10, GR_HEIGHT - GR_OFY - y * GR_MY / 2 + 7, '{:3.1f}'.format(y / 2))
-            painter.drawText(GR_OFX + 10, GR_OFY + 10, 'I, А')
-            painter.drawText(GR_WIDTH - 30, GR_HEIGHT - 5, 't, с')
+                painter.drawLine(self.GR_OFX - 5,
+                                 self.GR_HEIGHT - self.GR_OFY - y * self.GR_MY / 2,
+                                 self.GR_OFX + 5,
+                                 self.GR_HEIGHT - self.GR_OFY - y * self.GR_MY / 2)
+                painter.drawText(10,
+                                 self.GR_HEIGHT - self.GR_OFY - y * self.GR_MY / 2 + 7,
+                                 f'{y / 2:3.1f}')
+            painter.drawText(self.GR_OFX + 10,
+                             self.GR_OFY + 10,
+                             'I, А')
+            painter.drawText(self.GR_WIDTH - 30,
+                             self.GR_HEIGHT - 5,
+                             't, с')
             painter.setPen(QtGui.QPen(QtGui.QBrush(QtGui.QColor(QtCore.Qt.red)), 2))
             painter.drawPolyline(*points)
 
@@ -90,7 +116,7 @@ class Exam_bu(QtCore.QState):
     fail = QtCore.pyqtSignal()
     btnBack = None
     btnOk = None
-    end=QtCore.pyqtSignal()
+    end = QtCore.pyqtSignal()
 
     def __init__(self, parent=None, server=None, form=None):
         super().__init__(parent)
@@ -108,6 +134,8 @@ class Exam_bu(QtCore.QState):
         self.frm_main.stl.addWidget(self.frm)
         self.btnBack = self.frm_main.btnPanel.btnBack.clicked
         self.btnOk = self.frm_main.btnPanel.btnOk.clicked
+        self.btnUp = self.frm_main.btnPanel.btnUp.clicked
+        self.btnDown = self.frm_main.btnPanel.btnDown.clicked
 
         self.img = self.frm.img
         self.text = self.frm.text
@@ -123,15 +151,33 @@ class Exam_bu(QtCore.QState):
 
         self.error = Error(self)
         self.finish = Finish(self)
-        self.prepare = Prepare(self)
+        self.prepare1 = Prepare1(self)
+        self.prepare2 = Prepare2(self)
+        self.prepare3 = Prepare3(self)
+        self.prepare4 = Prepare4(self)
         self.switch_work = SwitchWork(self)
         self.connect_bu_di = ConnectBUDI(self)
         self.connect_bu = ConnectBU(self)
         self.di_check = DICheck(self)
-        self.di_config = DIConfig(self)
-        self.di_step = DIStep(self)
+        # self.di_config = DIConfig(self)
+        # self.di_step = DIStep(self)
+        # self.di_fail = DIFail(self)
+        # self.di_done = DIDone(self)
+        self.di_select_first = DISelectFirst(self)
+        self.di_select_second = DISelectSecond(self)
+        self.di_62 = DI62(self)
+        self.di_63 = DI63(self)
+        self.di_66 = DI66(self)
+        self.di_config1 = DIConfig1(self)
+        self.di_config2 = DIConfig2(self)
+        self.di_show_table = DIShowTable(self)
+        self.di_key_check = DIKeyCheck(self)
+        self.di_key_ok = DIKeyOk(self)
+        self.di_success = DISuccess(self)
         self.di_fail = DIFail(self)
-        self.di_done = DIDone(self)
+        self.di_next = DINext(self)
+        self.di_previos = DIPrevious(self)
+        self.di_result = DIResult(self)
 
         self.fi_check = FICheck(self)
         self.fi_param_sav = FiParamSave(self)
@@ -150,6 +196,7 @@ class Exam_bu(QtCore.QState):
         self.shim_graph_finish = ShimGraphFinish(self)
         self.shim_fail = ShimFail(self)
         self.shim_finish = ShimFinish(self)
+        self.shim_reg_off = ShimRegOff(self)
 
         self.ai_check = AiCheck(self)
         self.ai_measure = AIMeasure(self)
@@ -162,19 +209,39 @@ class Exam_bu(QtCore.QState):
         self.error.addTransition(self.finish)
         self.back_transition = self.addTransition(self.btnBack, self.finish)
 
-        self.prepare.addTransition(self.btnOk, self.switch_work)
+        self.prepare1.addTransition(self.btnOk, self.prepare2)
+        self.prepare2.addTransition(self.btnOk, self.prepare3)
+        self.prepare3.addTransition(self.btnOk, self.prepare4)
+        self.prepare4.addTransition(self.btnOk, self.switch_work)
         self.switch_work.addTransition(self.btnOk, self.connect_bu_di)
         self.switch_work.addTransition(self.success, self.connect_bu_di)
-        self.connect_bu_di.addTransition(self.connect_bu)  # self.opc.do1.updated
+        self.connect_bu_di.addTransition(self.connect_bu)
         self.connect_bu.addTransition(self.finish)
 
-        self.di_check.addTransition(self.btnOk, self.di_config)
-        self.di_config.addTransition(self.di_step)
-        self.di_step.addTransition(self.btnOk, self.di_step)
-        self.di_step.addTransition(self.btnBack, self.di_fail)
-        self.di_fail.addTransition(self.di_step)
-        self.di_step.addTransition(self.di_step.done, self.di_done)
-        self.di_done.addTransition(self.finish)
+        self.di_check.addTransition(self.btnOk, self.di_select_first)
+        self.di_select_first.addTransition(self.di_select_first.type3, self.di_62)
+        self.di_select_first.addTransition(self.di_select_first.type4, self.di_66)
+        self.di_62.addTransition(self.btnOk, self.di_config1)
+        self.di_66.addTransition(self.btnOk, self.di_config1)
+        self.di_config1.addTransition(self.di_show_table)
+        self.di_show_table.addTransition(self.di_key_check)
+        self.di_key_check.addTransition(self.freq.updated, self.di_key_check)
+        self.di_key_check.addTransition(self.di_key_check.next, self.di_next)
+        self.di_key_check.addTransition(self.di_key_check.previous, self.di_previos)
+        self.di_next.addTransition(self.di_show_table)
+        self.di_previos.addTransition(self.di_show_table)
+        self.di_key_check.addTransition(self.btnUp, self.di_success)
+        self.di_key_check.addTransition(self.btnDown, self.di_fail)
+        self.di_success.addTransition(self.di_next)
+        self.di_fail.addTransition(self.di_next)
+        self.di_key_check.addTransition(self.btnOk, self.di_key_ok)
+        # self.di_key_ok.addTransition(self.di_key_ok.next, self.di_next)
+        self.di_key_ok.addTransition(self.di_key_ok.done, self.di_select_second)
+        self.di_select_second.addTransition(self.di_select_second.done, self.di_result)
+        self.di_select_second.addTransition(self.di_select_second.di63, self.di_63)
+        self.di_63.addTransition(self.btnOk, self.di_config2)
+        self.di_config2.addTransition(self.di_show_table)
+        self.di_result.addTransition(self.btnOk, self.finish)
 
         self.fi_check.addTransition(self.btnOk, self.fi_config)
         self.fi_check.addTransition(self.btnBack, self.fi_param_sav)
@@ -200,7 +267,8 @@ class Exam_bu(QtCore.QState):
         self.shim_graph_finish.addTransition(self.btnOk, self.shim_finish)
         self.shim_graph_finish.addTransition(self.btnBack, self.shim_fail)
         self.shim_fail.addTransition(self.shim_finish)
-        self.shim_finish.addTransition(self.btnOk, self.finish)
+        self.shim_finish.addTransition(self.btnOk, self.shim_reg_off)
+        self.shim_reg_off.addTransition(self.btnOk, self.finish)
 
         self.ai_check.addTransition(self.ai_measure)
         self.ai_measure.addTransition(server.ao.updated, self.ai_measure)
@@ -213,7 +281,6 @@ class Exam_bu(QtCore.QState):
         self.ai_done.addTransition(self.btnOk, self.finish)
 
         self.print_result = PrintResult(self)
-
 
 
 class Error(QtCore.QState):
@@ -234,12 +301,13 @@ class Finish(QtCore.QFinalState):
         # com.opc.pa3.setActive(False)
         # com.opc.connect_bu_di_power(False)
         # com.opc.connect_bu_power(False)
+        com.freq.setActive(True)
         com.frm_main.stl.setCurrentWidget(com.frm_main.check_bu)
         com.frm_main.connectmenu()
         # com.pchv.setActive(False)
 
 
-class Prepare(QtCore.QState):
+class Prepare1(QtCore.QState):
     def onEntry(self, QEvent):
         global com, bu
         bu = BU(dev_type=com.dev_type)
@@ -248,10 +316,32 @@ class Prepare(QtCore.QState):
         com.img.setPixmap(com.frm.img_bu_prog)
         com.text.setText('<p>Установите блок управления (БУ) на кронштейн на боковой стенке пульта.</p>'
                          '<p>Подключите шлейфы к разъемам "XP1", "XP2", "XP3" блока управления и разъемам '
-                         '"XS1 БУ ПИТ.", "XS2 БУ ДВХ", "XS3 БУ АВХ" пульта соответственно</p><p>Подключите разъем '
-                         '"XS10 ИУ ПЭ" к разъему "XP8 НАГРУЗКА", которые расположены на правой стенке привода'
-                         ' при помощи шлейфа</p><p>Подключите при помощи шлейфа разъем "XS12 БП Х2"'
-                         ' и разъем "ХР13 24 В"</p><p>Снимите защитную крышку с разъема БУ "ОСНОВНАЯ РАБОТА" и подключите'
+                         '"XS1 БУ ПИТ.", "XS2 БУ ДВХ", "XS3 БУ АВХ" пульта соответственно</p>'
+                         '<p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+
+
+class Prepare2(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com, bu
+        com.img.setPixmap(com.frm.img_bu_prog)
+        com.text.setText('<p>Подключите разъем привода "XS10 ИУ ПЭ" к разъему привода "XP8 НАГРУЗКА", '
+                         'или к разъему поворотного электромагнита регулятора. '
+                         '</p><p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+
+
+class Prepare3(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com, bu
+        com.img.setPixmap(com.frm.img_bu_prog)
+        com.text.setText('<p>Подключите при помощи шлейфа разъем пульта "XS12 БП Х2"'
+                         ' и разъем "ХР13 24 В"</p><p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+
+
+class Prepare4(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com, bu
+        com.img.setPixmap(com.frm.img_bu_prog)
+        com.text.setText('<p>Снимите защитную крышку с разъема БУ "ОСНОВНАЯ РАБОТА" и подключите'
                          ' программатор</p><p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
 
 
@@ -267,34 +357,26 @@ class SwitchWork(QtCore.QState):
 class ConnectBUDI(QtCore.QState):
     def onEntry(self, QEvent):
         com.text.setText('Производится подключение питания дискретных входов БУ')
-        if bu.dev_type == 'ЭРЧМ30T3-06':
+
+        if bu.dev_type in ['ЭРЧМ30Т3-06', 'ЭРЧМ30Т3-04', 'ЭРЧМ30Т3-07']:
             com.opc.connect_bu_di_power(True, 110)
-        elif bu.dev_type == 'ЭРЧМ30T3-04':
+        elif bu.dev_type in ['ЭРЧМ30Т3-12', 'ЭРЧМ30Т3-12-01', 'ЭРЧМ30Т3-12-02', 'ЭРЧМ30Т3-12-03']:
             com.opc.connect_bu_di_power(True, 110)
-        elif bu.dev_type == 'ЭРЧМ30T3-07':
-            com.opc.connect_bu_di_power(True, 110)
-        elif bu.dev_type == 'ЭРЧМ30T3-08':
+        elif bu.dev_type in ['ЭРЧМ30Т3-08', 'ЭРЧМ30Т3-08-01']:
             com.opc.connect_bu_di_power(True, 75)
-        elif bu.dev_type == 'ЭРЧМ30T3-08-01':
+        elif bu.dev_type in ['ЭРЧМ30Т3-02', 'ЭРЧМ30Т3-05', 'ЭРЧМ30Т3-10', 'ЭРЧМ30Т3-10-01']:
+            com.opc.connect_bu_di_power(True, 110)
+        elif bu.dev_type in ['ЭРЧМ30Т4-01']:
             com.opc.connect_bu_di_power(True, 75)
-        elif bu.dev_type == 'ЭРЧМ30T3-02':
-            com.opc.connect_bu_di_power(True, 110)
-        elif bu.dev_type == 'ЭРЧМ30T3-05':
-            com.opc.connect_bu_di_power(True, 110)
-        elif bu.dev_type == 'ЭРЧМ30T3-10':
-            com.opc.connect_bu_di_power(True, 110)
-        elif bu.dev_type == 'ЭРЧМ30T3-10-01':
-            com.opc.connect_bu_di_power(True, 110)
-        elif bu.dev_type == 'ЭРЧМ30T4-01':
-            com.opc.connect_bu_di_power(True, 75)
-        elif bu.dev_type == 'ЭРЧМ30T4-02':
+        elif bu.dev_type in ['ЭРЧМ30Т4-02']:
             com.opc.connect_bu_di_power(True, 24)
-        elif bu.dev_type == 'ЭРЧМ30T4-02-01':
-            com.opc.connect_bu_di_power(True, 24)
-        elif bu.dev_type == 'ЭРЧМ30T4-03':
+        elif bu.dev_type in ['ЭРЧМ30Т4-02-01']:
+            com.opc.connect_bu_di_power(True, 48)
+        elif bu.dev_type in ['ЭРЧМ30Т4-03']:
             com.opc.connect_bu_di_power(True, 75)
         else:
             com.opc.connect_bu_di_power(False)
+            print(f'Неизвестный тип {bu.dev_type}')
 
 
 class ConnectBU(QtCore.QState):
@@ -312,17 +394,41 @@ class ConnectBU(QtCore.QState):
 
 class DICheck(QtCore.QState):
     def onEntry(self, QEvent):
-        global com
+        global com, bu
+        bu.di_res = []
+        com.do1.setValue([0] * 16 + com.do1.value[16:])
+        com.do1.setValue(1, 8)
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)
-        bu.di_res = ''
-        bu.di_note = ''
-        com.text.setText('<p>Установите режим "РЕ00" на программаторе. Для этого удерживайте нажатой кнопку '
+        com.text.setText('<p>Установите режим <b>"РЕ00"</b> на программаторе. Для этого удерживайте нажатой кнопку '
                          '1  программатора, а затем кнопками 5 и 6 установите на верхнем индикаторе номер '
                          'режима. После чего отпустите кнопку 1 и нажмите кнопку программатора 2. Кнопками 5 и 6 '
                          'установите номер подрежима.</p>'
+                         '<p>Нажмите "ПРИНЯТЬ" для продолжения</p>'
                          )
+
+
+class DISelectFirst(QtCore.QState):
+    type3 = QtCore.pyqtSignal()
+    type4 = QtCore.pyqtSignal()
+
+    def onEntry(self, QEvent):
+        global com, bu
+        com.do1.setValue([0] * 16 + com.do1.value[16:])
+        t3 = ['ЭРЧМ30Т3-06', 'ЭРЧМ30Т3-04', 'ЭРЧМ30Т3-07', 'ЭРЧМ30Т3-12', 'ЭРЧМ30Т3-12-01', 'ЭРЧМ30Т3-12-02',
+              'ЭРЧМ30Т3-12-03', 'ЭРЧМ30Т3-02', 'ЭРЧМ30Т3-05', 'ЭРЧМ30Т3-08', 'ЭРЧМ30Т3-08-01', 'ЭРЧМ30Т3-10',
+              'ЭРЧМ30Т3-10-01']
+        t4 = ['ЭРЧМ30Т4-01', 'ЭРЧМ30Т4-02', 'ЭРЧМ30Т4-02-01', 'ЭРЧМ30Т4-03']
+
+        if bu.dev_type in t3:
+            bu.di_reg = '62'
+            self.type3.emit()
+        elif bu.dev_type in t4:
+            bu.di_reg = '66'
+            self.type4.emit()
+        else:
+            print(f'Неизвестный тип {bu.dev_type}')
 
 
 class DI62(QtCore.QState):
@@ -330,7 +436,7 @@ class DI62(QtCore.QState):
         com.text.setText('<p>На нижнем индикаторе необходимо установить адресс 62. '
                          'Для этого кнопкой 4 выберать разряд, а кнопками 5 и 6 задайть значение. На текущий '
                          'разряд указывает точка.</p><p>После всех манипуляций на индикаторах программатора должно '
-                         'быть:<br><br><b><font size="+2">bn00<br>6200</font></b></p><p><br>Нажмите '
+                         'быть:<br><br><b><font size="+1">bn00<br>6200</font></b></p><p><br>Нажмите '
                          '"ПРИНЯТЬ" для продолжения</p>')
 
 
@@ -339,7 +445,7 @@ class DI63(QtCore.QState):
         com.text.setText('<p>На нижнем индикаторе необходимо установить адресс 63. '
                          'Для этого кнопкой 4 выберать разряд, а кнопками 5 и 6 задайть значение. На текущий '
                          'разряд указывает точка.</p><p>После всех манипуляций на индикаторах программатора должно '
-                         'быть:<br><br><b><font size="+2">bn00<br>6300</font></b></p><p><br>Нажмите '
+                         'быть:<br><br><b><font size="+1">bn00<br>6300</font></b></p><p><br>Нажмите '
                          '"ПРИНЯТЬ" для продолжения</p>')
 
 
@@ -348,58 +454,320 @@ class DI66(QtCore.QState):
         com.text.setText('<p>На нижнем индикаторе необходимо установить адресс 66. '
                          'Для этого кнопкой 4 выберать разряд, а кнопками 5 и 6 задайть значение. На текущий '
                          'разряд указывает точка.</p><p>После всех манипуляций на индикаторах программатора должно '
-                         'быть:<br><br><b><font size="+2">bn00<br>6600</font></b></p><p><br>Нажмите '
+                         'быть:<br><br><b><font size="+1">bn00<br>6600</font></b></p><p><br>Нажмите '
                          '"ПРИНЯТЬ" для продолжения</p>')
 
 
-class DIConfig(QtCore.QState):
+class DIConfig1(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com, bu
+        if bu.dev_type in ['ЭРЧМ30Т3-06', 'ЭРЧМ30Т3-04', 'ЭРЧМ30Т3-07']:
+            com.opc.connect_bu_di_power(True, 110)
+            com.args = ((0, '02', 'ДВХ1'),
+                        (1, '04', 'ДВХ2'),
+                        (2, '08', 'ДВХ3'),
+                        (3, '01', 'ДВХ4'),
+                        (5, '40', 'ДВХ5 (Упр. от КМ)'),
+                        (8, '10', 'ДВХ6 (Работа/стоп)'),
+                        (6, '20', 'ДВХ7 (Поезд. реж.)'))
+        elif bu.dev_type in ['ЭРЧМ30Т3-12', 'ЭРЧМ30Т3-12-01', 'ЭРЧМ30Т3-12-02', 'ЭРЧМ30Т3-12-03']:
+            com.opc.connect_bu_di_power(True, 110)
+            com.args = ((0, '02', 'ДВХ1'),
+                        (1, '04', 'ДВХ2'),
+                        (2, '08', 'ДВХ3'),
+                        (3, '01', 'ДВХ4'),
+                        (8, '10', 'ДВХ9 (Работа/стоп)'),
+                        (6, '20', 'ДВХ7 (Поезд. реж.)'))
+        elif bu.dev_type in ['ЭРЧМ30Т3-08', 'ЭРЧМ30Т3-08-01']:
+            com.opc.connect_bu_di_power(True, 75)
+            com.args = ((0, '02', 'ДВХ1'),
+                        (1, '04', 'ДВХ2'),
+                        (2, '08', 'ДВХ3'),
+                        (3, '01', 'ДВХ4'),
+                        (8, '10', 'ДВХ9 (Работа/стоп)'),
+                        (6, '20', 'ДВХ7 (Поезд. реж.)'),
+                        (9, '40', 'ДВХ10 (Резерв)'),
+                        (11, '80', 'ДВХ12 (Резерв)'))
+        elif bu.dev_type in ['ЭРЧМ30Т3-02', 'ЭРЧМ30Т3-05', 'ЭРЧМ30Т3-10', 'ЭРЧМ30Т3-10-01']:
+            com.opc.connect_bu_di_power(True, 110)
+            com.args = ((0, '02', 'ДВХ1'),
+                        (1, '04', 'ДВХ2'),
+                        (2, '08', 'ДВХ3'),
+                        (3, '01', 'ДВХ4'),
+                        (8, '10', 'ДВХ9 (Работа/стоп)'),
+                        (6, '20', 'ДВХ7 (Поезд. реж.)'),
+                        (9, '40', 'ДВХ10 (Резерв)'),
+                        (11, '80', 'ДВХ12 (Резерв)'))
+        elif bu.dev_type in ['ЭРЧМ30Т4-01']:
+            com.opc.connect_bu_di_power(True, 75)
+            com.args = ((0, '01', 'ДВХ1'),
+                        (1, '02', 'ДВХ2'),
+                        (2, '04', 'ДВХ3'),
+                        (3, '20', 'ДВХ4'),
+                        (5, '10', 'ДВХ5'),
+                        (8, '08', 'ДВХ7 (Работа/стоп)'))
+        elif bu.dev_type in ['ЭРЧМ30Т4-02']:
+            com.opc.connect_bu_di_power(True, 24)
+            com.args = ((0, '01', 'ДВХ1'),
+                        (1, '02', 'ДВХ2'),
+                        (2, '04', 'ДВХ3'),
+                        (3, '20', 'ДВХ4'),
+                        (5, '10', 'ДВХ5 (Мин. частота'),
+                        (8, '08', 'ДВХ6 (Работа/стоп)'),
+                        (12, '80', 'ДВХ7 (Работа от КМ)'))
+        elif bu.dev_type in ['ЭРЧМ30Т4-02-01']:
+            com.opc.connect_bu_di_power(True, 48)
+            com.args = ((0, '01', 'ДВХ1'),
+                        (1, '02', 'ДВХ2'),
+                        (2, '04', 'ДВХ3'),
+                        (3, '20', 'ДВХ4'),
+                        (5, '10', 'ДВХ5 (Мин. частота'),
+                        (8, '08', 'ДВХ6 (Работа/стоп)'),
+                        (12, '80', 'ДВХ7 (Работа от КМ)'))
+        elif bu.dev_type in ['ЭРЧМ30Т4-03']:
+            com.opc.connect_bu_di_power(True, 75)
+            com.args = ((0, '01', 'ДВХ1'),
+                        (1, '02', 'ДВХ2'),
+                        (2, '04', 'ДВХ3'),
+                        (3, '20', 'ДВХ4'),
+                        (5, '10', 'ДВХ5'),
+                        (8, '08', 'ДВХ7 (Работа/стоп)'))
+        else:
+            print(f'Неизвестный тип {bu.dev_type}')
+            com.opc.connect_bu_di_power(False)
+
+        bu.di_min = 0
+        bu.di_max = len(com.args)
+
+        if bu.dev_type in ['ЭРЧМ30Т3-12', 'ЭРЧМ30Т3-12-01', 'ЭРЧМ30Т3-12-02', 'ЭРЧМ30Т3-12-03']:
+            com.args += ((4, '02', 'ДВХ5 (Букс. 1)'),
+                         (5, '04', 'ДВХ6 (Букс. 2)'),
+                         (12, '80', 'ДВХ13 (Работа от КМ)'))
+        elif bu.dev_type in ['ЭРЧМ30Т3-08', 'ЭРЧМ30Т3-08-01']:
+            com.args += ((4, '02', 'ДВХ5 (Букс. 1)'),
+                         (5, '04', 'ДВХ6 (Букс. 2)'),
+                         (7, '10', 'ДВХ8 (Резерв)'),
+                         (10, '01', 'ДВХ11 (Резерв)'),
+                         (12, '80', 'ДВХ13 (Работа от КМ)'))
+        elif bu.dev_type in ['ЭРЧМ30Т3-02', 'ЭРЧМ30Т3-05', 'ЭРЧМ30Т3-10', 'ЭРЧМ30Т3-10-01']:
+            com.args += ((4, '02', 'ДВХ5 (Букс. 1)'),
+                         (5, '04', 'ДВХ6 (Букс. 2)'),
+                         (7, '10', 'ДВХ8 (Резерв)'),
+                         (10, '01', 'ДВХ11 (Резерв)'),
+                         (12, '80', 'ДВХ13 (Работа от КМ)'))
+
+        bu.di_res = [0] * len(com.args)
+        com.idx = 0
+
+
+class DIShowTable(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com, bu
+        br2 = 2
+        com.freq.setClear(br2)
+
+        com.do1.setValue([0] * 16 + com.do1.value[16:])
+        di_in = com.args[com.idx][0]
+        com.do1.setValue(True, di_in)
+
+        table_header = '<table ' \
+                       'border="1" ' \
+                       'style="margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;" ' \
+                       'cellspacing="0" ' \
+                       'cellpadding="0">'
+
+        table_bottom = '</table>'
+
+        row1 = '<tr><td  width="100">Вход БУ</td>'
+        row2 = '<tr><td  width="100">Значение</td>'
+
+        for i in range(bu.di_min, bu.di_max):
+            text1 = com.args[i][2]
+            text2 = com.args[i][1]
+            cell_state = bu.di_res[i]
+
+            if cell_state > 0 and i == com.idx:
+                color = '#60c060'
+            elif cell_state > 0:
+                color = '#80ff80'
+            elif cell_state < 0 and i == com.idx:
+                color = '#c06060'
+            elif cell_state < 0:
+                color = '#ff8080'
+            elif cell_state == 0 and i == com.idx:
+                color = '#c0c0c0'
+            else:
+                color = '#ffffff'
+
+            cell1 = f'<td width="80" bgcolor="{color}">{text1}</td>'
+            cell2 = f'<td width="80" bgcolor="{color}">{bu.di_reg+text2}</td>'
+
+            row1 += cell1
+            row2 += cell2
+        row1 += '</tr>'
+        row2 += '</tr>'
+
+        com.text.setText(f'<p>Для каждого столбца таблицы необходимо проверить совпадают ли '
+                         f'показания нижнего индикатора программатора со значениями указанными '
+                         f'во второй строке таблицы</p>'
+                         f'<p>{table_header}{row1}{row2}{table_bottom}</p>'
+                         f'<p>Поворотом валкодера "BR3" можно перемещаться по столбцам таблицы<br>'
+                         f'Нажмите кнопку "ВВЕРХ" если значения совпадают<br>'
+                         f'Нажмите кнопку "ВНИЗ если значения не совпадают"<br>'
+                         f'Нажмите кнопку "ПРИНЯТЬ" для продолжения<br>'
+                         f'Нажмите кнопку "НАЗАД" для выхода в меню</p>')
+
+
+class DIKeyCheck(QtCore.QState):
+    next = QtCore.pyqtSignal()
+    previous = QtCore.pyqtSignal()
+
     def onEntry(self, QEvent):
         global com
-        com.removeTransition(com.back_transition)
-        com.idx = -1
-        if bu.dev_type == 'ЭРЧМ30T3-06':
-            com.opc.connect_bu_di_power(True, 110)
-            com.args = (
-                (0, '01', 'ДВХ1'), (1, '02', 'ДВХ2'), (2, '04', 'ДВХ3'), (3, '08', 'ДВХ4'),
-                (5, '40', 'ДВХ5 (Упр. от КМ)'),
-                (8, '10', 'ДВХ6 (Работа/стоп)'), (6, '20', 'ДВХ7 (Поед. реж.)'))
+        if com.freq.value[2] > 1:
+            self.next.emit()
+        elif com.freq.value[2] < -1:
+            self.previous.emit()
 
 
-class DIStep(QtCore.QState):
+class DIKeyOk(QtCore.QState):
+    next = QtCore.pyqtSignal()
     done = QtCore.pyqtSignal()
 
     def onEntry(self, QEvent):
-        global com
-        com.do1.setValue([0] * 16 + com.do1.value[16:])
-        com.idx += 1
-        if com.idx < len(com.args):
-            com.do1.setValue(True, com.args[com.idx][0])
-            com.text.setText('<p>На индикаторах программатора должны быть следующие показания:'
-                             '<br><br><b><font size="+3">bn00<br>62{}</font></b></p><p>'
-                             'Если это условие выполняется нажмите <font color="green">"ПРИНЯТЬ"</font">'
-                             ',<br>Если условие не выполняется нажмите <font color="red">"НАЗАД"</font">.'
-                             '</p>'.format(com.args[com.idx][1]))
-        else:
+        global com, bu
+        bu.di_res[com.idx] = 1
+        if com.idx == bu.di_max - 1:
             self.done.emit()
+        else:
+            self.next.emit()
+
+
+class DISuccess(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com, bu
+        bu.di_res[com.idx] = 1
 
 
 class DIFail(QtCore.QState):
     def onEntry(self, QEvent):
-        global com
-        bu.di_note += 'Неисправен дискретный вход {}.\n'.format(com.args[com.idx][2])
-        bu.di_res = 'НЕ НОРМА'
+        global com, bu
+        bu.di_res[com.idx] = -1
 
 
-class DIDone(QtCore.QState):
+class DINext(QtCore.QState):
     def onEntry(self, QEvent):
-        global com
-        com.addTransition(com.back_transition)
-        com.do1.setValue([0] * 20 + com.do1.value[20:])
-        if not bu.di_res:
-            bu.di_res = 'норма'
-            com.frm_main.check_bu.btn_di.state = 'ok'
+        global com, bu
+        com.idx += 1
+        if com.idx >= bu.di_max:
+            com.idx = bu.di_max - 1
+
+
+class DIPrevious(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com, bu
+        com.idx -= 1
+        if com.idx < bu.di_min:
+            com.idx = bu.di_min
+
+
+class DISelectSecond(QtCore.QState):
+    done = QtCore.pyqtSignal()
+    di63 = QtCore.pyqtSignal()
+
+    def onEntry(self, QEvent):
+        global com, bu
+        com.do1.setValue([0] * 16 + com.do1.value[16:])
+
+        if bu.di_reg == '66':
+            self.done.emit()
+        elif bu.di_reg == '63':
+            self.done.emit()
+        elif bu.dev_type in ['ЭРЧМ30Т3-06', 'ЭРЧМ30Т3-04', 'ЭРЧМ30Т3-07']:
+            self.done.emit()
         else:
+            bu.di_reg = '63'
+            self.di63.emit()
+
+
+class DIConfig2(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com, bu
+
+        bu.di_min = bu.di_max
+        bu.di_max = len(com.args)
+        com.idx = bu.di_min
+
+
+class DIResult(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com, bu
+        if -1 in bu.di_res:
             com.frm_main.check_bu.btn_di.state = 'fail'
+        elif all(bu.di_res):
+            com.frm_main.check_bu.btn_di.state = 'ok'
+
+        bu.di_res = [(com.args[i][2], bu.di_res[i]) for i in range(bu.di_max)]
+
+        ok = [bu.di_res[i][0] for i in range(bu.di_max) if bu.di_res[i][1] > 0]
+        fail = [bu.di_res[i][0] for i in range(bu.di_max) if bu.di_res[i][1] < 0]
+        pas = [bu.di_res[i][0] for i in range(bu.di_max) if bu.di_res[i][1] == 0]
+        ok = ', '.join(ok)
+        fail = ', '.join(fail)
+        pas = ', '.join(pas)
+
+        res = ''
+        if ok:
+            res += '<p>Входы прошедшие проверку:<br>'
+            res += ok
+            res += '</p>'
+        if fail:
+            res += '<p>Входы провалившие проверку:<br>'
+            res += fail
+            res += '</p>'
+        if pas:
+            res += '<p>Проверка была пропущена для входов:<br>'
+            res += pas
+            res += '</p>'
+        res += '<p>Нажмите "ПРИНЯТЬ" для продолжения</p>'
+        com.text.setText(res)
+
+
+# class DIStep(QtCore.QState):
+#     done = QtCore.pyqtSignal()
+#
+#     def onEntry(self, QEvent):
+#         global com
+#         com.do1.setValue([0] * 16 + com.do1.value[16:])
+#         com.idx += 1
+#         if com.idx < len(com.args):
+#             com.do1.setValue(True, com.args[com.idx][0])
+#             com.text.setText('<p>На индикаторах программатора должны быть следующие показания:'
+#                              '<br><br><b><font size="+3">bn00<br>62{}</font></b></p><p>'
+#                              'Если это условие выполняется нажмите <font color="green">"ПРИНЯТЬ"</font">'
+#                              ',<br>Если условие не выполняется нажмите <font color="red">"НАЗАД"</font">.'
+#                              '</p>'.format(com.args[com.idx][1]))
+#         else:
+#             self.done.emit()
+
+
+# class DIFail(QtCore.QState):
+#     def onEntry(self, QEvent):
+#         global com
+#         bu.di_note += 'Неисправен дискретный вход {}.\n'.format(com.args[com.idx][2])
+#         bu.di_res = 'НЕ НОРМА'
+
+
+# class DIDone(QtCore.QState):
+#     def onEntry(self, QEvent):
+#         global com
+#         com.addTransition(com.back_transition)
+#         com.do1.setValue([0] * 20 + com.do1.value[20:])
+#         if not bu.di_res:
+#             bu.di_res = 'норма'
+#             com.frm_main.check_bu.btn_di.state = 'ok'
+#         else:
+#             com.frm_main.check_bu.btn_di.state = 'fail'
 
 
 class FICheck(QtCore.QState):
@@ -487,6 +855,7 @@ class FiDone(QtCore.QState):
 
 class ShimCheck(QtCore.QState):
     def onEntry(self, QEvent):
+        com.freq.setActive(False)
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)
@@ -567,7 +936,7 @@ class ShimGraphStart(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.frm.img.clear()
-        com.img.setMinimumHeight(GR_HEIGHT)
+        com.img.setMinimumHeight(com.frm.GR_HEIGHT)
         com.args = [(0, abs(com.pa3.value))]
         com.frm.arr = com.args
         com.frm.img.update()
@@ -607,7 +976,7 @@ class ShimGraphFinish(QtCore.QState):
 
 class ShimFail(QtCore.QState):
     def onEntry(self, QEvent):
-        bu.shim_note += 'График тока силовой цепи не соответствует требованиям ТУ.\n'
+        bu.shim_note += 'График тока силовой цепи не соответствует требованиям ТУ.;'
         bu.shim_res = 'НЕ НОРМА'
 
 
@@ -653,8 +1022,17 @@ class ShimFinish(QtCore.QState):
                          '<p>Минимальный ток - факт: {:5.3f} А, норма: 0,6-0,9 А, результат: {}<br>'
                          'Максимальный ток - факт: {:5.3f} А, норма: 2,1-2,4 А, результат: {}<br>'
                          'Монотонность графика: {}</p>'
-                         '<p><br>Нажмите "ПРИНЯТЬ" для выхода в меню проверки</p>'
+                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения</p>'
                          ''.format(bu.shim_i1, res1, bu.shim_i2, res2, res3))
+
+
+class ShimRegOff(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.freq.setActive(True)
+        com.text.setText('<p>Установите на программаторе режим <b>"PE10"</b>. Для этого зажав кнопку 1 или 2 кнопками'
+                         ' 5 и 6 установите требуемое значение режима.</p>'
+                         '</p><p><br>Нажмите "ПРИНЯТЬ" для выхода в меню</p>'
+                         )
 
 
 class AiCheck(QtCore.QState):
@@ -721,7 +1099,7 @@ class AIFail(QtCore.QState):
         cur = com.args[com.idx]
         ch = cur['ch']
         val = cur['val']
-        bu.ai_note += f'Не удалось проверить канал {ch} для значения {val}\n'
+        bu.ai_note += f'Не удалось проверить канал {ch} для значения {val};'
         com.idx += 1
 
 
@@ -782,6 +1160,7 @@ class PrintResult(QtCore.QState):
     def onEntry(self, QEvent):
         print('protokol')
 
+
 class Ended(QtCore.QState):
     def onEntry(self, e):
         global com
@@ -798,9 +1177,3 @@ class Ended(QtCore.QState):
         com.frm_main.stl.setCurrentWidget(com.frm_main.mnu_bu)
         com.frm_main.connectmenu()
         # com.pchv.setActive(False)
-
-
-
-
-
-

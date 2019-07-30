@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_icpdas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exam_iu/exam_iu_dp.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_iu/exam_iu_dp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exam_iu/exam_iu_pe.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_iu/exam_iu_pe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opc/icpdas.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/icpdas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tstManual.py" beforeDir="false" afterPath="$PROJECT_DIR$/tstManual.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/menu/mnuBUCheck.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu/mnuBUCheck.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/menu/mnuSelectBU.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu/mnuSelectBU.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,11 +17,32 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6137">
-              <caret line="363" column="47" selection-start-line="363" selection-start-column="47" selection-end-line="363" selection-end-column="47" />
+            <state relative-caret-position="221">
+              <caret line="685" column="67" selection-start-line="685" selection-start-column="29" selection-end-line="685" selection-end-column="70" />
+              <folding>
+                <element signature="e#0#42#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mnuBUCheck.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/menu/mnuBUCheck.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="333">
+              <caret line="54" column="45" selection-start-line="54" selection-start-column="45" selection-end-line="54" selection-end-column="45" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mnuBU.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/menu/mnuBU.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="2" selection-start-line="2" selection-end-line="2" />
             </state>
           </provider>
         </entry>
@@ -31,8 +50,8 @@
       <file leaf-file-name="exam_iu_2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="183" column="26" selection-start-line="183" selection-start-column="26" selection-end-line="183" selection-end-column="26" />
+            <state relative-caret-position="12529">
+              <caret line="740" selection-start-line="740" selection-end-line="740" />
             </state>
           </provider>
         </entry>
@@ -40,7 +59,7 @@
       <file leaf-file-name="exam_iu_pe.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_pe.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="246">
+            <state relative-caret-position="2244">
               <caret line="132" column="40" selection-start-line="132" selection-start-column="8" selection-end-line="132" selection-end-column="42" />
             </state>
           </provider>
@@ -49,8 +68,8 @@
       <file leaf-file-name="exam_iu_dp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_dp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5312">
-              <caret line="95" column="27" lean-forward="true" selection-start-line="95" selection-start-column="27" selection-end-line="95" selection-end-column="27" />
+            <state relative-caret-position="1615">
+              <caret line="95" column="27" selection-start-line="95" selection-start-column="27" selection-end-line="95" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -58,8 +77,8 @@
       <file leaf-file-name="opc2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opc/opc2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5355">
-              <caret line="325" column="8" selection-start-line="325" selection-start-column="8" selection-end-line="325" selection-end-column="8" />
+            <state relative-caret-position="2329">
+              <caret line="147" selection-start-line="147" selection-end-line="147" />
             </state>
           </provider>
         </entry>
@@ -67,56 +86,11 @@
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="553">
-              <caret line="55" column="39" selection-start-line="55" selection-start-column="39" selection-end-line="55" selection-end-column="39" />
+            <state relative-caret-position="3001">
+              <caret line="236" selection-start-line="236" selection-end-line="236" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tstManual.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tstManual.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_icpdas.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/test_icpdas.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-246">
-              <caret line="12" selection-start-line="12" selection-end-line="12" />
-              <folding>
-                <element signature="e#0#29#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="icpdas.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="536">
-              <caret line="106" column="23" selection-start-line="106" selection-start-column="22" selection-end-line="106" selection-end-column="23" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="bitwise.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/opc/bitwise.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="11" selection-start-line="5" selection-end-line="12" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -138,6 +112,7 @@
       <find>self</find>
       <find>com</find>
       <find>com.val</find>
+      <find>T</find>
     </findStrings>
     <replaceStrings>
       <replace>pid_current</replace>
@@ -146,6 +121,7 @@
       <replace>com.check_bu</replace>
       <replace>com.frm_main</replace>
       <replace>com.args</replace>
+      <replace>Т</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -187,25 +163,25 @@
         <option value="$PROJECT_DIR$/exam_iu/frm_iu.py" />
         <option value="$PROJECT_DIR$/menu/mnuSelectIU.py" />
         <option value="$PROJECT_DIR$/opc/monad.py" />
-        <option value="$PROJECT_DIR$/opc/owenpchv.py" />
         <option value="$PROJECT_DIR$/opc/pid.py" />
         <option value="$PROJECT_DIR$/exam_iu/exam_iu.py" />
         <option value="$PROJECT_DIR$/menu/mnuBU.py" />
         <option value="$PROJECT_DIR$/exam_bu/form_iu.py" />
         <option value="$PROJECT_DIR$/menu/mainform.py" />
-        <option value="$PROJECT_DIR$/menu/mnuSelectBU.py" />
-        <option value="$PROJECT_DIR$/opc/opc2.py" />
         <option value="$PROJECT_DIR$/opc/ddsgenerator.py" />
         <option value="$PROJECT_DIR$/menu/auth.py" />
-        <option value="$PROJECT_DIR$/menu/mnuBUCheck.py" />
-        <option value="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" />
-        <option value="$PROJECT_DIR$/Main.py" />
-        <option value="$PROJECT_DIR$/exam_iu/exam_iu_2.py" />
         <option value="$PROJECT_DIR$/tstManual.py" />
         <option value="$PROJECT_DIR$/exam_iu/exam_iu_pe.py" />
         <option value="$PROJECT_DIR$/exam_iu/exam_iu_dp.py" />
-        <option value="$PROJECT_DIR$/opc/icpdas.py" />
         <option value="$PROJECT_DIR$/tests/test_icpdas.py" />
+        <option value="$PROJECT_DIR$/opc/opc2.py" />
+        <option value="$PROJECT_DIR$/opc/icpdas.py" />
+        <option value="$PROJECT_DIR$/opc/owenpchv.py" />
+        <option value="$PROJECT_DIR$/exam_iu/exam_iu_2.py" />
+        <option value="$PROJECT_DIR$/Main.py" />
+        <option value="$PROJECT_DIR$/menu/mnuSelectBU.py" />
+        <option value="$PROJECT_DIR$/menu/mnuBUCheck.py" />
+        <option value="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" />
       </list>
     </option>
   </component>
@@ -289,7 +265,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests in test_icpdas.py">
+  <component name="RunManager" selected="Python.Main">
     <configuration name="Main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="A3136P" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -384,8 +360,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests in test_icpdas.py" />
         <item itemvalue="Python.Main" />
+        <item itemvalue="Python tests.Unittests in test_icpdas.py" />
         <item itemvalue="Python.exam_bu_prog" />
         <item itemvalue="Python.frm_iu" />
         <item itemvalue="Python.frm_iu_dp" />
@@ -592,21 +568,26 @@
       <option name="project" value="LOCAL" />
       <updated>1563858367844</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="рефракторинг icpdas &#10;исправление ошибок сброса&#10;исправление настройки ПЭ">
+      <created>1563880375415</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1563880375415</updated>
+    </task>
+    <task id="LOCAL-00029" summary="при ошибке частотометра будет сброс порта&#10;при ошибке ПЧВ лпо или напряжение сброса не будет&#10;путь к протоколу теперь заполняется 0 где дата">
+      <created>1563884148234</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1563884148234</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_in_test_icpdas_py - 2019.07.23 at 13h 13m 30s.xml">
-      <configuration name="Unittests in test_icpdas.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_in_test_icpdas_py - 2019.07.23 at 13h 13m 47s.xml">
-      <configuration name="Unittests in test_icpdas.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_in_test_icpdas_py - 2019.07.23 at 13h 14m 37s.xml">
-      <configuration name="Unittests in test_icpdas.py" configurationId="tests" />
-    </history-entry>
     <history-entry file="Unittests_in_test_icpdas_py - 2019.07.23 at 13h 14m 50s.xml">
       <configuration name="Unittests in test_icpdas.py" configurationId="tests" />
     </history-entry>
@@ -626,6 +607,15 @@
       <configuration name="Unittests in test_icpdas.py" configurationId="tests" />
     </history-entry>
     <history-entry file="Unittests_in_test_icpdas_py - 2019.07.23 at 13h 27m 39s.xml">
+      <configuration name="Unittests in test_icpdas.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_icpdas_py - 2019.07.23 at 14h 28m 20s.xml">
+      <configuration name="Unittests in test_icpdas.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_icpdas_py - 2019.07.24 at 08h 51m 44s.xml">
+      <configuration name="Unittests in test_icpdas.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_icpdas_py - 2019.07.24 at 10h 23m 23s.xml">
       <configuration name="Unittests in test_icpdas.py" configurationId="tests" />
     </history-entry>
   </component>
@@ -691,8 +681,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="исправлена ошибка АО, pack data&#10;вместо быстрых классов пчв и М7084 изменены базовые&#10;Добавлена возможность регулировать ток BR3" />
-    <MESSAGE value="исправлена ошибка АО, pack data&#10;вместо быстрых классов пчв и М7084 изменены базовые&#10;Добавлена возможность регулировать ток BR3&#10;исправлены ошибки" />
     <MESSAGE value="убраны классы отдельных цифровых приборов&#10;создан универсальный класс ScaledDevice" />
     <MESSAGE value="добавлен второй пид-регулятор" />
     <MESSAGE value="переделана проверка ПЭ под машину состояний" />
@@ -716,7 +704,9 @@
     <MESSAGE value="добавлена подготовка к проверке БУ" />
     <MESSAGE value="Завершены проверки БУ:&#10;-проверка дискр. входов&#10;-проверка частотных входов&#10;-проверка ШИМ" />
     <MESSAGE value="переделана проверка иу&#10;добавлен график&#10;изиенен протокол иу" />
-    <option name="LAST_COMMIT_MESSAGE" value="переделана проверка иу&#10;добавлен график&#10;изиенен протокол иу" />
+    <MESSAGE value="рефракторинг icpdas &#10;исправление ошибок сброса&#10;исправление настройки ПЭ" />
+    <MESSAGE value="при ошибке частотометра будет сброс порта&#10;при ошибке ПЧВ лпо или напряжение сброса не будет&#10;путь к протоколу теперь заполняется 0 где дата" />
+    <option name="LAST_COMMIT_MESSAGE" value="при ошибке частотометра будет сброс порта&#10;при ошибке ПЧВ лпо или напряжение сброса не будет&#10;путь к протоколу теперь заполняется 0 где дата" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -727,22 +717,18 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="57" />
+      <option name="time" value="99" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="tests">
         <watch expression="self" />
       </configuration>
+      <configuration name="PythonConfigurationType">
+        <watch expression="bu.dev_type" />
+      </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtWidgets/QCheckBox.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="204" column="8" selection-start-line="204" selection-start-column="8" selection-end-line="204" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/opc/test_gen.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-331" />
@@ -844,13 +830,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/opc/owenpchv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="366">
-          <caret line="125" column="8" selection-start-line="125" selection-start-column="8" selection-end-line="125" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/menu/mnuIU.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -872,20 +851,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="372">
           <caret line="82" column="38" lean-forward="true" selection-start-line="82" selection-start-column="38" selection-end-line="82" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/menu/mnuSelectBU.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="782">
-          <caret line="48" column="8" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/menu/mnuBU.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>
@@ -938,13 +903,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/menu/mnuBUCheck.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="23" column="35" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/menu/template.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -980,30 +938,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6137">
-          <caret line="363" column="47" selection-start-line="363" selection-start-column="47" selection-end-line="363" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config_gen.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/opc2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5355">
-          <caret line="325" column="8" selection-start-line="325" selection-start-column="8" selection-end-line="325" selection-end-column="8" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tstManual.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="578">
           <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1014,53 +955,99 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_pe.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2244">
+          <caret line="132" column="40" selection-start-line="132" selection-start-column="8" selection-end-line="132" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="12529">
+          <caret line="740" selection-start-line="740" selection-end-line="740" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_icpdas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" selection-start-line="12" selection-end-line="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/python/Lib/site-packages/modbus_tk/modbus_rtu.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="89" column="29" selection-start-line="89" selection-start-column="8" selection-end-line="89" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/owenpchv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="110" column="37" selection-start-line="110" selection-start-column="37" selection-end-line="110" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_dp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1615">
+          <caret line="95" column="27" selection-start-line="95" selection-start-column="27" selection-end-line="95" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/opc2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2329">
+          <caret line="147" selection-start-line="147" selection-end-line="147" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="679">
+          <caret line="132" column="8" selection-start-line="132" selection-start-column="8" selection-end-line="132" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="553">
-          <caret line="55" column="39" selection-start-line="55" selection-start-column="39" selection-end-line="55" selection-end-column="39" />
+        <state relative-caret-position="3001">
+          <caret line="236" selection-start-line="236" selection-end-line="236" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_2.py">
+    <entry file="file://$PROJECT_DIR$/menu/mnuSelectBU.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="183" column="26" selection-start-line="183" selection-start-column="26" selection-end-line="183" selection-end-column="26" />
+        <state relative-caret-position="151">
+          <caret line="14" column="39" selection-start-line="14" selection-start-column="7" selection-end-line="30" selection-end-column="45" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_pe.py">
+    <entry file="file://$PROJECT_DIR$/menu/mnuBU.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="132" column="40" selection-start-line="132" selection-start-column="8" selection-end-line="132" selection-end-column="42" />
+        <state relative-caret-position="17">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_dp.py">
+    <entry file="file://$PROJECT_DIR$/menu/mnuBUCheck.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5312">
-          <caret line="95" column="27" lean-forward="true" selection-start-line="95" selection-start-column="27" selection-end-line="95" selection-end-column="27" />
+        <state relative-caret-position="333">
+          <caret line="54" column="45" selection-start-line="54" selection-start-column="45" selection-end-line="54" selection-end-column="45" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_icpdas.py">
+    <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-246">
-          <caret line="12" selection-start-line="12" selection-end-line="12" />
+        <state relative-caret-position="221">
+          <caret line="685" column="67" selection-start-line="685" selection-start-column="29" selection-end-line="685" selection-end-column="70" />
           <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="536">
-          <caret line="106" column="23" selection-start-line="106" selection-start-column="22" selection-end-line="106" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#0#42#0" expanded="true" />
           </folding>
         </state>
       </provider>

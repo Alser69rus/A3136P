@@ -12,7 +12,7 @@ class SelectBU(Menu):
         self.dev_type = ''
         self.form = form
 
-        self.btn_bu_3_06 = Btn('ЭРЧМ30T3-06')
+        self.btn_bu_3_06 = Btn('ЭРЧМ30Т3-06')
         self.btn_bu_3_07 = Btn('ЭРЧМ30Т3-07')
         self.btn_bu_3_04 = Btn('ЭРЧМ30Т3-04')
         self.btn_bu_3_08 = Btn('ЭРЧМ30Т3-08')

@@ -34,7 +34,7 @@ class CheckBU(Menu):
     def reset(self):
         super().reset()
         vis = []
-        if self.dev_type == 'ЭРЧМ30T3-06':
+        if self.dev_type == 'ЭРЧМ30Т3-06':
             # vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai,
             #        self.btn_di_r, self.btn_fi1_r, self.btn_power_r]
             vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
@@ -53,6 +53,14 @@ class CheckBU(Menu):
         elif self.dev_type == 'ЭРЧМ30Т3-10':
             vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-10-01':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т3-12':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т3-12-01':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т3-12-02':
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+        elif self.dev_type == 'ЭРЧМ30Т3-12-03':
             vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т4-01':
             vis = [self.btn_di, self.btn_fi, self.btn_power]

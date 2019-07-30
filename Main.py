@@ -216,7 +216,7 @@ class CheckBU(QtCore.QState):
     def init_exam_bu(self, btn):
         global com
         if btn == 'Подготовка':
-            com.exam_bu.setInitialState(com.exam_bu.prepare)
+            com.exam_bu.setInitialState(com.exam_bu.prepare1)
         elif btn == 'Проверка дискретных входов':
             com.exam_bu.setInitialState(com.exam_bu.di_check)
         elif btn == 'Проверка частотных входов':
