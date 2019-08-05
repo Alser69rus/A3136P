@@ -18,6 +18,7 @@ class BU:
 
     fi_res: str = ''
     fi_note: str = ''
+
     shim_res: str = ''
     shim_note: str = ''
     shim_graph: list = field(default_factory=list)
@@ -26,12 +27,16 @@ class BU:
     shim_res1: str = ''
     shim_res2: str = ''
     shim_res3: str = ''
+
     ai_res: str = ''
     ai_note: str = ''
     ai_i11: float = 0
     ai_i12: float = 0
     ai_i21: float = 0
     ai_i22: float = 0
+
+    ai_3_1: bool = False
+    ai_3_2: bool = False
 
 
 bu = BU('')
@@ -205,6 +210,14 @@ class Exam_bu(QtCore.QState):
         self.ai_res = AIRes(self)
         self.ai_done = AIDone(self)
 
+        self.ai_3_check = AI3Check(self)
+        self.ai_3_max = AI3Max(self)
+        self.ai_3_success_1 = AI3Success1(self)
+        self.ai_3_fail_1 = AI3Fail1(self)
+        self.ai_3_success_2 = AI3Success2(self)
+        self.ai_3_fail_2 = AI3Fail2(self)
+        self.ai_3_res = AI3Res(self)
+
         self.addTransition(self.opc.error, self.error)
         self.error.addTransition(self.finish)
         self.back_transition = self.addTransition(self.btnBack, self.finish)
@@ -214,7 +227,7 @@ class Exam_bu(QtCore.QState):
         self.prepare3.addTransition(self.btnOk, self.prepare4)
         self.prepare4.addTransition(self.btnOk, self.switch_work)
         self.switch_work.addTransition(self.btnOk, self.connect_bu_di)
-        self.switch_work.addTransition(self.success, self.connect_bu_di)
+        self.switch_work.addTransition(self.switch_work.success, self.connect_bu_di)
         self.connect_bu_di.addTransition(self.connect_bu)
         self.connect_bu.addTransition(self.finish)
 
@@ -235,7 +248,7 @@ class Exam_bu(QtCore.QState):
         self.di_success.addTransition(self.di_next)
         self.di_fail.addTransition(self.di_next)
         self.di_key_check.addTransition(self.btnOk, self.di_key_ok)
-        # self.di_key_ok.addTransition(self.di_key_ok.next, self.di_next)
+        self.di_key_ok.addTransition(self.di_key_ok.next, self.di_next)
         self.di_key_ok.addTransition(self.di_key_ok.done, self.di_select_second)
         self.di_select_second.addTransition(self.di_select_second.done, self.di_result)
         self.di_select_second.addTransition(self.di_select_second.di63, self.di_63)
@@ -279,6 +292,16 @@ class Exam_bu(QtCore.QState):
         self.ai_measure.addTransition(self.ai_measure.done, self.ai_res)
         self.ai_res.addTransition(self.ai_done)
         self.ai_done.addTransition(self.btnOk, self.finish)
+
+        self.ai_3_check.addTransition(self.btnOk, self.ai_3_success_1)
+        self.ai_3_check.addTransition(self.btnDown, self.ai_3_fail_1)
+        self.ai_3_success_1.addTransition(self.ai_3_max)
+        self.ai_3_fail_1.addTransition(self.ai_3_max)
+        self.ai_3_max.addTransition(self.btnOk, self.ai_3_success_2)
+        self.ai_3_max.addTransition(self.btnDown, self.ai_3_fail_2)
+        self.ai_3_success_2.addTransition(self.ai_3_res)
+        self.ai_3_fail_2.addTransition(self.ai_3_res)
+        self.ai_3_res.addTransition(self.btnOk, self.finish)
 
         self.print_result = PrintResult(self)
 
@@ -346,12 +369,14 @@ class Prepare4(QtCore.QState):
 
 
 class SwitchWork(QtCore.QState):
+    success = QtCore.pyqtSignal()
+
     def onEntry(self, QEvent):
-        pass_list = ['ЭРЧМ30T3-04']
-        if bu.dev_type in pass_list:
-            com.success.emit()
-        com.text.setText('<p>Переведите переключатель "РЕЗЕРВНАЯ РАБОТА" на БУ в положение '
-                         '"ОТКЛ."</p><p>Для продолжения нажмите "ПРИНЯТЬ"</p>')
+        if bu.dev_type == 'ЭРЧМ30Т3-06':
+            com.text.setText('<p>Переведите переключатель "РЕЗЕРВНАЯ РАБОТА" на БУ в положение '
+                             '"ОТКЛ."</p><p>Для продолжения нажмите "ПРИНЯТЬ"</p>')
+        else:
+            self.success.emit()
 
 
 class ConnectBUDI(QtCore.QState):
@@ -385,7 +410,7 @@ class ConnectBU(QtCore.QState):
 
         com.opc.connect_bu_power()
         lst = [com.frm_main.check_bu.btn_di, com.frm_main.check_bu.btn_fi, com.frm_main.check_bu.btn_power,
-               com.frm_main.check_bu.btn_ai]
+               com.frm_main.check_bu.btn_ai, com.frm_main.check_bu.btn_ai_3]
         for e in lst:
             e.setEnabled(True)
         com.frm_main.check_bu.btn_prepare.state = 'ok'
@@ -636,10 +661,13 @@ class DIKeyOk(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com, bu
-        bu.di_res[com.idx] = 1
+
         if com.idx == bu.di_max - 1:
+            if bu.di_res[com.idx] == 0:
+                bu.di_res[com.idx] = 1
             self.done.emit()
         else:
+            bu.di_res[com.idx] = 1
             self.next.emit()
 
 
@@ -731,43 +759,6 @@ class DIResult(QtCore.QState):
             res += '</p>'
         res += '<p>Нажмите "ПРИНЯТЬ" для продолжения</p>'
         com.text.setText(res)
-
-
-# class DIStep(QtCore.QState):
-#     done = QtCore.pyqtSignal()
-#
-#     def onEntry(self, QEvent):
-#         global com
-#         com.do1.setValue([0] * 16 + com.do1.value[16:])
-#         com.idx += 1
-#         if com.idx < len(com.args):
-#             com.do1.setValue(True, com.args[com.idx][0])
-#             com.text.setText('<p>На индикаторах программатора должны быть следующие показания:'
-#                              '<br><br><b><font size="+3">bn00<br>62{}</font></b></p><p>'
-#                              'Если это условие выполняется нажмите <font color="green">"ПРИНЯТЬ"</font">'
-#                              ',<br>Если условие не выполняется нажмите <font color="red">"НАЗАД"</font">.'
-#                              '</p>'.format(com.args[com.idx][1]))
-#         else:
-#             self.done.emit()
-
-
-# class DIFail(QtCore.QState):
-#     def onEntry(self, QEvent):
-#         global com
-#         bu.di_note += 'Неисправен дискретный вход {}.\n'.format(com.args[com.idx][2])
-#         bu.di_res = 'НЕ НОРМА'
-
-
-# class DIDone(QtCore.QState):
-#     def onEntry(self, QEvent):
-#         global com
-#         com.addTransition(com.back_transition)
-#         com.do1.setValue([0] * 20 + com.do1.value[20:])
-#         if not bu.di_res:
-#             bu.di_res = 'норма'
-#             com.frm_main.check_bu.btn_di.state = 'ok'
-#         else:
-#             com.frm_main.check_bu.btn_di.state = 'fail'
 
 
 class FICheck(QtCore.QState):
@@ -903,7 +894,7 @@ class ShimSaveI1(QtCore.QState):
         bu.shim_i1 = com.val
         if not (0.6 <= com.val <= 0.9):
             bu.shim_note += 'Ток в силовой цепи ПЭ при параметре "Р000" режима "РЕ80" факт:' \
-                            ' {:.3f} А, норма: 0,6-0,9 А.\n'.format(com.val)
+                            ' {:.3f} А, норма: 0,6-0,9 А.;'.format(com.val)
             bu.shim_res = 'НЕ НОРМА'
 
         com.val = 0
@@ -921,10 +912,10 @@ class ShimSaveI2(QtCore.QState):
         bu.shim_i2 = com.val
         if not (2.1 <= com.val <= 2.4):
             bu.shim_note += 'Ток в силовой цепи ПЭ при параметре "Р3F8" режима "РЕ80" факт: ' \
-                            '{} А, норма: 2,1-2,9 А.\n'.format(com.val)
+                            '{} А, норма: 2,1-2,9 А.;'.format(com.val)
             bu.shim_res = 'НЕ НОРМА'
 
-        com.text.setText('<p>Нажмите и удерживайте кнопку 6 программатора. Значения нижнего ряда '
+        com.text.setText('<p>Нажмите и удерживайте кнопку 6 "МЕНЬШЕ" программатора. Значения нижнего ряда '
                          'индикаторов будут уменьшаться.'
                          'При этом будет построен график тока силовой цепи.</p>'
                          )
@@ -1045,16 +1036,21 @@ class AiCheck(QtCore.QState):
         bu.ai_note = ''
         bu.ai_res1 = ''
         bu.ai_res2 = ''
+        bu.ai_i11 = 0
+        bu.ai_i12 = 0
+        bu.ai_i21 = 0
+        bu.ai_i22 = 0
         com.do2.setValue(1, 15)  # вкл пит. АО
         com.ao.setActive()
-        com.br3_zero = com.freq.value[2]
+        com.freq.setClear(2)
+        # com.br3_zero = com.freq.value[2]
         com.val = 0
         com.idx = 0
         com.args = [
-            {'v0': 10, 'ch': 'АВХ1 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '00.00', 'norm': '3.97-4.03'},
-            {'v0': 900, 'ch': 'АВХ1 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '02.50', 'norm': '19.97-20.03'},
-            {'v0': 10, 'ch': 'АВХ2 - ДДМ', 'reg': 'PEС0', 'row': 'верхнего', 'val': '00.00', 'norm': '3.97-4.03'},
-            {'v0': 900, 'ch': 'АВХ2 - ДДМ', 'reg': 'PEС0', 'row': 'верхнего', 'val': '16.00', 'norm': '19.97-20.03'}]
+            {'v0': 38, 'ch': 'АВХ1.1 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '0.080', 'norm': '4.45-4.55'},
+            {'v0': 954, 'ch': 'АВХ1.2 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '2.400', 'norm': '19.45-19.55'},
+            {'v0': 37, 'ch': 'АВХ2.1 - ДДМ', 'reg': 'PEС0', 'row': 'верхнего', 'val': '00.50', 'norm': '4.45-4.55'},
+            {'v0': 963, 'ch': 'АВХ2.2 - ДДМ', 'reg': 'PEС0', 'row': 'верхнего', 'val': '15.50', 'norm': '19.45-19.55'}]
 
 
 class AIMeasure(QtCore.QState):
@@ -1066,7 +1062,7 @@ class AIMeasure(QtCore.QState):
             return
         cur = com.args[com.idx]
         v0 = cur['v0']
-        br3 = com.freq.value[2] - com.br3_zero
+        br3 = com.freq.value[2]
         v = br3 + v0
         if v < 0:
             v = 0
@@ -1083,11 +1079,12 @@ class AIMeasure(QtCore.QState):
         val = cur['val']
         norm = cur['norm']
 
-        com.text.setText(f'<p>Для проверки канала {ch} установите на программаторе режим <b>"{reg}"</b>. Для этого '
-                         'удерживая кнопку 1 или кнопку 2  программатора кнопками 5 и 6 установите требуемое '
+        com.text.setText(f'<p>Для проверки канала {ch} установите на программаторе режим '
+                         f'<b><font color="blue">"{reg}"</font></b>. Для этого '
+                         'удерживая кнопку 1 или 2 программатора кнопками 5 и 6 установите требуемое '
                          'значение режима.</p>'
                          f'<p>После чего поворотом рукоятки валкодера BR3 установите значение {row} '
-                         f'ряда индикаторов равным <b>{val}</b>.</p>'
+                         f'ряда индикаторов в диапазоне <b><font color="green">{val}\u00b10.05</font></b>.</p>'
                          f'<p>Текущее значение тока: {i:5.2f} мА, норма: {norm} мА</p>'
                          '<p><br>Нажмите "ПРИНЯТЬ" для продолжения,<br>'
                          f'Если значение {val} установить не удалось нажмите "НАЗАД".</p>'
@@ -1096,11 +1093,20 @@ class AIMeasure(QtCore.QState):
 
 class AIFail(QtCore.QState):
     def onEntry(self, QEvent):
+        if com.idx == 0:
+            bu.ai_i11 = 0
+        elif com.idx == 1:
+            bu.ai_i12 = 0
+        elif com.idx == 2:
+            bu.ai_i21 = 0
+        elif com.idx == 3:
+            bu.ai_i22 = 0
         cur = com.args[com.idx]
         ch = cur['ch']
         val = cur['val']
         bu.ai_note += f'Не удалось проверить канал {ch} для значения {val};'
         com.idx += 1
+        com.freq.setClear(2)
 
 
 class AIOk(QtCore.QState):
@@ -1114,34 +1120,57 @@ class AIOk(QtCore.QState):
         elif com.idx == 3:
             bu.ai_i22 = com.val
         com.idx += 1
+        com.freq.setClear(2)
 
 
 class AIRes(QtCore.QState):
     def onEntry(self, QEvent):
         com.addTransition(com.back_transition)
-        com.val = ''
-        if not bu.ai_note.count('АВХ1'):
-            bu.ai_res = f'Канал АВХ1 - ДДН норма 4-20 мА, факт: {bu.ai_i11:5.2f}-{bu.ai_i12:5.2f} мА, результат: '
-            if 3.97 <= bu.ai_i11 <= 4.03 and 19.97 <= bu.ai_i12 <= 20.03:
-                bu.ai_res += 'норма'
-                com.val = '1'
-            else:
-                bu.ai_res += 'НЕ НОРМА'
-        else:
-            bu.ai_res = 'Канал АВХ1 - ДДН, выход за пределы диапазона.'
-        bu.ai_res += '\n'
+        table_header = '<table ' \
+                       'border="1" ' \
+                       'style="margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;" ' \
+                       'cellspacing="0" ' \
+                       'cellpadding="0">' \
+                       '<tr>' \
+                       '<td  width="200">Параметр</td>' \
+                       '<td  width="120">Норма, мА</td>' \
+                       '<td  width="120">Факт, мА</td>' \
+                       '<td  width="120">Результат</td>' \
+                       '</tr>'
 
-        if not bu.ai_note.count('АВХ2'):
-            bu.ai_res += f'Канал АВХ2 - ДДМ норма 4-20 мА, факт: {bu.ai_i21:5.2f}-{bu.ai_i22:5.2f} мА, результат: '
-            if 3.97 <= bu.ai_i21 <= 4.03 and 19.97 <= bu.ai_i22 <= 20.03:
-                bu.ai_res += 'норма'
-                com.val += '2'
-            else:
-                bu.ai_res += 'НЕ НОРМА'
-        else:
-            bu.ai_res = 'Канал АВХ2 - ДДМ, выход за пределы диапазона.'
+        table_bottom = '</table>'
 
-        if com.val == '12':
+        color_success = '#80ff80'
+        color_fail = '#ff8080'
+        val = [bu.ai_i11, bu.ai_i12, bu.ai_i21, bu.ai_i22]
+        norm = [4.5, 19.5, 4.5, 19.5]
+        check = [norm[i] - 0.05 <= val[i] <= norm[i] + 0.05 for i in range(4)]
+
+        row = [''] * 4
+        for i in range(4):
+            if check[i]:
+                res = 'НОРМА'
+                color = color_success
+            else:
+                res = 'НЕ НОРМА'
+                color = color_fail
+
+            row[i] = f'<tr>' \
+                     f'<td bgcolor="{color}">{com.args[i]["ch"]}</td>' \
+                     f'<td bgcolor="{color}">{com.args[i]["norm"]}</td>' \
+                     f'<td bgcolor="{color}">{val[i]:5.2f}</td>' \
+                     f'<td bgcolor="{color}">{res}</td>' \
+                     f'</tr>'
+
+        com.text.setText(f'<p>Резудьтаты испытания аналоговых входов АВХ1 - ДДН и АВХ2 - ДДМ</p>'
+                         f'<p>{table_header}'
+                         f'{row[0]}'
+                         f'{row[1]}'
+                         f'{row[2]}'
+                         f'{row[3]}'
+                         f'{table_bottom}</p>'
+                         f'<p><br>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+        if all(check):
             com.frm_main.check_bu.btn_ai.state = 'ok'
         else:
             com.frm_main.check_bu.btn_ai.state = 'fail'
@@ -1151,9 +1180,78 @@ class AIDone(QtCore.QState):
     def onEntry(self, QEvent):
         com.do2.setValue(0, 15)  # выкл пит. АО
         com.ao.setActive(False)
-        com.text.setText(f'<p>Результаты проверки аналоговых входов:</p>'
-                         f'<p>{bu.ai_res}</p>'
-                         '<br>Нажмите "ПРИНЯТЬ" для завершения проверки')
+
+
+class AI3Check(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.do2.setValue(True, 31)
+        bu.ai_3_1 = False
+        bu.ai_3_2 = False
+        com.frm_main.disconnectmenu()
+        com.frm_main.stl.setCurrentWidget(com.frm)
+        com.img.setPixmap(com.frm.img_prog2)
+        com.text.setText(f'<p>Для проверки канала АВХ3 - датчика температуры установите на программаторе режим '
+                         f'<b><font color="blue">"PECB"</font></b>. Для этого '
+                         'удерживая кнопку 1 или 2 программатора кнопками 5 и 6 установите требуемое '
+                         'значение режима.</p>'
+                         f'<p>Показания верхнего ряда индикаторов должны быть '
+                         f'<b><font color="green">0000</font></b></p>'
+                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения,<br>'
+                         f'Если значение отличается нажмите "ВНИЗ".</p>'
+                         )
+
+
+class AI3Fail1(QtCore.QState):
+    def onEntry(self, QEvent):
+        global bu
+        bu.ai_3_1 = False
+
+
+class AI3Success1(QtCore.QState):
+    def onEntry(self, QEvent):
+        global bu
+        bu.ai_3_1 = True
+
+
+class AI3Max(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.do2.setValue(False, 31)
+        com.do2.setValue(True, 29)
+        com.text.setText(f'<p>Проверка максимального значения. Показания верхнего '
+                         f'ряда индикаторов должны быть '
+                         f'<b><font color="green">не менее  0100</font></b></p>'
+                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения,<br>'
+                         f'Если значение отличается нажмите "ВНИЗ".</p>'
+                         )
+
+
+class AI3Fail2(QtCore.QState):
+    def onEntry(self, QEvent):
+        global bu
+        bu.ai_3_2 = False
+
+
+class AI3Success2(QtCore.QState):
+    def onEntry(self, QEvent):
+        global bu
+        bu.ai_3_2 = True
+
+
+class AI3Res(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.do2.setValue(False, 29)
+        com.do2.setValue(False, 31)
+        if bu.ai_3_1 and bu.ai_3_2:
+            com.text.setText('<p>Проверка завершена успешно.'
+                             '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.'
+                             )
+            com.frm_main.check_bu.btn_ai_3.state = 'ok'
+        else:
+            com.text.setText('<p>Канал измерения температуры масла неисправен.'
+                             '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.'
+                             )
+            com.frm_main.check_bu.btn_ai_3.state = 'fail'
 
 
 class PrintResult(QtCore.QState):

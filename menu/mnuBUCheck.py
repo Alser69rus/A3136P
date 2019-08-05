@@ -8,7 +8,7 @@ class CheckBU(Menu):
     btn_ok = QtCore.pyqtSignal(str)
 
     def __init__(self, parent=None):
-        super().__init__('Проверка блока управления', parent, col=2)
+        super().__init__('Проверка блока управления', parent, col=1)
         self.dev_type = ''
 
         self.btn_prepare = Btn('Подготовка')
@@ -16,6 +16,7 @@ class CheckBU(Menu):
         self.btn_fi = Btn('Проверка частотных входов')
         self.btn_power = Btn('Проверка ШИМ силового канала')
         self.btn_ai = Btn('Проверка аналоговых входов')
+        self.btn_ai_3 = Btn('Проверка канала измерения температуры')
 
         self.btn_di_r = Btn('Проверка резервного канала дискретных входов')
         self.btn_fi1_r = Btn('Проверка резервного канала ДЧД')
@@ -23,7 +24,7 @@ class CheckBU(Menu):
 
         self.btn_bu_back = Btn('Завершение испытаний')
 
-        lst = [self.btn_prepare, self.btn_di, self.btn_fi, self.btn_power, self.btn_ai,
+        lst = [self.btn_prepare, self.btn_di, self.btn_fi, self.btn_power, self.btn_ai, self.btn_ai_3,
                self.btn_di_r, self.btn_fi1_r, self.btn_power_r, self.btn_bu_back]
         self.set_lst(lst)
 
@@ -37,11 +38,11 @@ class CheckBU(Menu):
         if self.dev_type == 'ЭРЧМ30Т3-06':
             # vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai,
             #        self.btn_di_r, self.btn_fi1_r, self.btn_power_r]
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai, self.btn_ai_3]
         elif self.dev_type == 'ЭРЧМ30Т3-07':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai, self.btn_ai_3]
         elif self.dev_type == 'ЭРЧМ30Т3-04':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai, self.btn_ai_3]
         elif self.dev_type == 'ЭРЧМ30Т3-08':
             vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-08-01':

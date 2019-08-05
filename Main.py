@@ -9,6 +9,7 @@ import exam_iu.exam_iu_dp
 from exam_iu.exam_iu_2 import ExamIU2
 from exam_iu.exam_iu import ExamIU
 from exam_bu.exam_bu_prog import Exam_bu
+from exam_bu.bu_ai_tune import BuAiTune
 
 com = None
 
@@ -60,6 +61,8 @@ class Main(QtCore.QObject):
         self.check_bu = CheckBU(self.stm)
         self.exam_bu = Exam_bu(self.stm, self.opc, self.form)
         com.exam_bu = self.exam_bu
+        self.bu_ai_tune = BuAiTune(self.stm, self.opc, self.form)
+        self.bu_select_2 = ExamBUSelect(self.stm)
 
         self.state_close = QtCore.QFinalState(self.stm)
 
@@ -105,6 +108,12 @@ class Main(QtCore.QObject):
         self.check_bu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
         self.check_bu.addTransition(com.success, self.exam_bu)
         self.exam_bu.addTransition(self.exam_bu.finished, self.check_bu)
+
+        self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_ai_tune.clicked, self.bu_select_2)
+        self.bu_select_2.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
+        self.bu_select_2.addTransition(self.form.select_bu.btn_back, self.menu_bu)
+        self.bu_select_2.addTransition(self.form.select_bu.btn_ok, self.bu_ai_tune)
+        self.bu_ai_tune.addTransition(self.bu_ai_tune.finished, self.menu_bu)
 
         self.opc.started.connect(self.stm.start)
         self.opc.start()
@@ -225,6 +234,8 @@ class CheckBU(QtCore.QState):
             com.exam_bu.setInitialState(com.exam_bu.shim_check)
         elif btn == 'Проверка аналоговых входов':
             com.exam_bu.setInitialState(com.exam_bu.ai_check)
+        elif btn=='Проверка канала измерения температуры':
+            com.exam_bu.setInitialState(com.exam_bu.ai_3_check)
 
         com.success.emit()
 

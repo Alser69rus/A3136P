@@ -7,6 +7,7 @@ class MnuBU(Menu):
         super().__init__('Проверка блока управления', parent)
 
         self.btn_bu_exam = Btn('Проверка блока управления при помощи программатора')
+        self.btn_bu_ai_tune = Btn('Настройка АВХ1 - ДДН и АВХ2 - ДДМ')
         self.btn_bu_back = Btn('Назад')
 
-        self.set_lst([self.btn_bu_exam, self.btn_bu_back])
+        self.set_lst([self.btn_bu_exam,self.btn_bu_ai_tune, self.btn_bu_back])
