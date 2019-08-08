@@ -8,7 +8,7 @@ class CheckBU(Menu):
     btn_ok = QtCore.pyqtSignal(str)
 
     def __init__(self, parent=None):
-        super().__init__('Проверка блока управления', parent, col=1)
+        super().__init__('Проверка блока управления', parent, col=2)
         self.dev_type = ''
 
         self.btn_prepare = Btn('Подготовка')

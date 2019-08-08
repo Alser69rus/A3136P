@@ -37,6 +37,7 @@ class BU:
 
     ai_3_1: bool = False
     ai_3_2: bool = False
+    ai_3_3: bool = False
 
 
 bu = BU('')
@@ -211,11 +212,14 @@ class Exam_bu(QtCore.QState):
         self.ai_done = AIDone(self)
 
         self.ai_3_check = AI3Check(self)
+        self.ai_3_100 = AI3100(self)
         self.ai_3_max = AI3Max(self)
         self.ai_3_success_1 = AI3Success1(self)
         self.ai_3_fail_1 = AI3Fail1(self)
         self.ai_3_success_2 = AI3Success2(self)
         self.ai_3_fail_2 = AI3Fail2(self)
+        self.ai_3_success_3 = AI3Success3(self)
+        self.ai_3_fail_3 = AI3Fail3(self)
         self.ai_3_res = AI3Res(self)
 
         self.addTransition(self.opc.error, self.error)
@@ -295,12 +299,16 @@ class Exam_bu(QtCore.QState):
 
         self.ai_3_check.addTransition(self.btnOk, self.ai_3_success_1)
         self.ai_3_check.addTransition(self.btnDown, self.ai_3_fail_1)
-        self.ai_3_success_1.addTransition(self.ai_3_max)
-        self.ai_3_fail_1.addTransition(self.ai_3_max)
-        self.ai_3_max.addTransition(self.btnOk, self.ai_3_success_2)
-        self.ai_3_max.addTransition(self.btnDown, self.ai_3_fail_2)
-        self.ai_3_success_2.addTransition(self.ai_3_res)
-        self.ai_3_fail_2.addTransition(self.ai_3_res)
+        self.ai_3_success_1.addTransition(self.ai_3_100)
+        self.ai_3_fail_1.addTransition(self.ai_3_100)
+        self.ai_3_100.addTransition(self.btnOk, self.ai_3_success_2)
+        self.ai_3_100.addTransition(self.btnDown, self.ai_3_fail_2)
+        self.ai_3_success_2.addTransition(self.ai_3_max)
+        self.ai_3_fail_2.addTransition(self.ai_3_max)
+        self.ai_3_max.addTransition(self.btnOk, self.ai_3_success_3)
+        self.ai_3_max.addTransition(self.btnDown, self.ai_3_fail_3)
+        self.ai_3_success_3.addTransition(self.ai_3_res)
+        self.ai_3_fail_3.addTransition(self.ai_3_res)
         self.ai_3_res.addTransition(self.btnOk, self.finish)
 
         self.print_result = PrintResult(self)
@@ -1047,10 +1055,10 @@ class AiCheck(QtCore.QState):
         com.val = 0
         com.idx = 0
         com.args = [
-            {'v0': 38, 'ch': 'АВХ1.1 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '0.080', 'norm': '4.45-4.55'},
-            {'v0': 954, 'ch': 'АВХ1.2 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '2.400', 'norm': '19.45-19.55'},
-            {'v0': 37, 'ch': 'АВХ2.1 - ДДМ', 'reg': 'PEС0', 'row': 'верхнего', 'val': '00.50', 'norm': '4.45-4.55'},
-            {'v0': 963, 'ch': 'АВХ2.2 - ДДМ', 'reg': 'PEС0', 'row': 'верхнего', 'val': '15.50', 'norm': '19.45-19.55'}]
+            {'v0': 32, 'ch': 'АВХ1.1 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '0.080', 'norm': '4.45-4.55'},
+            {'v0': 960, 'ch': 'АВХ1.2 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '2.400', 'norm': '19.45-19.55'},
+            {'v0': 31, 'ch': 'АВХ2.1 - ДДМ', 'reg': 'PEС0', 'row': 'верхнего', 'val': '00.50', 'norm': '4.45-4.55'},
+            {'v0': 969, 'ch': 'АВХ2.2 - ДДМ', 'reg': 'PEС0', 'row': 'верхнего', 'val': '15.50', 'norm': '19.45-19.55'}]
 
 
 class AIMeasure(QtCore.QState):
@@ -1068,7 +1076,7 @@ class AIMeasure(QtCore.QState):
             v = 0
         if v > 1000:
             v = 1000
-        i = 3.9 + v * (20.1 - 3.9) / 1000
+        i = 4 + v * (20 - 4) / 1000
         com.val = i
 
         com.ao.setValue([v, v] + com.ao.value[2:])
@@ -1143,7 +1151,7 @@ class AIRes(QtCore.QState):
         color_success = '#80ff80'
         color_fail = '#ff8080'
         val = [bu.ai_i11, bu.ai_i12, bu.ai_i21, bu.ai_i22]
-        norm = [4.5, 19.5, 4.5, 19.5]
+        norm = [4.512, 19.36, 4.496, 19.504]
         check = [norm[i] - 0.05 <= val[i] <= norm[i] + 0.05 for i in range(4)]
 
         row = [''] * 4
@@ -1188,6 +1196,7 @@ class AI3Check(QtCore.QState):
         com.do2.setValue(True, 31)
         bu.ai_3_1 = False
         bu.ai_3_2 = False
+        bu.ai_3_3 = False
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)
@@ -1214,13 +1223,13 @@ class AI3Success1(QtCore.QState):
         bu.ai_3_1 = True
 
 
-class AI3Max(QtCore.QState):
+class AI3100(QtCore.QState):
     def onEntry(self, QEvent):
         com.do2.setValue(False, 31)
-        com.do2.setValue(True, 29)
-        com.text.setText(f'<p>Проверка максимального значения. Показания верхнего '
-                         f'ряда индикаторов должны быть '
-                         f'<b><font color="green">не менее  0100</font></b></p>'
+        com.do2.setValue(True, 30)
+        com.text.setText(f'<p>Проверка среднего значения. Показания верхнего '
+                         f'ряда индикаторов должны быть в диапазоне '
+                         f'<b><font color="green">0095 - 0105</font></b>.</p>'
                          '<p><br>Нажмите "ПРИНЯТЬ" для продолжения,<br>'
                          f'Если значение отличается нажмите "ВНИЗ".</p>'
                          )
@@ -1238,17 +1247,43 @@ class AI3Success2(QtCore.QState):
         bu.ai_3_2 = True
 
 
+class AI3Max(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.do2.setValue(False, 30)
+        com.do2.setValue(True, 29)
+        com.text.setText(f'<p>Проверка максимального значения. Показания верхнего '
+                         f'ряда индикаторов должны быть '
+                         f'<b><font color="green">не менее  0100</font></b></p>'
+                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения,<br>'
+                         f'Если значение отличается нажмите "ВНИЗ".</p>'
+                         )
+
+
+class AI3Fail3(QtCore.QState):
+    def onEntry(self, QEvent):
+        global bu
+        bu.ai_3_3 = False
+
+
+class AI3Success3(QtCore.QState):
+    def onEntry(self, QEvent):
+        global bu
+        bu.ai_3_3 = True
+
+
 class AI3Res(QtCore.QState):
     def onEntry(self, QEvent):
         com.do2.setValue(False, 29)
+        com.do2.setValue(False, 30)
         com.do2.setValue(False, 31)
-        if bu.ai_3_1 and bu.ai_3_2:
-            com.text.setText('<p>Проверка завершена успешно.'
+        if bu.ai_3_1 and bu.ai_3_2 and bu.ai_3_3:
+            com.text.setText('<p>Проверка завершена <b><font color="green">успешно</font></b>.'
                              '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.'
                              )
             com.frm_main.check_bu.btn_ai_3.state = 'ok'
         else:
-            com.text.setText('<p>Канал измерения температуры масла неисправен.'
+            com.text.setText('<p>Канал измерения температуры масла '
+                             '<b><font color="red">неисправен или требует настройки</font></b>.'
                              '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.'
                              )
             com.frm_main.check_bu.btn_ai_3.state = 'fail'

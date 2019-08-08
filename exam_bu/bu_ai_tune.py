@@ -6,7 +6,7 @@ com = None
 
 
 def i_to_v(i: float) -> int:
-    return round((i - 3.9) * 1000 / (20.1 - 3.9))
+    return round((i - 4) * 1000 / (20 - 4))
 
 
 @dataclass
@@ -150,6 +150,7 @@ class Finish(QtCore.QFinalState):
         com.freq.setActive(True)
         com.frm_main.stl.setCurrentWidget(com.frm_main.check_bu)
         com.opc.connect_bu_di_power(False)
+        com.opc.connect_bu_power(False)
         com.opc.do1.setValue([0] * 32)
         com.opc.do2.setValue([0] * 32)
         com.ao.setActive(False)
@@ -302,3 +303,68 @@ class Save(QtCore.QState):
                          '<p>После чего кратковременно нажать и отпустить кнопку 6</p>'
                          '<p>Дождавшись записи значений в память блока управления через 2-3 с, отпустите кнопку 3</p>'
                          '<p><br>Нажмите "ПРИНЯТЬ" для продолжения</p>')
+
+
+class BuAi3Tune(QState):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        global com
+        self.error = Error(self)
+        self.finish = Finish(self)
+        self.prepare1 = Prepare1(self)
+        self.prepare2 = Prepare2(self)
+        self.prepare3 = Prepare3(self)
+        self.prepare4 = Prepare4(self)
+        self.switch_work = SwitchWork(self)
+        self.connect_bu_di = ConnectBUDI(self)
+        self.connect_bu = ConnectBU(self)
+
+        self.addTransition(com.opc.error, self.error)
+        self.error.addTransition(self.finish)
+        self.back_transition = self.addTransition(com.btnBack, self.finish)
+
+        self.prepare1.addTransition(com.btnOk, self.prepare2)
+        self.prepare2.addTransition(com.btnOk, self.prepare3)
+        self.prepare3.addTransition(com.btnOk, self.prepare4)
+
+        self.ai_3_min = AI3Min(self)
+        self.ai_3_max = AI3Max(self)
+        self.ai_3_save = Save(self)
+
+        self.prepare4.addTransition(com.btnOk, self.ai_3_min)
+        self.ai_3_min.addTransition(com.btnOk, self.ai_3_max)
+        self.ai_3_max.addTransition(com.btnOk, self.ai_3_save)
+        self.ai_3_save.addTransition(com.btnOk, self.finish)
+
+        self.setInitialState(self.prepare1)
+
+
+class AI3Min(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.opc.connect_bu_power()
+        com.opc.connect_bu_di_power(True, 110)
+        com.do2.setValue(True, 31)
+        com.img.setPixmap(com.frm.img_prog2)
+        com.text.setText(f'<p>Для настройки канала АВХ3 - датчика температуры установите на программаторе режим '
+                         f'<b><font color="blue">"PEC8"</font></b>. Для этого '
+                         'удерживая кнопку 1 или 2 программатора кнопками 5 и 6 установите требуемое '
+                         'значение режима.</p>'
+                         f'<p>Кнопками 5 и 6 установите показания нижнего ряда индикаторов равным '
+                         f'<b><font color="green">0000</font></b>. После чего нажмите кнопку 4.</p>'
+                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.</p>'
+                         )
+
+
+class AI3Max(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.do2.setValue(False, 31)
+        com.do2.setValue(True, 30)
+        com.text.setText(f'<p>Установите на программаторе режим '
+                         f'<b><font color="blue">"PEC9"</font></b>. Для этого '
+                         'удерживая кнопку 1 или 2 программатора кнопками 5 и 6 установите требуемое '
+                         'значение режима.</p>'
+                         f'<p>Кнопками 5 и 6 установите показания нижнего ряда индикаторов равным '
+                         f'<b><font color="green">0100</font></b>. После чего нажмите кнопку 4.</p>'
+                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.</p>'
+                         )
