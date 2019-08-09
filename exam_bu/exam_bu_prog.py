@@ -261,11 +261,11 @@ class Exam_bu(QtCore.QState):
         self.di_result.addTransition(self.btnOk, self.finish)
 
         self.fi_check.addTransition(self.btnOk, self.fi_config)
-        self.fi_check.addTransition(self.btnBack, self.fi_param_sav)
+        self.fi_check.addTransition(self.btnDown, self.fi_param_sav)
         self.fi_param_sav.addTransition(self.btnOk, self.fi_config)
         self.fi_config.addTransition(self.fi_measure)
         self.fi_measure.addTransition(self.btnOk, self.fi_measure)
-        self.fi_measure.addTransition(self.btnBack, self.fi_fail)
+        self.fi_measure.addTransition(self.btnDown, self.fi_fail)
         self.fi_fail.addTransition(self.fi_measure)
         self.fi_measure.addTransition(self.fi_measure.done, self.fi_done)
         self.fi_done.addTransition(self.finish)
@@ -282,14 +282,14 @@ class Exam_bu(QtCore.QState):
         self.shim_graph.addTransition(self.pa3.updated, self.shim_graph)
         self.shim_graph.addTransition(self.shim_graph.done, self.shim_graph_finish)
         self.shim_graph_finish.addTransition(self.btnOk, self.shim_finish)
-        self.shim_graph_finish.addTransition(self.btnBack, self.shim_fail)
+        self.shim_graph_finish.addTransition(self.btnDown, self.shim_fail)
         self.shim_fail.addTransition(self.shim_finish)
         self.shim_finish.addTransition(self.btnOk, self.shim_reg_off)
         self.shim_reg_off.addTransition(self.btnOk, self.finish)
 
         self.ai_check.addTransition(self.ai_measure)
         self.ai_measure.addTransition(server.ao.updated, self.ai_measure)
-        self.ai_measure.addTransition(self.btnBack, self.ai_fail)
+        self.ai_measure.addTransition(self.btnDown, self.ai_fail)
         self.ai_measure.addTransition(self.btnOk, self.ai_ok)
         self.ai_fail.addTransition(self.ai_measure)
         self.ai_ok.addTransition(self.ai_measure)
@@ -434,7 +434,8 @@ class DICheck(QtCore.QState):
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)
-        com.text.setText('<p>Установите режим <b>"РЕ00"</b> на программаторе. Для этого удерживайте нажатой кнопку '
+        com.text.setText('<p>Установите режим <b><font color="blue">"РЕ00"</font></b> на программаторе. '
+                         'Для этого удерживайте нажатой кнопку '
                          '1  программатора, а затем кнопками 5 и 6 установите на верхнем индикаторе номер '
                          'режима. После чего отпустите кнопку 1 и нажмите кнопку программатора 2. Кнопками 5 и 6 '
                          'установите номер подрежима.</p>'
@@ -469,7 +470,7 @@ class DI62(QtCore.QState):
         com.text.setText('<p>На нижнем индикаторе необходимо установить адресс 62. '
                          'Для этого кнопкой 4 выберать разряд, а кнопками 5 и 6 задайть значение. На текущий '
                          'разряд указывает точка.</p><p>После всех манипуляций на индикаторах программатора должно '
-                         'быть:<br><br><b><font size="+1">bn00<br>6200</font></b></p><p><br>Нажмите '
+                         'быть:<br><br><b><font size="+1" color="green">bn00<br>6200</font></b></p><p><br>Нажмите '
                          '"ПРИНЯТЬ" для продолжения</p>')
 
 
@@ -478,7 +479,7 @@ class DI63(QtCore.QState):
         com.text.setText('<p>На нижнем индикаторе необходимо установить адресс 63. '
                          'Для этого кнопкой 4 выберать разряд, а кнопками 5 и 6 задайть значение. На текущий '
                          'разряд указывает точка.</p><p>После всех манипуляций на индикаторах программатора должно '
-                         'быть:<br><br><b><font size="+1">bn00<br>6300</font></b></p><p><br>Нажмите '
+                         'быть:<br><br><b><font size="+1" color="green">bn00<br>6300</font></b></p><p><br>Нажмите '
                          '"ПРИНЯТЬ" для продолжения</p>')
 
 
@@ -487,7 +488,7 @@ class DI66(QtCore.QState):
         com.text.setText('<p>На нижнем индикаторе необходимо установить адресс 66. '
                          'Для этого кнопкой 4 выберать разряд, а кнопками 5 и 6 задайть значение. На текущий '
                          'разряд указывает точка.</p><p>После всех манипуляций на индикаторах программатора должно '
-                         'быть:<br><br><b><font size="+1">bn00<br>6600</font></b></p><p><br>Нажмите '
+                         'быть:<br><br><b><font size="+1" color="green">bn00<br>6600</font></b></p><p><br>Нажмите '
                          '"ПРИНЯТЬ" для продолжения</p>')
 
 
@@ -777,13 +778,14 @@ class FICheck(QtCore.QState):
         com.img.setPixmap(com.frm.img_prog2)
         bu.fi_res = ''
         bu.fi_note = ''
-        com.removeTransition(com.back_transition)
-        com.text.setText('<p>Установите на программаторе режим <b>"РЕА0"</b>. Для этого зажмите кнопку 1 для выбора '
+        # com.removeTransition(com.back_transition)
+        com.text.setText('<p>Установите на программаторе режим <b><font color="blue">"РЕА0"</font></b>. '
+                         'Для этого зажмите кнопку 1 для выбора '
                          'режима или кнопку 2 для выбора подрежима и кнопками 5 и 6 установите значение А0. На '
                          'нижнем ряде индикаторов программатора должно быть: '
-                         '<b>0124</b></p><p></p>'
-                         'Если это условие выполняется нажмите <font color="green">"ПРИНЯТЬ"</font">'
-                         ',<br>Если условие не выполняется нажмите <font color="red">"НАЗАД"</font">.</p>'
+                         '<b><font color="green">0124</font></b></p><p></p>'
+                         'Если это условие выполняется нажмите <font color="green">"ПРИНЯТЬ"</font>,'
+                         '<br>Если условие не выполняется нажмите <font color="red">"ВНИЗ"</font>.</p>'
                          )
 
 
@@ -791,8 +793,9 @@ class FiParamSave(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.text.setText('<p>Кнопками 5 и 6 установите на нижнем ряде индикаторов значение '
-                         '<b>0124</b>.</p><p>После чего удерживая кнопку 1 или кнопку 2 '
-                         'кнопками 5 и 6 установите  режим "F0". Затем нажмите и удерживайте кнопку 3 и '
+                         '<b><font color="green">0124</font></b>.</p><p>После чего удерживая кнопку 1 или кнопку 2 '
+                         'кнопками 5 и 6 установите  режим <b><font color="blue">"PEF0"</font></b>. '
+                         'Затем нажмите и удерживайте кнопку 3 и '
                          'кратковременно нажмите кнопку 6. Через несколько секунд, после изменения показаний '
                          'индикаторов программатора, отпустите кнопку 3.</p><p><br>Нажмите '
                          '"ПРИНЯТЬ" для продолжения</p>'
@@ -821,11 +824,11 @@ class FiMeasure(QtCore.QState):
             args = com.args[com.idx]
             com.gen.setValue(args[4])
             com.text.setText('<p>Зажав кнопку программатора 1 или 2 установите при помощи кнопок 5 и 6 '
-                             '<b>режим "{}"</b>.</p>'
+                             'режим <b><font color="blue">"{}"</font></b>.</p>'
                              '<p>Показания <b>{} ряда</b> индикаторов должны находится в пределах '
-                             '<b>{}</b></p>'
-                             '<p>Если это условие выполняется нажмите <font color="green">"ПРИНЯТЬ"</font">,'
-                             '<br>Если условие не выполняется нажмите <font color="red">"НАЗАД"</font">.</p>'
+                             '<b><font color="green">{}</font></b></p>'
+                             '<p>Если это условие выполняется нажмите <font color="green">"ПРИНЯТЬ"</font>,'
+                             '<br>Если условие не выполняется нажмите <font color="red">"ВНИЗ"</font>.</p>'
                              ''.format(*args))
         else:
             self.done.emit()
@@ -842,7 +845,7 @@ class FiFail(QtCore.QState):
 class FiDone(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.addTransition(com.back_transition)
+        # com.addTransition(com.back_transition)
         com.do2.setValue(com.do2.value[:12] + [0, 0, 0] + com.do2.value[15:])
         com.gen.setValue([0, 0, 0])
         if not bu.fi_res:
@@ -869,9 +872,10 @@ class ShimCheck(QtCore.QState):
         bu.shim_res2 = ''
         bu.shim_res3 = ''
         com.pa3.setActive()
-        com.text.setText('<p>Установите на программаторе режим <b>"PE80"</b>. Для этого зажав кнопку 1 или 2 кнопками'
+        com.text.setText('<p>Установите на программаторе режим <b><font color="blue">"PE80"</font></b>. '
+                         'Для этого зажав кнопку 1 или 2 кнопками'
                          ' 5 и 6 установите требуемое значение режима.</p>'
-                         '<p>Нижний ряд индикаторов должен показывать <b>"P000"</b>'
+                         '<p>Нижний ряд индикаторов должен показывать <b><font color="green">"P000"</font></b>'
                          '</p><p><br>Нажмите "ПРИНЯТЬ" для продолжения</p>'
                          )
 
@@ -963,14 +967,14 @@ class ShimGraph(QtCore.QState):
 
 class ShimGraphFinish(QtCore.QState):
     def onEntry(self, QEvent):
-        com.removeTransition(com.back_transition)
+        # com.removeTransition(com.back_transition)
         bu.shim_graph = com.args[:]
 
         com.text.setText(
             '<p>График должен монотонно уменьшаться. Не должно быть "пиков", '
             '"провалов" и "плато" на всем протяжении графика.</p>'
             '<p>Если это условие выполняется нажмите <font color="green">"ПРИНЯТЬ"</font>,'
-            '<br>Если условие не выполняется нажмите <font color="red">"НАЗАД"</font>.</p>')
+            '<br>Если условие не выполняется нажмите <font color="red">"ВНИЗ"</font>.</p>')
 
 
 class ShimFail(QtCore.QState):
@@ -984,7 +988,7 @@ class ShimFinish(QtCore.QState):
         global com
 
         com.img.setMinimumHeight(0)
-        com.addTransition(com.back_transition)
+        # com.addTransition(com.back_transition)
         com.do2.setValue(0, 6)  # PA3
         com.opc.connect_bu_di_power(False)
         com.do1.setValue(0, 8)  # work/stop
@@ -1028,7 +1032,8 @@ class ShimFinish(QtCore.QState):
 class ShimRegOff(QtCore.QState):
     def onEntry(self, QEvent):
         com.freq.setActive(True)
-        com.text.setText('<p>Установите на программаторе режим <b>"PE10"</b>. Для этого зажав кнопку 1 или 2 кнопками'
+        com.text.setText('<p>Установите на программаторе режим <b><font color="blue">"PE10"</font></b>. '
+                         'Для этого зажав кнопку 1 или 2 кнопками'
                          ' 5 и 6 установите требуемое значение режима.</p>'
                          '</p><p><br>Нажмите "ПРИНЯТЬ" для выхода в меню</p>'
                          )
@@ -1039,7 +1044,7 @@ class AiCheck(QtCore.QState):
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)
-        com.removeTransition(com.back_transition)
+        # com.removeTransition(com.back_transition)
         bu.ai_res = ''
         bu.ai_note = ''
         bu.ai_res1 = ''
@@ -1094,8 +1099,8 @@ class AIMeasure(QtCore.QState):
                          f'<p>После чего поворотом рукоятки валкодера BR3 установите значение {row} '
                          f'ряда индикаторов в диапазоне <b><font color="green">{val}\u00b10.05</font></b>.</p>'
                          f'<p>Текущее значение тока: {i:5.2f} мА, норма: {norm} мА</p>'
-                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения,<br>'
-                         f'Если значение {val} установить не удалось нажмите "НАЗАД".</p>'
+                         '<p><br>Нажмите <font color="green">"ПРИНЯТЬ"</font> для продолжения,<br>'
+                         f'Если значение {val} установить не удалось нажмите <font color="red">"ВНИЗ"</font>.</p>'
                          )
 
 
@@ -1133,7 +1138,7 @@ class AIOk(QtCore.QState):
 
 class AIRes(QtCore.QState):
     def onEntry(self, QEvent):
-        com.addTransition(com.back_transition)
+        # com.addTransition(com.back_transition)
         table_header = '<table ' \
                        'border="1" ' \
                        'style="margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;" ' \
@@ -1206,8 +1211,8 @@ class AI3Check(QtCore.QState):
                          'значение режима.</p>'
                          f'<p>Показания верхнего ряда индикаторов должны быть '
                          f'<b><font color="green">0000</font></b></p>'
-                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения,<br>'
-                         f'Если значение отличается нажмите "ВНИЗ".</p>'
+                         '<p><br>Нажмите <font color="green">"ПРИНЯТЬ"</font> для продолжения,<br>'
+                         f'Если значение отличается нажмите <font color="red">"ВНИЗ"</font>.</p>'
                          )
 
 
@@ -1230,8 +1235,8 @@ class AI3100(QtCore.QState):
         com.text.setText(f'<p>Проверка среднего значения. Показания верхнего '
                          f'ряда индикаторов должны быть в диапазоне '
                          f'<b><font color="green">0095 - 0105</font></b>.</p>'
-                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения,<br>'
-                         f'Если значение отличается нажмите "ВНИЗ".</p>'
+                         '<p><br>Нажмите <font color="green">"ПРИНЯТЬ"</font> для продолжения,<br>'
+                         f'Если значение отличается нажмите <font color="red">"ВНИЗ"</font>.</p>'
                          )
 
 
@@ -1254,8 +1259,8 @@ class AI3Max(QtCore.QState):
         com.text.setText(f'<p>Проверка максимального значения. Показания верхнего '
                          f'ряда индикаторов должны быть '
                          f'<b><font color="green">не менее  0100</font></b></p>'
-                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения,<br>'
-                         f'Если значение отличается нажмите "ВНИЗ".</p>'
+                         '<p><br>Нажмите <font color="green">"ПРИНЯТЬ"</font> для продолжения,<br>'
+                         f'Если значение отличается нажмите <font color="red">"ВНИЗ"</font>.</p>'
                          )
 
 
@@ -1280,13 +1285,13 @@ class AI3Res(QtCore.QState):
             com.text.setText('<p>Проверка завершена <b><font color="green">успешно</font></b>.'
                              '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.'
                              )
-            com.frm_main.check_bu.btn_ai_3.state = 'ok'
+            com.frm_main.check_bu.btn_rt.state = 'ok'
         else:
             com.text.setText('<p>Канал измерения температуры масла '
                              '<b><font color="red">неисправен или требует настройки</font></b>.'
                              '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.'
                              )
-            com.frm_main.check_bu.btn_ai_3.state = 'fail'
+            com.frm_main.check_bu.btn_rt.state = 'fail'
 
 
 class PrintResult(QtCore.QState):

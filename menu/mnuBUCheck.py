@@ -31,8 +31,9 @@ class CheckBU(Menu):
         self.btn_bu_back.clicked.connect(self.btn_back)
 
     def reset(self):
-        super().reset()
         self.set_btn_visible()
+        super().reset()
+
 
     def set_btn_visible(self):
         vis = []
