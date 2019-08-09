@@ -3,7 +3,7 @@
 com = None
 
 
-class ExamIUPE(QtCore.QState):
+class ExamIuPe(QtCore.QState):
     """Установка поворотного электромагнита на исполнительное устройство"""
     success = QtCore.pyqtSignal()
     fail = QtCore.pyqtSignal()

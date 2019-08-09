@@ -9,7 +9,7 @@ import exam_iu.exam_iu_dp
 from exam_iu.exam_iu_2 import ExamIU2
 from exam_iu.exam_iu import ExamIU
 from exam_bu.exam_bu_prog import Exam_bu
-from exam_bu.bu_ai_tune import BuAiTune, BuAi3Tune
+from exam_bu.bu_ai_tune import BuAiTune, BuRtTune
 
 com = None
 
@@ -34,91 +34,95 @@ class Main(QtCore.QObject):
 
         self.form = menu.mainform.MainForm(self.opc)
         com.form = self.form
-        # com.form.setCursor(QtCore.Qt.BlankCursor)
         self.form.closeEvent = self.closeEvent
         self.form.mnu_main.btnQuit.clicked.connect(self.form.close)
         self.form.showMaximized()
 
         self.stm = QtCore.QStateMachine()
 
-        self.state_init = StateInit(self.stm)
-        self.menu = QState(self.stm)
-        self.menu_main = MenuMain(self.menu)
-        self.menu_iu = MenuIU(self.menu)
-        self.exam_iu_pe_select = ExamIUPESelect(self.stm)
-        self.exam_iu_pe = exam_iu.exam_iu_pe.ExamIUPE(self.stm, self.opc, self.form)
-        self.exam_iu_dp_select = ExamIUPESelect(self.stm)
-        self.exam_iu_dp = exam_iu.exam_iu_dp.ExamIUDP(self.stm, self.opc, self.form)
-        self.exam_iu_auth = ExamIUAuth(self.stm)
-        self.exam_iu_select = ExamIUSelect(self.stm)
+        self.init_menu = InitMenu(self.stm)
+        self.menu_main = MenuMain(self.stm)
+        self.menu_iu = MenuIU(self.stm)
+        self.iu_pe_select = IuPeSelect(self.stm)
+        self.iu_pe = exam_iu.exam_iu_pe.ExamIuPe(self.stm, self.opc, self.form)
+        self.iu_dp_select = IuPeSelect(self.stm)
+        self.iu_dp = exam_iu.exam_iu_dp.ExamIUDP(self.stm, self.opc, self.form)
+        self.iu_auth = IuAuth(self.stm)
+        self.iu_select = IuSelect(self.stm)
         self.exam_iu_old = ExamIU(self.stm, self.opc, self.form)
         self.exam_iu = ExamIU2(self.stm, self.opc, self.form)
 
         self.menu_bu = MenuBU(self.stm)
-        self.exam_bu_auth = ExamBUAuth(self.stm)
-        self.exam_bu_select = ExamBUSelect(self.stm)
-        self.prepare_check_bu = PrepareCheckBU(self.stm)
+        self.bu_auth = BuAuth(self.stm)
+        self.bu_select = BuSelect(self.stm)
+        self.reset_check_bu = ResetCheckBu(self.stm)
         self.check_bu = CheckBU(self.stm)
         self.exam_bu = Exam_bu(self.stm, self.opc, self.form)
         com.exam_bu = self.exam_bu
         self.bu_ai_tune = BuAiTune(self.stm, self.opc, self.form)
-        self.bu_select_2 = ExamBUSelect(self.stm)
-        self.bu_ai_3_tune = BuAi3Tune(self.stm)
+        self.bu_select_2 = BuSelect(self.stm)
+        self.bu_rt_tune = BuRtTune(self.stm)
+
+        self.bu_prepare = BuPrepare(self.stm)
+        self.bu_di = BuDi(self.stm)
+        self.bu_ai = BuAi(self.stm)
+        self.bu_fi = BuFi(self.stm)
+        self.bu_rt = BuRt(self.stm)
+        self.bu_shim = BuShim(self.stm)
 
         self.state_close = QtCore.QFinalState(self.stm)
 
-        self.stm.setInitialState(self.state_init)
-        self.menu.setInitialState(self.menu_main)
+        self.stm.setInitialState(self.init_menu)
 
-        self.state_init.addTransition(com.success, self.menu)
-        self.menu_main.addTransition(self.form.mnu_main.btnIU.clicked, self.menu_iu)
-        self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_back.clicked, self.menu_main)
+        self.init_menu.addTransition(self.init_menu.success, self.menu_main)
+        self.menu_main.addTransition(self.form.mnu_main.btnIU.clicked, self.iu_auth)
+        self.menu_main.addTransition(self.form.mnu_main.btnIUTune.clicked, self.menu_iu)
         self.menu_iu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
-        self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_PE_tune.clicked, self.exam_iu_pe_select)
-        self.exam_iu_pe_select.addTransition(self.form.select_iu.btn_ok, self.exam_iu_pe)
-        self.exam_iu_pe_select.addTransition(self.form.select_iu.btn_back, self.menu_iu)
-        self.exam_iu_pe_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
-        self.menu_iu.addTransition(self.form.mnu_iu.btn_IU_DP_tune.clicked, self.exam_iu_dp_select)
-        self.exam_iu_dp_select.addTransition(self.form.select_iu.btn_ok, self.exam_iu_dp)
-        self.exam_iu_dp_select.addTransition(self.form.select_iu.btn_back, self.menu_iu)
-        self.exam_iu_dp_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
-        self.exam_iu_pe.addTransition(self.exam_iu_pe.finished, self.menu_iu)
-        self.exam_iu_dp.addTransition(self.exam_iu_dp.finished, self.menu_iu)
-        self.menu_iu.addTransition(self.form.mnu_iu.btn_iu_exam_2.clicked, self.exam_iu_auth)
-        self.exam_iu_auth.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
-        self.exam_iu_auth.addTransition(self.form.auth.btn_back, self.menu_iu)
-        self.exam_iu_auth.addTransition(self.form.auth.btn_ok, self.exam_iu_select)
-        self.exam_iu_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
-        self.exam_iu_select.addTransition(self.form.select_iu.btn_back, self.menu_iu)
-        self.exam_iu_select.addTransition(self.form.select_iu.btn_ok, self.exam_iu)
-        self.exam_iu.addTransition(self.exam_iu.finished, self.menu_iu)
+        self.menu_iu.addTransition(self.form.mnu_iu.btn_iu_pe_tune.clicked, self.iu_pe_select)
+        self.iu_pe_select.addTransition(self.form.select_iu.btn_ok, self.iu_pe)
+        self.iu_pe_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
+        self.menu_iu.addTransition(self.form.mnu_iu.btn_iu_dp_tune.clicked, self.iu_dp_select)
+        self.iu_dp_select.addTransition(self.form.select_iu.btn_ok, self.iu_dp)
+        self.iu_dp_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_iu)
+        self.iu_pe.addTransition(self.iu_pe.finished, self.menu_iu)
+        self.iu_dp.addTransition(self.iu_dp.finished, self.menu_iu)
+        self.iu_auth.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
+        self.iu_auth.addTransition(self.form.auth.btn_ok, self.iu_select)
+        self.iu_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
+        self.iu_select.addTransition(self.form.select_iu.btn_ok, self.exam_iu)
+        self.exam_iu.addTransition(self.exam_iu.finished, self.menu_main)
 
-        self.menu_main.addTransition(self.form.mnu_main.btnBU.clicked, self.menu_bu)
-        self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_back.clicked, self.menu_main)
+        self.menu_main.addTransition(self.form.mnu_main.btnBUTune.clicked, self.menu_bu)
         self.menu_bu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
-        self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_exam.clicked, self.exam_bu_auth)
-        self.exam_bu_auth.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
-        self.exam_bu_auth.addTransition(self.form.auth.btn_back, self.menu_bu)
-        self.exam_bu_auth.addTransition(self.form.auth.btn_ok, self.exam_bu_select)
-        self.exam_bu_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
-        self.exam_bu_select.addTransition(self.form.select_bu.btn_back, self.menu_bu)
-        self.exam_bu_select.addTransition(self.form.select_bu.btn_ok, self.prepare_check_bu)
-        self.prepare_check_bu.addTransition(self.check_bu)
-        self.form.check_bu.btn_ok.connect(self.check_bu.init_exam_bu)
-        self.check_bu.addTransition(self.form.check_bu.btn_back, self.menu_bu)
-        self.check_bu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
-        self.check_bu.addTransition(com.success, self.exam_bu)
+        self.menu_main.addTransition(self.form.mnu_main.btnBU.clicked, self.bu_auth)
+        self.bu_auth.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
+        self.bu_auth.addTransition(self.form.auth.btn_ok, self.bu_select)
+        self.bu_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
+        self.bu_select.addTransition(self.form.select_bu.btn_ok, self.reset_check_bu)
+        self.reset_check_bu.addTransition(self.check_bu)
+        self.check_bu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
         self.exam_bu.addTransition(self.exam_bu.finished, self.check_bu)
+
+        self.check_bu.addTransition(self.form.check_bu.btn_prepare.clicked, self.bu_prepare)
+        self.bu_prepare.addTransition(self.exam_bu)
+        self.check_bu.addTransition(self.form.check_bu.btn_di.clicked, self.bu_di)
+        self.bu_di.addTransition(self.exam_bu)
+        self.check_bu.addTransition(self.form.check_bu.btn_ai.clicked, self.bu_ai)
+        self.bu_ai.addTransition(self.exam_bu)
+        self.check_bu.addTransition(self.form.check_bu.btn_fi.clicked, self.bu_fi)
+        self.bu_fi.addTransition(self.exam_bu)
+        self.check_bu.addTransition(self.form.check_bu.btn_rt.clicked, self.bu_rt)
+        self.bu_rt.addTransition(self.exam_bu)
+        self.check_bu.addTransition(self.form.check_bu.btn_shim.clicked, self.bu_shim)
+        self.bu_shim.addTransition(self.exam_bu)
 
         self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_ai_tune.clicked, self.bu_select_2)
         self.bu_select_2.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
-        self.bu_select_2.addTransition(self.form.select_bu.btn_back, self.menu_bu)
         self.bu_select_2.addTransition(self.form.select_bu.btn_ok, self.bu_ai_tune)
         self.bu_ai_tune.addTransition(self.bu_ai_tune.finished, self.menu_bu)
 
-        self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_ai_3_tune.clicked, self.bu_ai_3_tune)
-        self.bu_ai_3_tune.addTransition(self.bu_ai_3_tune.finished, self.menu_bu)
-
+        self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_ai_3_tune.clicked, self.bu_rt_tune)
+        self.bu_rt_tune.addTransition(self.bu_rt_tune.finished, self.menu_bu)
 
         self.opc.started.connect(self.stm.start)
         self.opc.start()
@@ -130,7 +134,9 @@ class Main(QtCore.QObject):
         QEvent.accept()
 
 
-class StateInit(QtCore.QState):
+class InitMenu(QtCore.QState):
+    success = QtCore.pyqtSignal()
+
     def onEntry(self, QEvent):
         global com
         print('stm started')
@@ -147,7 +153,7 @@ class StateInit(QtCore.QState):
 
         com.form.mnu_main.reset()
         com.form.mnu_iu.reset()
-        com.success.emit()
+        self.success.emit()
 
 
 class MenuMain(QtCore.QState):
@@ -170,7 +176,7 @@ class MenuBU(QtCore.QState):
         com.form.mnu_bu.reset()
 
 
-class ExamIUPESelect(QtCore.QState):
+class IuPeSelect(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.form.currentmenu = com.form.select_iu
@@ -184,38 +190,36 @@ class ExamIUDPSelect(QtCore.QState):
         com.form.currentmenu.reset()
 
 
-class ExamIUAuth(QtCore.QState):
+class IuAuth(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.form.currentmenu = com.form.auth
         com.form.currentmenu.reset()
 
 
-class ExamBUAuth(QtCore.QState):
+class BuAuth(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.form.currentmenu = com.form.auth
         com.form.currentmenu.reset()
 
 
-class ExamIUSelect(QtCore.QState):
+class IuSelect(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.form.currentmenu = com.form.select_iu
         com.form.currentmenu.reset()
 
 
-class ExamBUSelect(QtCore.QState):
+class BuSelect(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.form.currentmenu = com.form.select_bu
         com.form.currentmenu.reset()
-        com.form.check_bu.reset()
 
 
-class PrepareCheckBU(QtCore.QState):
+class ResetCheckBu(QtCore.QState):
     def onEntry(self, QEvent):
-        global com
         com.form.check_bu.dev_type = com.form.select_bu.dev_type
         com.exam_bu.dev_type = com.form.select_bu.dev_type
         com.form.check_bu.reset()
@@ -224,25 +228,38 @@ class PrepareCheckBU(QtCore.QState):
 class CheckBU(QtCore.QState):
     def onEntry(self, QEvent):
         global com
+
         com.form.currentmenu = com.form.check_bu
 
-    @QtCore.pyqtSlot(str)
-    def init_exam_bu(self, btn):
-        global com
-        if btn == 'Подготовка':
-            com.exam_bu.setInitialState(com.exam_bu.prepare1)
-        elif btn == 'Проверка дискретных входов':
-            com.exam_bu.setInitialState(com.exam_bu.di_check)
-        elif btn == 'Проверка частотных входов':
-            com.exam_bu.setInitialState(com.exam_bu.fi_check)
-        elif btn == 'Проверка ШИМ силового канала':
-            com.exam_bu.setInitialState(com.exam_bu.shim_check)
-        elif btn == 'Проверка аналоговых входов':
-            com.exam_bu.setInitialState(com.exam_bu.ai_check)
-        elif btn == 'Проверка канала измерения температуры':
-            com.exam_bu.setInitialState(com.exam_bu.ai_3_check)
 
-        com.success.emit()
+class BuPrepare(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.exam_bu.setInitialState(com.exam_bu.prepare1)
+
+
+class BuDi(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.exam_bu.setInitialState(com.exam_bu.di_check)
+
+
+class BuAi(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.exam_bu.setInitialState(com.exam_bu.ai_check)
+
+
+class BuFi(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.exam_bu.setInitialState(com.exam_bu.fi_check)
+
+
+class BuRt(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.exam_bu.setInitialState(com.exam_bu.ai_3_check)
+
+
+class BuShim(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.exam_bu.setInitialState(com.exam_bu.shim_check)
 
 
 if __name__ == '__main__':

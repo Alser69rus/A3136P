@@ -4,7 +4,7 @@ from menu.btn import Btn
 
 
 class SelectIU(Menu):
-    btn_back = QtCore.pyqtSignal()
+    btn_back = QtCore.pyqtSignal(bool)
     btn_ok = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):

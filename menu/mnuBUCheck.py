@@ -14,9 +14,9 @@ class CheckBU(Menu):
         self.btn_prepare = Btn('Подготовка')
         self.btn_di = Btn('Проверка дискретных входов')
         self.btn_fi = Btn('Проверка частотных входов')
-        self.btn_power = Btn('Проверка ШИМ силового канала')
+        self.btn_shim = Btn('Проверка ШИМ силового канала')
         self.btn_ai = Btn('Проверка аналоговых входов')
-        self.btn_ai_3 = Btn('Проверка канала измерения температуры')
+        self.btn_rt = Btn('Проверка канала измерения температуры')
 
         self.btn_di_r = Btn('Проверка резервного канала дискретных входов')
         self.btn_fi1_r = Btn('Проверка резервного канала ДЧД')
@@ -24,53 +24,53 @@ class CheckBU(Menu):
 
         self.btn_bu_back = Btn('Завершение испытаний')
 
-        lst = [self.btn_prepare, self.btn_di, self.btn_fi, self.btn_power, self.btn_ai, self.btn_ai_3,
+        lst = [self.btn_prepare, self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai, self.btn_rt,
                self.btn_di_r, self.btn_fi1_r, self.btn_power_r, self.btn_bu_back]
         self.set_lst(lst)
 
         self.btn_bu_back.clicked.connect(self.btn_back)
-        for e in lst:
-            e.clicked.connect(self.on_select)
 
     def reset(self):
         super().reset()
+        self.set_btn_visible()
+
+    def set_btn_visible(self):
         vis = []
+
         if self.dev_type == 'ЭРЧМ30Т3-06':
-            # vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai,
-            #        self.btn_di_r, self.btn_fi1_r, self.btn_power_r]
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai, self.btn_ai_3]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai, self.btn_rt]
         elif self.dev_type == 'ЭРЧМ30Т3-07':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai, self.btn_ai_3]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai, self.btn_rt]
         elif self.dev_type == 'ЭРЧМ30Т3-04':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai, self.btn_ai_3]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai, self.btn_rt]
         elif self.dev_type == 'ЭРЧМ30Т3-08':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-08-01':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-02':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-05':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-10':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-10-01':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-12':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-12-01':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-12-02':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т3-12-03':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т4-01':
-            vis = [self.btn_di, self.btn_fi, self.btn_power]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim]
         elif self.dev_type == 'ЭРЧМ30Т4-02':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т4-02-01':
-            vis = [self.btn_di, self.btn_fi, self.btn_power, self.btn_ai]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai]
         elif self.dev_type == 'ЭРЧМ30Т4-03':
-            vis = [self.btn_di, self.btn_fi, self.btn_power]
+            vis = [self.btn_di, self.btn_fi, self.btn_shim]
 
         for elem in self.list:
             if elem != self.btn_bu_back and elem != self.btn_prepare:
@@ -79,6 +79,3 @@ class CheckBU(Menu):
                     elem.setVisible(True)
                 else:
                     elem.setVisible(False)
-
-    def on_select(self):
-        self.btn_ok.emit(self.sender().text())

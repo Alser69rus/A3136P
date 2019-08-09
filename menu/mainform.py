@@ -37,11 +37,17 @@ class MainForm(QtWidgets.QWidget):
 
         self.mnu_main = mnumain.MainMenu()
         self.mnu_iu = mnuiu.mnuIU()
+        self.mnu_iu.btn_iu_back.clicked.connect(self.btnPanel.btnBack.clicked)
         self.mnu_bu = MnuBU()
+        self.mnu_bu.btn_bu_back.clicked.connect(self.btnPanel.btnBack.clicked)
         self.auth = Auth()
+        self.auth.btn_back.connect(self.btnPanel.btnBack.clicked)
         self.select_iu = SelectIU()
+        self.select_iu.btn_back.connect(self.btnPanel.btnBack.clicked)
         self.select_bu = SelectBU()
+        self.select_bu.btn_bu_back.clicked.connect(self.btnPanel.btnBack.clicked)
         self.check_bu = CheckBU()
+        self.check_bu.btn_bu_back.clicked.connect(self.btnPanel.btnBack.clicked)
 
         self.exam_iu_pe_set_pe = exam_iu.frm_iu.Form_iu_set_pe()
         self.exam_iu_pe_set_dp = exam_iu.frm_iu.Form_iu_set_dp()

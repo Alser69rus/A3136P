@@ -305,7 +305,7 @@ class Save(QtCore.QState):
                          '<p><br>Нажмите "ПРИНЯТЬ" для продолжения</p>')
 
 
-class BuAi3Tune(QState):
+class BuRtTune(QState):
     def __init__(self, parent=None):
         super().__init__(parent)
         global com

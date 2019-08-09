@@ -417,8 +417,8 @@ class ConnectBU(QtCore.QState):
         com.text.setText('Производится подключение питания БУ')
 
         com.opc.connect_bu_power()
-        lst = [com.frm_main.check_bu.btn_di, com.frm_main.check_bu.btn_fi, com.frm_main.check_bu.btn_power,
-               com.frm_main.check_bu.btn_ai, com.frm_main.check_bu.btn_ai_3]
+        lst = [com.frm_main.check_bu.btn_di, com.frm_main.check_bu.btn_fi, com.frm_main.check_bu.btn_shim,
+               com.frm_main.check_bu.btn_ai, com.frm_main.check_bu.btn_rt]
         for e in lst:
             e.setEnabled(True)
         com.frm_main.check_bu.btn_prepare.state = 'ok'
