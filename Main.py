@@ -215,7 +215,7 @@ class BuSelect(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.form.currentmenu = com.form.select_bu
-        com.form.currentmenu.reset()
+        # com.form.currentmenu.reset()
 
 
 class ResetCheckBu(QtCore.QState):
@@ -228,7 +228,6 @@ class ResetCheckBu(QtCore.QState):
 class CheckBU(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-
         com.form.currentmenu = com.form.check_bu
 
 
@@ -266,5 +265,6 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     main = Main()
     print('Старт')
+    print(com.form.width(),com.form.height())
 
     sys.exit(app.exec_())

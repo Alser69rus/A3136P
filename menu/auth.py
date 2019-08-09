@@ -9,8 +9,8 @@ class Auth(Menu):
 
     def __init__(self, parent=None):
         super().__init__('Данные испытания', parent, col=2)
-        self.vbox.setColumnMinimumWidth(0, 450)
-        self.vbox.setColumnMinimumWidth(1, 450)
+        # self.vbox.setColumnMinimumWidth(0, 450)
+        # self.vbox.setColumnMinimumWidth(1, 450)
         self.num = ''
         self.date = ''
         self.locomotive = ''

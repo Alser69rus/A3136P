@@ -913,7 +913,7 @@ class ShimSaveI1(QtCore.QState):
         com.idx = 0
         com.args[0] = '2,1-2,4'
         com.text.setText('<p>Установите при помощи кнопки 6 значение '
-                         '<b>"P3F8"</b> на нижнем индикаторе  программатора.</p>'
+                         '<b><font color="green">"P3F8"</font></b> на нижнем индикаторе  программатора.</p>'
                          '<p><br>Нажмите "ПРИНЯТЬ" для продолжения</p>')
 
 
@@ -994,9 +994,9 @@ class ShimFinish(QtCore.QState):
         com.do1.setValue(0, 8)  # work/stop
         if not bu.shim_res:
             bu.shim_res = 'норма'
-            com.frm_main.check_bu.btn_power.state = 'ok'
+            com.frm_main.check_bu.btn_shim.state = 'ok'
         else:
-            com.frm_main.check_bu.btn_power.state = 'fail'
+            com.frm_main.check_bu.btn_shim.state = 'fail'
         com.pa3.setActive(False)
 
         if 0.6 <= bu.shim_i1 <= 0.9:

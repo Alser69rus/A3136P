@@ -14,10 +14,18 @@ class Menu(QtWidgets.QWidget):
         super().__init__(parent)
         self.col = col
         self.bigbox = QtWidgets.QVBoxLayout()
-        self.vbox = QtWidgets.QGridLayout()
         self.hbox = QtWidgets.QHBoxLayout()
         self.table = QtWidgets.QWidget()
-        self.btnArea = QtWidgets.QWidget()
+        self.btnArea = []
+        self.vbox = []
+
+        self.hbox.addStretch(1)
+        for i in range(col):
+            self.btnArea.append(QtWidgets.QWidget())
+            self.vbox.append(QtWidgets.QVBoxLayout())
+            self.btnArea[i].setLayout(self.vbox[i])
+            self.hbox.addWidget(self.btnArea[i])
+        self.hbox.addStretch(1)
 
         self.caption = caption.Caption(title)
         self.selected = None
@@ -30,21 +38,17 @@ class Menu(QtWidgets.QWidget):
         self.setLayout(self.bigbox)
 
         self.table.setLayout(self.hbox)
-        self.hbox.addStretch(1)
-        self.hbox.addWidget(self.btnArea)
-        self.hbox.addStretch(1)
-        self.btnArea.setLayout(self.vbox)
 
         self.encoder_value = 0
 
     def set_lst(self, lst):
         self.list = lst[:]
-        i = 0
+        for i, v in enumerate(lst):
+            self.vbox[i*self.col//len(lst)].addWidget(v)
+            v.mouse_entry.connect(self.on_btn_select)
+        for i in range(self.col):
+            self.vbox[i].addStretch(1)
 
-        for elem in lst:
-            self.vbox.addWidget(elem, i // self.col, i % self.col)
-            elem.mouse_entry.connect(self.on_btn_select)
-            i += 1
 
         self.reset()
 
