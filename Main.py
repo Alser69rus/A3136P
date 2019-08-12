@@ -64,7 +64,9 @@ class Main(QtCore.QObject):
         self.bu_rt_tune = BuRtTune(self.stm)
 
         self.bu_prepare = BuPrepare(self.stm)
+        self.bu_prepare_r = BuPrepareR(self.stm)
         self.bu_di = BuDi(self.stm)
+        self.bu_di_r = BuDiR(self.stm)
         self.bu_ai = BuAi(self.stm)
         self.bu_fi = BuFi(self.stm)
         self.bu_rt = BuRt(self.stm)
@@ -105,8 +107,12 @@ class Main(QtCore.QObject):
 
         self.check_bu.addTransition(self.form.check_bu.btn_prepare.clicked, self.bu_prepare)
         self.bu_prepare.addTransition(self.exam_bu)
+        self.check_bu.addTransition(self.form.check_bu.btn_prepare_r.clicked, self.bu_prepare_r)
+        self.bu_prepare_r.addTransition(self.exam_bu)
         self.check_bu.addTransition(self.form.check_bu.btn_di.clicked, self.bu_di)
         self.bu_di.addTransition(self.exam_bu)
+        self.check_bu.addTransition(self.form.check_bu.btn_di_r.clicked, self.bu_di_r)
+        self.bu_di_r.addTransition(self.exam_bu)
         self.check_bu.addTransition(self.form.check_bu.btn_ai.clicked, self.bu_ai)
         self.bu_ai.addTransition(self.exam_bu)
         self.check_bu.addTransition(self.form.check_bu.btn_fi.clicked, self.bu_fi)
@@ -236,9 +242,18 @@ class BuPrepare(QtCore.QState):
         com.exam_bu.setInitialState(com.exam_bu.prepare1)
 
 
+class BuPrepareR(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.exam_bu.setInitialState(com.exam_bu.prepare_r)
+
+
 class BuDi(QtCore.QState):
     def onEntry(self, QEvent):
         com.exam_bu.setInitialState(com.exam_bu.di_check)
+
+class BuDiR(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.exam_bu.setInitialState(com.exam_bu.di_check_r)
 
 
 class BuAi(QtCore.QState):
@@ -265,6 +280,6 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     main = Main()
     print('Старт')
-    print(com.form.width(),com.form.height())
+    print(com.form.width(), com.form.height())
 
     sys.exit(app.exec_())

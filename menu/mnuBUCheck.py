@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 from menu.template import Menu
 from menu.btn import Btn
+import exam_bu.exam_bu_prog
 
 
 class CheckBU(Menu):
@@ -20,27 +21,29 @@ class CheckBU(Menu):
 
         self.btn_prepare_r = Btn('Подготовка к проверке рез. каналов')
         self.btn_di_r = Btn('Проверка рез. канала дискретных входов')
-        self.btn_fi1_r = Btn('Проверка резервного канала ДЧД')
-        self.btn_power_r = Btn('Проверка резервного канала ШИМ')
+        self.btn_fi_r = Btn('Проверка резервного канала ДЧД')
+        self.btn_shim_r = Btn('Проверка резервного канала ШИМ')
 
         self.btn_bu_back = Btn('Завершение испытаний')
 
         lst = [self.btn_prepare, self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai, self.btn_rt,
-               self.btn_prepare_r, self.btn_di_r, self.btn_fi1_r, self.btn_power_r, self.btn_bu_back]
+               self.btn_prepare_r, self.btn_di_r, self.btn_fi_r, self.btn_shim_r, self.btn_bu_back]
         self.set_lst(lst)
 
         self.btn_bu_back.clicked.connect(self.btn_back)
 
     def reset(self):
+        exam_bu.exam_bu_prog.bu = exam_bu.exam_bu_prog.BU(dev_type=self.dev_type)
         self.set_btn_visible()
         super().reset()
+
 
     def set_btn_visible(self):
         vis = []
 
         if self.dev_type == 'ЭРЧМ30Т3-06':
             vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai, self.btn_rt,
-                   self.btn_prepare_r, self.btn_di_r, self.btn_fi1_r, self.btn_power_r]
+                   self.btn_prepare_r, self.btn_di_r, self.btn_fi_r, self.btn_shim_r]
         elif self.dev_type == 'ЭРЧМ30Т3-07':
             vis = [self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai, self.btn_rt]
         elif self.dev_type == 'ЭРЧМ30Т3-04':
@@ -77,7 +80,7 @@ class CheckBU(Menu):
         vis += [self.btn_bu_back, self.btn_prepare]
 
         for elem in self.list:
-            if elem != self.btn_bu_back and elem != self.btn_prepare and elem != self.btn_prepare_r:
+            if elem != self.btn_bu_back and elem != self.btn_prepare:
                 elem.setEnabled(False)
             if elem in vis:
                 elem.setVisible(True)
