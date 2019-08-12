@@ -211,17 +211,17 @@ class Exam_bu(QtCore.QState):
         self.ai_res = AIRes(self)
         self.ai_done = AIDone(self)
 
-        self.ai_3_check = AI3Check(self)
-        self.ai_3_100 = AI3100(self)
-        self.ai_3_max = AI3Max(self)
-        self.ai_3_success_1 = AI3Success1(self)
-        self.ai_3_fail_1 = AI3Fail1(self)
-        self.ai_3_success_2 = AI3Success2(self)
-        self.ai_3_fail_2 = AI3Fail2(self)
-        self.ai_3_success_3 = AI3Success3(self)
-        self.ai_3_fail_3 = AI3Fail3(self)
-        self.ai_reg_switch = AIRegSwitch(self)
-        self.ai_3_res = AI3Res(self)
+        self.rt_check = RtCheck(self)
+        self.rt_100 = Rt100(self)
+        self.rt_max = RtMax(self)
+        self.rt_success_1 = RtSuccess1(self)
+        self.rt_fail_1 = RtFail1(self)
+        self.rt_success_2 = RtSuccess2(self)
+        self.rt_fail_2 = RtFail2(self)
+        self.rt_success_3 = RtSuccess3(self)
+        self.rt_fail_3 = RtFail3(self)
+        self.rt_switch = AIRegSwitch(self)
+        self.rt_res = RtRes(self)
 
         self.addTransition(self.opc.error, self.error)
         self.error.addTransition(self.finish)
@@ -292,29 +292,27 @@ class Exam_bu(QtCore.QState):
         self.ai_measure.addTransition(server.ao.updated, self.ai_measure)
         self.ai_measure.addTransition(self.btnDown, self.ai_fail)
         self.ai_measure.addTransition(self.btnOk, self.ai_ok)
-        self.ai_fail.addTransition(self.ai_reg_switch)
-        self.ai_ok.addTransition(self.ai_reg_switch)
-        self.ai_reg_switch.addTransition(self.ai_reg_switch.done, self.ai_measure)
-        self.ai_reg_switch.addTransition(self.btnOk, self.ai_measure)
+        self.ai_fail.addTransition(self.rt_switch)
+        self.ai_ok.addTransition(self.rt_switch)
+        self.rt_switch.addTransition(self.rt_switch.done, self.ai_measure)
+        self.rt_switch.addTransition(self.btnOk, self.ai_measure)
         self.ai_measure.addTransition(self.ai_measure.done, self.ai_res)
         self.ai_res.addTransition(self.ai_done)
         self.ai_done.addTransition(self.btnOk, self.finish)
 
-        self.ai_3_check.addTransition(self.btnOk, self.ai_3_success_1)
-        self.ai_3_check.addTransition(self.btnDown, self.ai_3_fail_1)
-        self.ai_3_success_1.addTransition(self.ai_3_100)
-        self.ai_3_fail_1.addTransition(self.ai_3_100)
-        self.ai_3_100.addTransition(self.btnOk, self.ai_3_success_2)
-        self.ai_3_100.addTransition(self.btnDown, self.ai_3_fail_2)
-        self.ai_3_success_2.addTransition(self.ai_3_max)
-        self.ai_3_fail_2.addTransition(self.ai_3_max)
-        self.ai_3_max.addTransition(self.btnOk, self.ai_3_success_3)
-        self.ai_3_max.addTransition(self.btnDown, self.ai_3_fail_3)
-        self.ai_3_success_3.addTransition(self.ai_3_res)
-        self.ai_3_fail_3.addTransition(self.ai_3_res)
-        self.ai_3_res.addTransition(self.btnOk, self.finish)
-
-        self.print_result = PrintResult(self)
+        self.rt_check.addTransition(self.btnOk, self.rt_success_1)
+        self.rt_check.addTransition(self.btnDown, self.rt_fail_1)
+        self.rt_success_1.addTransition(self.rt_100)
+        self.rt_fail_1.addTransition(self.rt_100)
+        self.rt_100.addTransition(self.btnOk, self.rt_success_2)
+        self.rt_100.addTransition(self.btnDown, self.rt_fail_2)
+        self.rt_success_2.addTransition(self.rt_max)
+        self.rt_fail_2.addTransition(self.rt_max)
+        self.rt_max.addTransition(self.btnOk, self.rt_success_3)
+        self.rt_max.addTransition(self.btnDown, self.rt_fail_3)
+        self.rt_success_3.addTransition(self.rt_res)
+        self.rt_fail_3.addTransition(self.rt_res)
+        self.rt_res.addTransition(self.btnOk, self.finish)
 
 
 class Error(QtCore.QState):
@@ -1213,7 +1211,7 @@ class AIDone(QtCore.QState):
         com.ao.setActive(False)
 
 
-class AI3Check(QtCore.QState):
+class RtCheck(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.do2.setValue(True, 31)
@@ -1234,19 +1232,19 @@ class AI3Check(QtCore.QState):
                          )
 
 
-class AI3Fail1(QtCore.QState):
+class RtFail1(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
         bu.ai_3_1 = False
 
 
-class AI3Success1(QtCore.QState):
+class RtSuccess1(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
         bu.ai_3_1 = True
 
 
-class AI3100(QtCore.QState):
+class Rt100(QtCore.QState):
     def onEntry(self, QEvent):
         com.do2.setValue(False, 31)
         com.do2.setValue(True, 30)
@@ -1258,19 +1256,19 @@ class AI3100(QtCore.QState):
                          )
 
 
-class AI3Fail2(QtCore.QState):
+class RtFail2(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
         bu.ai_3_2 = False
 
 
-class AI3Success2(QtCore.QState):
+class RtSuccess2(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
         bu.ai_3_2 = True
 
 
-class AI3Max(QtCore.QState):
+class RtMax(QtCore.QState):
     def onEntry(self, QEvent):
         com.do2.setValue(False, 30)
         com.do2.setValue(True, 29)
@@ -1282,19 +1280,19 @@ class AI3Max(QtCore.QState):
                          )
 
 
-class AI3Fail3(QtCore.QState):
+class RtFail3(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
         bu.ai_3_3 = False
 
 
-class AI3Success3(QtCore.QState):
+class RtSuccess3(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
         bu.ai_3_3 = True
 
 
-class AI3Res(QtCore.QState):
+class RtRes(QtCore.QState):
     def onEntry(self, QEvent):
         com.do2.setValue(False, 29)
         com.do2.setValue(False, 30)
@@ -1311,25 +1309,3 @@ class AI3Res(QtCore.QState):
                              )
             com.frm_main.check_bu.btn_rt.state = 'fail'
 
-
-class PrintResult(QtCore.QState):
-    def onEntry(self, QEvent):
-        print('protokol')
-
-
-class Ended(QtCore.QState):
-    def onEntry(self, e):
-        global com
-        print('bu_finish')
-        # com.opc.ai.setActive(False)
-        # com.opc.di.setActive(True)
-        # com.opc.pv1.setActive(False)
-        # com.opc.pv2.setActive(False)
-        # com.opc.pa1.setActive(False)
-        # com.opc.pa2.setActive(False)
-        # com.opc.pa3.setActive(False)
-        # com.opc.connect_bu_di_power(False)
-        # com.opc.connect_bu_power(False)
-        com.frm_main.stl.setCurrentWidget(com.frm_main.mnu_bu)
-        com.frm_main.connectmenu()
-        # com.pchv.setActive(False)

@@ -253,7 +253,7 @@ class BuFi(QtCore.QState):
 
 class BuRt(QtCore.QState):
     def onEntry(self, QEvent):
-        com.exam_bu.setInitialState(com.exam_bu.ai_3_check)
+        com.exam_bu.setInitialState(com.exam_bu.rt_check)
 
 
 class BuShim(QtCore.QState):
