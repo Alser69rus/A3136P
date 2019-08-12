@@ -434,7 +434,7 @@ class Prepare1(QtCore.QState):
     def onEntry(self, QEvent):
         global com, bu
         com.opc.connect_bu_di_power(False)
-        com.opc.connect_bu_di_power(False)
+        com.opc.connect_bu_power(False)
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_bu_prog)
@@ -1412,7 +1412,7 @@ class PrepareR(QtCore.QState):
     def onEntry(self, QEvent):
         global com, bu
         com.opc.connect_bu_di_power(False)
-        com.opc.connect_bu_di_power(False)
+        com.opc.connect_bu_power(False)
 
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
