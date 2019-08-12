@@ -5,7 +5,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/menu/mnuBUCheck.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu/mnuBUCheck.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -85,8 +84,8 @@
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1951">
-              <caret line="241" column="32" lean-forward="true" selection-start-line="241" selection-start-column="32" selection-end-line="241" selection-end-column="32" />
+            <state relative-caret-position="514">
+              <caret line="71" column="28" selection-start-line="71" selection-start-column="28" selection-end-line="71" selection-end-column="28" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -97,8 +96,8 @@
       <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="294" column="19" selection-start-line="294" selection-start-column="19" selection-end-line="294" selection-end-column="19" />
+            <state relative-caret-position="435">
+              <caret line="1599" column="81" selection-start-line="1599" selection-start-column="81" selection-end-line="1599" selection-end-column="81" />
               <folding>
                 <element signature="e#0#42#0" expanded="true" />
               </folding>
@@ -648,7 +647,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565597668714</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="добавлена проверка двх рез">
+      <created>1565608034152</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1565608034152</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -747,7 +753,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="завершена проверка датчика положения" />
     <MESSAGE value="Добавлена проверка записи М7084, АО и DO" />
     <MESSAGE value="добавлен выбор ИУ&#10;добавлена форма данных испытания" />
     <MESSAGE value="подправлена установка тока в 0" />
@@ -772,10 +777,18 @@
     <MESSAGE value="переделаны колонки меню&#10;исправлены мелкие ошибки" />
     <MESSAGE value="при проверке авх отдельная стадия для переключения режимов" />
     <MESSAGE value="рефакторинг. проверки rt вместо ai_3" />
-    <option name="LAST_COMMIT_MESSAGE" value="рефакторинг. проверки rt вместо ai_3" />
+    <MESSAGE value="добавлена проверка двх рез" />
+    <option name="LAST_COMMIT_MESSAGE" value="добавлена проверка двх рез" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py</url>
+          <line>885</line>
+          <option name="timeStamp" value="117" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -783,7 +796,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="117" />
+      <option name="time" value="118" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="tests">
@@ -1112,8 +1125,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1951">
-          <caret line="241" column="32" lean-forward="true" selection-start-line="241" selection-start-column="32" selection-end-line="241" selection-end-column="32" />
+        <state relative-caret-position="514">
+          <caret line="71" column="28" selection-start-line="71" selection-start-column="28" selection-end-line="71" selection-end-column="28" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
@@ -1122,8 +1135,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="294" column="19" selection-start-line="294" selection-start-column="19" selection-end-line="294" selection-end-column="19" />
+        <state relative-caret-position="435">
+          <caret line="1599" column="81" selection-start-line="1599" selection-start-column="81" selection-end-line="1599" selection-end-column="81" />
           <folding>
             <element signature="e#0#42#0" expanded="true" />
           </folding>

@@ -69,6 +69,7 @@ class Main(QtCore.QObject):
         self.bu_di_r = BuDiR(self.stm)
         self.bu_ai = BuAi(self.stm)
         self.bu_fi = BuFi(self.stm)
+        self.bu_fi_r = BuFiR(self.stm)
         self.bu_rt = BuRt(self.stm)
         self.bu_shim = BuShim(self.stm)
 
@@ -117,6 +118,8 @@ class Main(QtCore.QObject):
         self.bu_ai.addTransition(self.exam_bu)
         self.check_bu.addTransition(self.form.check_bu.btn_fi.clicked, self.bu_fi)
         self.bu_fi.addTransition(self.exam_bu)
+        self.check_bu.addTransition(self.form.check_bu.btn_fi_r.clicked, self.bu_fi_r)
+        self.bu_fi_r.addTransition(self.exam_bu)
         self.check_bu.addTransition(self.form.check_bu.btn_rt.clicked, self.bu_rt)
         self.bu_rt.addTransition(self.exam_bu)
         self.check_bu.addTransition(self.form.check_bu.btn_shim.clicked, self.bu_shim)
@@ -251,6 +254,7 @@ class BuDi(QtCore.QState):
     def onEntry(self, QEvent):
         com.exam_bu.setInitialState(com.exam_bu.di_check)
 
+
 class BuDiR(QtCore.QState):
     def onEntry(self, QEvent):
         com.exam_bu.setInitialState(com.exam_bu.di_check_r)
@@ -264,6 +268,11 @@ class BuAi(QtCore.QState):
 class BuFi(QtCore.QState):
     def onEntry(self, QEvent):
         com.exam_bu.setInitialState(com.exam_bu.fi_check)
+
+
+class BuFiR(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.exam_bu.setInitialState(com.exam_bu.fi_check_r)
 
 
 class BuRt(QtCore.QState):

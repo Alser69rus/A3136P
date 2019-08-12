@@ -19,6 +19,8 @@ class BU:
 
     fi_res: str = ''
     fi_note: str = ''
+    fi_res_r: str = ''
+    fi_note_r: str = ''
 
     shim_res: str = ''
     shim_note: str = ''
@@ -206,6 +208,13 @@ class Exam_bu(QtCore.QState):
         self.fi_fail = FiFail(self)
         self.fi_done = FiDone(self)
 
+        self.fi_check_r = FICheckR(self)
+        self.fi_param_sav_r = FiParamSave(self)
+        self.fi_config_r = FiConfigR(self)
+        self.fi_measure_r = FiMeasure(self)
+        self.fi_fail_r = FiFailR(self)
+        self.fi_done_r = FiDoneR(self)
+
         self.shim_check = ShimCheck(self)
         self.shim_measure_i1 = ShimMeasure(self)
         self.shim_save_i1 = ShimSaveI1(self)
@@ -305,6 +314,16 @@ class Exam_bu(QtCore.QState):
         self.fi_fail.addTransition(self.fi_measure)
         self.fi_measure.addTransition(self.fi_measure.done, self.fi_done)
         self.fi_done.addTransition(self.finish)
+
+        self.fi_check_r.addTransition(self.btnOk, self.fi_config_r)
+        self.fi_check_r.addTransition(self.btnDown, self.fi_param_sav_r)
+        self.fi_param_sav_r.addTransition(self.btnOk, self.fi_config_r)
+        self.fi_config_r.addTransition(self.fi_measure_r)
+        self.fi_measure_r.addTransition(self.btnOk, self.fi_measure_r)
+        self.fi_measure_r.addTransition(self.btnDown, self.fi_fail_r)
+        self.fi_fail_r.addTransition(self.fi_measure_r)
+        self.fi_measure_r.addTransition(self.fi_measure_r.done, self.fi_done_r)
+        self.fi_done_r.addTransition(self.finish)
 
         self.shim_check.addTransition(self.btnOk, self.shim_measure_i1)
         self.shim_measure_i1.addTransition(self.pa3.updated, self.shim_measure_i1)
@@ -850,10 +869,10 @@ class FiConfig(QtCore.QState):
         com.do2.setValue(com.do2.value[:12] + [1, 1, 1] + com.do2.value[15:])
         com.idx = -1
         com.args = (
-            ('РЕ10', 'верхнего', '0495-0502', 'ДВХ1 - ДЧД', [1030, 0, 0]),
-            ('РЕ9E', 'нижнего', '0995-1005', 'ДВХ2 - ДЧТК', [0, 1000, 0]),
-            ('РЕ70', 'верхнего', '01.00-06.00', 'ДВХ3 - ДП 25 кГц', [0, 0, 25000]),
-            ('РЕ70', 'верхнего', '14.00-25.00', 'ДВХ3 - ДП 17 кГц', [0, 0, 17000]))
+            ('РЕ10', 'верхнего', '0495-0502', 'ЧВХ1 - ДЧД', [1030, 0, 0]),
+            ('РЕ9E', 'нижнего', '0995-1005', 'ЧВХ2 - ДЧТК', [0, 1000, 0]),
+            ('РЕ70', 'верхнего', '01.00-06.00', 'ЧВХ3 - ДП 25 кГц', [0, 0, 25000]),
+            ('РЕ70', 'верхнего', '14.00-25.00', 'ЧВХ3 - ДП 17 кГц', [0, 0, 17000]))
 
 
 class FiMeasure(QtCore.QState):
@@ -881,7 +900,7 @@ class FiFail(QtCore.QState):
         global com
         args = com.args[com.idx]
         bu.fi_res = 'НЕ НОРМА'
-        bu.fi_note += 'Неисправен частотный вход {}.\n'.format(args[3])
+        bu.fi_note += 'Неисправен частотный вход {}.;'.format(args[3])
 
 
 class FiDone(QtCore.QState):
@@ -1552,3 +1571,50 @@ class DIResultR(QtCore.QState):
             res += '</p>'
         res += '<p>Нажмите "ПРИНЯТЬ" для продолжения</p>'
         com.text.setText(res)
+
+
+class FICheckR(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.frm_main.disconnectmenu()
+        com.frm_main.stl.setCurrentWidget(com.frm)
+        com.img.setPixmap(com.frm.img_prog2)
+        bu.fi_res_r = ''
+        bu.fi_note_r = ''
+        com.text.setText('<p>Установите на программаторе режим <b><font color="blue">"РЕ70"</font></b>. '
+                         'Для этого зажмите кнопку 1 для выбора '
+                         'режима или кнопку 2 для выбора подрежима и кнопками 5 и 6 установите значение режима. На '
+                         'нижнем ряде индикаторов программатора должно быть: '
+                         '<b><font color="green">0124</font></b></p><p></p>'
+                         'Если это условие выполняется нажмите <font color="green">"ПРИНЯТЬ"</font>,'
+                         '<br>Если условие не выполняется нажмите <font color="red">"ВНИЗ"</font>.</p>'
+                         )
+
+
+class FiConfigR(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.do2.setValue(com.do2.value[:12] + [1, 1, 1] + com.do2.value[15:])
+        com.idx = -1
+        com.args = (
+            ('РЕ00', 'верхнего', '0495-0502', 'ЧВХ1 - ДЧД (рез.)', [1030, 0, 0]),)
+
+
+class FiFailR(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        args = com.args[com.idx]
+        bu.fi_res_r = 'НЕ НОРМА'
+        bu.fi_note_r += f'Неисправен частотный вход {args[3]}.;'
+
+
+class FiDoneR(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.do2.setValue(com.do2.value[:12] + [0, 0, 0] + com.do2.value[15:])
+        com.gen.setValue([0, 0, 0])
+        if not bu.fi_res_r:
+            bu.fi_res = 'норма'
+            com.frm_main.check_bu.btn_fi_r.state = 'ok'
+        else:
+            com.frm_main.check_bu.btn_fi_r.state = 'fail'
