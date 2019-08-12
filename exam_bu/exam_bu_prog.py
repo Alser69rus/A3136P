@@ -31,6 +31,15 @@ class BU:
     shim_res2: str = ''
     shim_res3: str = ''
 
+    shim_res_r: str = ''
+    shim_note_r: str = ''
+    shim_graph_r: list = field(default_factory=list)
+    shim_i1_r: float = 0
+    shim_i2_r: float = 0
+    shim_res1_r: str = ''
+    shim_res2_r: str = ''
+    shim_res3_r: str = ''
+
     ai_res: str = ''
     ai_note: str = ''
     ai_i11: float = 0
@@ -227,6 +236,18 @@ class Exam_bu(QtCore.QState):
         self.shim_finish = ShimFinish(self)
         self.shim_reg_off = ShimRegOff(self)
 
+        self.shim_check_r = ShimCheckR(self)
+        self.shim_measure_i1_r = ShimMeasure(self)
+        self.shim_save_i1_r = ShimSaveI1R(self)
+        self.shim_measure_i2_r = ShimMeasure(self)
+        self.shim_save_i2_r = ShimSaveI2R(self)
+        self.shim_graph_start_r = ShimGraphStartR(self)
+        self.shim_graph_r = ShimGraphR(self)
+        self.shim_graph_finish_r = ShimGraphFinishR(self)
+        self.shim_fail_r = ShimFailR(self)
+        self.shim_finish_r = ShimFinishR(self)
+        self.shim_reg_off_r = ShimRegOff(self)
+
         self.ai_check = AiCheck(self)
         self.ai_measure = AIMeasure(self)
         self.ai_ok = AIOk(self)
@@ -341,6 +362,23 @@ class Exam_bu(QtCore.QState):
         self.shim_fail.addTransition(self.shim_finish)
         self.shim_finish.addTransition(self.btnOk, self.shim_reg_off)
         self.shim_reg_off.addTransition(self.btnOk, self.finish)
+
+        self.shim_check_r.addTransition(self.btnOk, self.shim_measure_i1_r)
+        self.shim_measure_i1_r.addTransition(self.pa3.updated, self.shim_measure_i1_r)
+        self.shim_measure_i1_r.addTransition(self.shim_measure_i1_r.done, self.shim_save_i1_r)
+        self.shim_save_i1_r.addTransition(self.btnOk, self.shim_measure_i2_r)
+        self.shim_measure_i2_r.addTransition(self.pa3.updated, self.shim_measure_i2_r)
+        self.shim_measure_i2_r.addTransition(self.shim_measure_i2_r.done, self.shim_save_i2_r)
+        self.shim_save_i2_r.addTransition(self.shim_graph_start_r)
+        self.shim_graph_start_r.addTransition(self.shim_graph_start_r.start, self.shim_graph_r)
+        self.shim_graph_start_r.addTransition(self.pa3.updated, self.shim_graph_start_r)
+        self.shim_graph_r.addTransition(self.pa3.updated, self.shim_graph_r)
+        self.shim_graph_r.addTransition(self.shim_graph_r.done, self.shim_graph_finish_r)
+        self.shim_graph_finish_r.addTransition(self.btnOk, self.shim_finish_r)
+        self.shim_graph_finish_r.addTransition(self.btnDown, self.shim_fail_r)
+        self.shim_fail_r.addTransition(self.shim_finish_r)
+        self.shim_finish_r.addTransition(self.btnOk, self.shim_reg_off_r)
+        self.shim_reg_off_r.addTransition(self.btnOk, self.finish)
 
         self.ai_check.addTransition(self.ai_measure)
         self.ai_measure.addTransition(server.ao.updated, self.ai_measure)
@@ -1618,3 +1656,161 @@ class FiDoneR(QtCore.QState):
             com.frm_main.check_bu.btn_fi_r.state = 'ok'
         else:
             com.frm_main.check_bu.btn_fi_r.state = 'fail'
+
+
+class ShimCheckR(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.freq.setActive(False)
+        com.frm_main.disconnectmenu()
+        com.frm_main.stl.setCurrentWidget(com.frm)
+        com.img.setPixmap(com.frm.img_prog2)
+        bu.shim_res_r = ''
+        bu.shim_note_r = ''
+        com.args = ['0,6-0,9', 0, 0]
+        com.idx = 0
+        com.val = 0
+        bu.shim_i1_r = 0
+        bu.shim_i2_r = 0
+        bu.shim_res1_r = ''
+        bu.shim_res2_r = ''
+        bu.shim_res3_r = ''
+        com.pa3.setActive()
+        com.text.setText('<p>Установите на программаторе режим <b><font color="blue">"PE80"</font></b>. '
+                         'Для этого зажав кнопку 1 или 2 кнопками'
+                         ' 5 и 6 установите требуемое значение режима.</p>'
+                         '<p>Нижний ряд индикаторов должен показывать <b><font color="green">"P000"</font></b>'
+                         '</p><p><br>Нажмите "ПРИНЯТЬ" для продолжения</p>'
+                         )
+
+        com.do2.setValue(1, 6)  # PA3
+        if com.dev_type == 'ЭРЧМ30T3-06':
+            com.opc.connect_bu_di_power(True, 110)
+            com.do1.setValue(0, 8)  # work/stop
+
+
+class ShimSaveI1R(QtCore.QState):
+    def onEntry(self, QEvent):
+        if 0.9 <= com.val <= 1.05:
+            com.val = 0.9
+        bu.shim_i1_r = com.val
+        if not (0.6 <= com.val <= 0.9):
+            bu.shim_note_r += 'Ток в силовой цепи ПЭ при параметре "Р000" режима "РЕ80" факт:' \
+                              ' {:.3f} А, норма: 0,6-0,9 А.;'.format(com.val)
+            bu.shim_res_r = 'НЕ НОРМА'
+
+        com.val = 0
+        com.idx = 0
+        com.args[0] = '2,1-2,4'
+        com.text.setText('<p>Установите при помощи кнопки 6 значение '
+                         '<b><font color="green">"1023"</font></b> на нижнем индикаторе  программатора.</p>'
+                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения</p>')
+
+
+class ShimSaveI2R(QtCore.QState):
+    def onEntry(self, QEvent):
+        if 2.4 <= com.val <= 2.55:
+            com.val = 2.4
+        bu.shim_i2_r = com.val
+        if not (2.1 <= com.val <= 2.4):
+            bu.shim_note_r += 'Ток в силовой цепи ПЭ при параметре "Р3F8" режима "РЕ80" факт: ' \
+                              '{} А, норма: 2,1-2,9 А.;'.format(com.val)
+            bu.shim_res_r = 'НЕ НОРМА'
+
+        com.text.setText('<p>Нажмите и удерживайте кнопку 6 "МЕНЬШЕ" программатора. Значения нижнего ряда '
+                         'индикаторов будут уменьшаться.'
+                         'При этом будет построен график тока силовой цепи.</p>'
+                         )
+
+
+class ShimGraphStartR(QtCore.QState):
+    start = QtCore.pyqtSignal()
+
+    def onEntry(self, QEvent):
+        global com
+        com.frm.img.clear()
+        com.img.setMinimumHeight(com.frm.GR_HEIGHT)
+        com.args = [(0, abs(com.pa3.value))]
+        com.frm.arr = com.args
+        com.frm.img.update()
+        com.t1 = time.perf_counter()
+        if abs(com.pa3.value) < bu.shim_i2_r - 0.01:
+            self.start.emit()
+
+
+class ShimGraphR(QtCore.QState):
+    done = QtCore.pyqtSignal()
+
+    def onEntry(self, QEvent):
+        com.t2 = time.perf_counter()
+        dt = com.t2 - com.t1
+        v = abs(com.pa3.value)
+        com.args.append((dt, v))
+        com.text.setText('<p>График тока силовой цепи.</p>'
+                         '<p>Текущее значение тока {:5.3f} А, с начала испытания прошло {:.1f} с.</p>'
+                         ''.format(v, dt))
+        if dt > 50 or v < bu.shim_i1_r + 0.05:
+            self.done.emit()
+        com.frm.arr = com.args
+        com.frm.img.update()
+
+
+class ShimGraphFinishR(QtCore.QState):
+    def onEntry(self, QEvent):
+        bu.shim_graph_r = com.args[:]
+
+        com.text.setText(
+            '<p>График должен монотонно уменьшаться. Не должно быть "пиков", '
+            '"провалов" и "плато" на всем протяжении графика.</p>'
+            '<p>Если это условие выполняется нажмите <font color="green">"ПРИНЯТЬ"</font>,'
+            '<br>Если условие не выполняется нажмите <font color="red">"ВНИЗ"</font>.</p>')
+
+
+class ShimFailR(QtCore.QState):
+    def onEntry(self, QEvent):
+        bu.shim_note_r += 'График тока силовой цепи не соответствует требованиям ТУ.;'
+        bu.shim_res_r = 'НЕ НОРМА'
+
+
+class ShimFinishR(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+
+        com.img.setMinimumHeight(0)
+        com.do2.setValue(0, 6)  # PA3
+        com.opc.connect_bu_di_power(False)
+        com.do1.setValue(0, 8)  # work/stop
+        if not bu.shim_res_r:
+            bu.shim_res_r = 'норма'
+            com.frm_main.check_bu.btn_shim_r.state = 'ok'
+        else:
+            com.frm_main.check_bu.btn_shim_r.state = 'fail'
+        com.pa3.setActive(False)
+
+        if 0.6 <= bu.shim_i1_r <= 0.9:
+            bu.shim_res1_r = 'норма'
+            res1 = '<font color="green">норма</font>'
+        else:
+            bu.shim_res1_r = 'НЕ НОРМА'
+            res1 = '<font color="red">НЕ НОРМА</font>'
+
+        if 2.1 <= bu.shim_i2_r <= 2.4:
+            res2 = '<font color="green">норма</font>'
+            bu.shim_res2_r = 'норма'
+        else:
+            res2 = '<font color="red">НЕ НОРМА</font>'
+            bu.shim_res2_r = 'НЕ НОРМА'
+
+        if not bu.shim_note_r.count('График'):
+            res3 = '<font color="green">норма</font>'
+            bu.shim_res3_r = 'норма'
+        else:
+            res3 = '<font color="red">НЕ НОРМА {}</font>'
+            bu.shim_res3_r = 'НЕ НОРМА'
+
+        com.frm.arr = []
+        com.text.setText('<p>Результаты проверки силового канала:</p>'
+                         '<p>Минимальный ток - факт: {:5.3f} А, норма: 0,6-0,9 А, результат: {}<br>'
+                         'Максимальный ток - факт: {:5.3f} А, норма: 2,1-2,4 А, результат: {}<br>'
+                         'Монотонность графика: {}</p>'
+                         '<p><br>Нажмите "ПРИНЯТЬ" для продолжения</p>'
+                         ''.format(bu.shim_i1_r, res1, bu.shim_i2_r, res2, res3))

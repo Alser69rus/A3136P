@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -96,8 +95,8 @@
       <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="1599" column="81" selection-start-line="1599" selection-start-column="81" selection-end-line="1599" selection-end-column="81" />
+            <state relative-caret-position="553">
+              <caret line="380" column="27" selection-start-line="380" selection-start-column="27" selection-end-line="380" selection-end-column="27" />
               <folding>
                 <element signature="e#0#42#0" expanded="true" />
               </folding>
@@ -654,7 +653,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565608034152</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="добавлена проверка чвх1 - дчд рез.">
+      <created>1565609987647</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1565609987647</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -753,7 +759,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Добавлена проверка записи М7084, АО и DO" />
     <MESSAGE value="добавлен выбор ИУ&#10;добавлена форма данных испытания" />
     <MESSAGE value="подправлена установка тока в 0" />
     <MESSAGE value="написан общий компонент для управления током" />
@@ -778,17 +783,11 @@
     <MESSAGE value="при проверке авх отдельная стадия для переключения режимов" />
     <MESSAGE value="рефакторинг. проверки rt вместо ai_3" />
     <MESSAGE value="добавлена проверка двх рез" />
-    <option name="LAST_COMMIT_MESSAGE" value="добавлена проверка двх рез" />
+    <MESSAGE value="добавлена проверка чвх1 - дчд рез." />
+    <option name="LAST_COMMIT_MESSAGE" value="добавлена проверка чвх1 - дчд рез." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py</url>
-          <line>885</line>
-          <option name="timeStamp" value="117" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -1135,8 +1134,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="1599" column="81" selection-start-line="1599" selection-start-column="81" selection-end-line="1599" selection-end-column="81" />
+        <state relative-caret-position="553">
+          <caret line="380" column="27" selection-start-line="380" selection-start-column="27" selection-end-line="380" selection-end-column="27" />
           <folding>
             <element signature="e#0#42#0" expanded="true" />
           </folding>

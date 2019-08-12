@@ -72,6 +72,7 @@ class Main(QtCore.QObject):
         self.bu_fi_r = BuFiR(self.stm)
         self.bu_rt = BuRt(self.stm)
         self.bu_shim = BuShim(self.stm)
+        self.bu_shim_r = BuShimR(self.stm)
 
         self.state_close = QtCore.QFinalState(self.stm)
 
@@ -124,6 +125,8 @@ class Main(QtCore.QObject):
         self.bu_rt.addTransition(self.exam_bu)
         self.check_bu.addTransition(self.form.check_bu.btn_shim.clicked, self.bu_shim)
         self.bu_shim.addTransition(self.exam_bu)
+        self.check_bu.addTransition(self.form.check_bu.btn_shim_r.clicked, self.bu_shim_r)
+        self.bu_shim_r.addTransition(self.exam_bu)
 
         self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_ai_tune.clicked, self.bu_select_2)
         self.bu_select_2.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
@@ -283,6 +286,10 @@ class BuRt(QtCore.QState):
 class BuShim(QtCore.QState):
     def onEntry(self, QEvent):
         com.exam_bu.setInitialState(com.exam_bu.shim_check)
+
+class BuShimR(QtCore.QState):
+    def onEntry(self, QEvent):
+        com.exam_bu.setInitialState(com.exam_bu.shim_check_r)
 
 
 if __name__ == '__main__':
