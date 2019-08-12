@@ -220,6 +220,7 @@ class Exam_bu(QtCore.QState):
         self.ai_3_fail_2 = AI3Fail2(self)
         self.ai_3_success_3 = AI3Success3(self)
         self.ai_3_fail_3 = AI3Fail3(self)
+        self.ai_reg_switch = AIRegSwitch(self)
         self.ai_3_res = AI3Res(self)
 
         self.addTransition(self.opc.error, self.error)
@@ -291,8 +292,10 @@ class Exam_bu(QtCore.QState):
         self.ai_measure.addTransition(server.ao.updated, self.ai_measure)
         self.ai_measure.addTransition(self.btnDown, self.ai_fail)
         self.ai_measure.addTransition(self.btnOk, self.ai_ok)
-        self.ai_fail.addTransition(self.ai_measure)
-        self.ai_ok.addTransition(self.ai_measure)
+        self.ai_fail.addTransition(self.ai_reg_switch)
+        self.ai_ok.addTransition(self.ai_reg_switch)
+        self.ai_reg_switch.addTransition(self.ai_reg_switch.done, self.ai_measure)
+        self.ai_reg_switch.addTransition(self.btnOk, self.ai_measure)
         self.ai_measure.addTransition(self.ai_measure.done, self.ai_res)
         self.ai_res.addTransition(self.ai_done)
         self.ai_done.addTransition(self.btnOk, self.finish)
@@ -1134,6 +1137,21 @@ class AIOk(QtCore.QState):
             bu.ai_i22 = com.val
         com.idx += 1
         com.freq.setClear(2)
+
+
+class AIRegSwitch(QtCore.QState):
+    done = QtCore.pyqtSignal()
+
+    def onEntry(self, QEvent):
+        if com.idx == 2:
+            com.text.setText('<p>Установите на программаторе режим '
+                             '<b><font color="blue">"PEС0"</font></b>. Для этого '
+                             'удерживая кнопку 1 или 2 программатора кнопками 5 и 6 установите требуемое '
+                             'значение режима.</p>'
+                             '<p><br>Нажмите <font color="green">"ПРИНЯТЬ"</font> для продолжения.</p>'
+                             )
+        else:
+            self.done.emit()
 
 
 class AIRes(QtCore.QState):
