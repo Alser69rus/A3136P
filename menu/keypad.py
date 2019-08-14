@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
-
+from functools import partial
 
 class KeyRow(QtWidgets.QWidget):
 
@@ -36,15 +36,22 @@ class Keypad(QtWidgets.QDialog):
         self.label.setAlignment(QtCore.Qt.AlignRight)
         self.vbox.addWidget(self.label)
 
-        row = [([it for it in '1234567890-+_='], 0),
-               ([it for it in 'йцукенгшщзхъ'], 0.3),
-               ([it for it in 'фывапролджэ'] + ['   Ввод   '], 0.6),
-               ([it for it in 'ячсмитьбю.,'], 0.9),
-               ([' ' * 10 + 'ПРОБЕЛ' + ' ' * 10], 1.2), ]
+        row = [[it for it in '1234567890-+_'],
+               [it for it in 'йцукенгшщзхъ'],
+               [it for it in 'фывапролджэ'],
+               [it for it in 'ячсмитьбю.,'],
+               [' ' * 20 + 'ПРОБЕЛ' + ' ' * 20],
+               ]
 
-        self.rows = [KeyRow(keys[0], keys[1]) for keys in row]
+        self.rows = [KeyRow(keys, i * 0.3) for i, keys in enumerate(row)]
         for row in self.rows:
             self.vbox.addWidget(row)
+            for btn in row.btns:
+                if len(btn.text()) == 1:
+                    btn.clicked.connect(partial(self.keyPress,btn.text()))
+
+    def keyPress(self,text):
+        self.label.setText(self.label.text() + text)
 
 
 if __name__ == '__main__':
