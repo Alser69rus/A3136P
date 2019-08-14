@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/menu/keypad.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" afterDir="false" />
     </list>
@@ -35,20 +36,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mnuSelectBU.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/menu/mnuSelectBU.py">
+      <file leaf-file-name="auth.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/menu/auth.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="47" column="44" selection-start-line="47" selection-start-column="44" selection-end-line="47" selection-end-column="44" />
+            <state relative-caret-position="-926">
+              <caret line="10" column="58" selection-start-line="10" selection-start-column="58" selection-end-line="10" selection-end-column="58" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="auth.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/menu/auth.py">
+      <file leaf-file-name="keypad.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/menu/keypad.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="10" column="58" selection-start-line="10" selection-start-column="58" selection-end-line="10" selection-end-column="58" />
+            <state relative-caret-position="493">
+              <caret line="41" column="42" selection-start-line="41" selection-start-column="42" selection-end-line="41" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -58,15 +59,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="782">
               <caret line="49" column="37" selection-start-line="49" selection-start-column="37" selection-end-line="49" selection-end-column="37" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mnuSelectIU.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/menu/mnuSelectIU.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -92,11 +84,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="690">
-              <caret line="1814" column="12" selection-start-line="1814" selection-start-column="12" selection-end-line="1814" selection-end-column="12" />
+            <state relative-caret-position="486">
+              <caret line="1684" column="115" selection-start-line="1684" selection-start-column="115" selection-end-line="1684" selection-end-column="115" />
               <folding>
                 <element signature="e#0#42#0" expanded="true" />
               </folding>
@@ -149,7 +141,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/exam/test_frm_ui_pe.py" />
         <option value="$PROJECT_DIR$/exam/frm_ui_pe.py" />
         <option value="$PROJECT_DIR$/exam/frm_iu_pe.py" />
         <option value="$PROJECT_DIR$/exam_iu/exam_ui_pe.py" />
@@ -200,6 +191,7 @@
         <option value="$PROJECT_DIR$/menu/mnuBUCheck.py" />
         <option value="$PROJECT_DIR$/Main.py" />
         <option value="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" />
+        <option value="$PROJECT_DIR$/menu/keypad.py" />
       </list>
     </option>
   </component>
@@ -248,8 +240,8 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="NBKnowledgePane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -273,7 +265,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Main">
+  <component name="RunManager" selected="Python.keypad">
     <configuration name="Main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="A3136P" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -328,7 +320,7 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <configuration name="frm_iu_dp" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="keypad" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="A3136P" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -336,11 +328,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/exam_iu" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/menu" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/exam_iu/frm_iu_dp.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/menu/keypad.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -361,18 +353,18 @@
     </configuration>
     <list>
       <item itemvalue="Python.Main" />
-      <item itemvalue="Python.frm_iu_dp" />
       <item itemvalue="Python.frm_iu" />
       <item itemvalue="Python.exam_bu_prog" />
       <item itemvalue="Python tests.Unittests in test_icpdas.py" />
+      <item itemvalue="Python.keypad" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.keypad" />
         <item itemvalue="Python.Main" />
         <item itemvalue="Python tests.Unittests in test_icpdas.py" />
         <item itemvalue="Python.exam_bu_prog" />
         <item itemvalue="Python.frm_iu" />
-        <item itemvalue="Python.frm_iu_dp" />
       </list>
     </recent_temporary>
   </component>
@@ -674,7 +666,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565615320993</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="исправлениы проверки платы резервирования связанные с отличным от основного управлением программатора">
+      <created>1565697659326</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1565697659326</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -727,7 +726,7 @@
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14583333" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32908705" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5015625" side_tool="true" weight="0.32590234" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4984375" weight="0.32590234" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4984375" visible="true" weight="0.32590234" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32908705" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -773,7 +772,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="написан общий компонент для управления током" />
     <MESSAGE value="исправлена ошибка ПЧВ &quot;на задании&quot;&#10;завершена проверка давления ИУ" />
     <MESSAGE value="завершена проверка тока ПЭ&#10;завершена проверка частоты ДП" />
     <MESSAGE value="протокол испытания ИУ&#10;кое где исправлены проверки на None" />
@@ -798,7 +796,8 @@
     <MESSAGE value="добавлена проверка чвх1 - дчд рез." />
     <MESSAGE value="добавлена проверка шм рез." />
     <MESSAGE value="исправлена ошибка подключения БУ" />
-    <option name="LAST_COMMIT_MESSAGE" value="исправлена ошибка подключения БУ" />
+    <MESSAGE value="исправлениы проверки платы резервирования связанные с отличным от основного управлением программатора" />
+    <option name="LAST_COMMIT_MESSAGE" value="исправлениы проверки платы резервирования связанные с отличным от основного управлением программатора" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -809,7 +808,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="118" />
+      <option name="time" value="120" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="tests">
@@ -821,13 +820,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/exam_iu/graph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="33" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/opc/opc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="782">
@@ -855,13 +847,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="434">
           <caret line="57" column="32" selection-start-line="57" selection-start-column="32" selection-end-line="57" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtGui/QFont.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="299" column="8" selection-start-line="299" selection-start-column="8" selection-end-line="299" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -1081,13 +1066,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/menu/auth.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="10" column="58" selection-start-line="10" selection-start-column="58" selection-end-line="10" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/menu/template.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="782">
@@ -1145,11 +1123,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="690">
-          <caret line="1814" column="12" selection-start-line="1814" selection-start-column="12" selection-end-line="1814" selection-end-column="12" />
+        <state relative-caret-position="486">
+          <caret line="1684" column="115" selection-start-line="1684" selection-start-column="115" selection-end-line="1684" selection-end-column="115" />
           <folding>
             <element signature="e#0#42#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtGui/QFont.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="299" column="8" selection-start-line="299" selection-start-column="8" selection-end-line="299" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/menu/auth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-926">
+          <caret line="10" column="58" selection-start-line="10" selection-start-column="58" selection-end-line="10" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/menu/keypad.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="41" column="42" selection-start-line="41" selection-start-column="42" selection-end-line="41" selection-end-column="42" />
         </state>
       </provider>
     </entry>
