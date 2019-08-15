@@ -14,6 +14,10 @@ from opc.pid import PID
 class Current(QtCore.QObject):
     def __init__(self, pida=None, pidc=None, freq=None, ao=None, parent=None):
         super().__init__(parent)
+        settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
+        settings.setIniCodec('UTF-8')
+        self.BR3 = int(settings.value('freq/br3', 2))
+        self.SHIM = int(settings.value('ao/shim', 2))
         self.pida = pida
         self.pidc = pidc
         self.freq = freq
@@ -21,8 +25,8 @@ class Current(QtCore.QObject):
         self.active = False
         self.pida_value = pida.u
         self.pidc_value = pidc.u
-        self.br3_value = freq.value[2]
-        self.br3_zero = freq.value[2]
+        self.br3_value = freq.value[self.BR3]
+        self.br3_zero = freq.value[self.BR3]
         self.manual_value = 0
         freq.updated.connect(self.on_freq_update, QtCore.Qt.QueuedConnection)
         pida.changed.connect(self.set_pida, QtCore.Qt.QueuedConnection)
@@ -47,9 +51,9 @@ class Current(QtCore.QObject):
             self.pida.setActive(False)
             self.pidc.setActive(False)
             if task >= 0:
-                self.br3_zero = self.freq.value[2] - task
+                self.br3_zero = self.freq.value[self.BR3] - task
             else:
-                self.br3_zero = self.freq.value[2] - self.ao.value[2]
+                self.br3_zero = self.freq.value[self.BR3] - self.ao.value[self.SHIM]
         elif 'manual' == value:
             self.pida.setActive(False)
             self.pidc.setActive(False)
@@ -79,7 +83,7 @@ class Current(QtCore.QObject):
 
     @QtCore.pyqtSlot()
     def on_freq_update(self):
-        v = self.freq.value[2]
+        v = self.freq.value[self.BR3]
         if v != self.br3_value:
             self.set_br3(v)
 
@@ -101,7 +105,7 @@ class Current(QtCore.QObject):
         v = round(value)
         if v < 0: v = 0
         if v > 1000: v = 1000
-        self.ao.setValue(v, 2)
+        self.ao.setValue(v, self.SHIM)
 
     def on_task_reached(self):
         self.setActive(False)
@@ -143,7 +147,7 @@ class Worker(QtCore.QObject):
         return serial.Serial(port_name, baud_rate, *args, **kwargs)
 
     def modbus_master(self, serial_port, *args, **kwargs):
-        master=None
+        master = None
         try:
             master = modbus_rtu.RtuMaster(serial_port, *args, **kwargs)
             return master
@@ -163,23 +167,28 @@ class Worker1(Worker):
 
     def __init__(self, port=None, baud=9600, timeout=0.05, parent=None):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
-        self.ai = owenio.AI8(self.port, 8)
-        self.ai.k = [0, 0.0001, 0, 0, 0, 0, 0, 0]
-        self.ai.off = [0, -0.4, 0, 0, 0, 0, 0, 0]
-        self.ai.eps = [1, 0.001, 1, 1, 1, 1, 1, 1]
-        self.di = owenio.DI16(self.port, 9)
-        self.do1 = owenio.DO32(self.port, 1, name='DO1')
-        self.do2 = owenio.DO32(self.port, 5, name='DO2')
-        self.ao = owenio.AO8I(self.port, 6)
+        settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
+        settings.setIniCodec('UTF-8')
 
-        self.pv1 = ElMultimeter(self.port, 11, k=0.01, eps=0.01, name='PV1')
-        self.pv2 = ElMultimeter(self.port, 12, name='PV2')
-        self.pa1 = ElMultimeter(self.port, 21, name='PA1')
-        self.pa2 = ElMultimeter(self.port, 22, name='PA2')
-        self.pa3 = ElMultimeter(self.port, 23, k=0.001, eps=0.001, name='PA3')
+        self.ai = owenio.AI8(self.port, settings.value('ai/dev', 8, int))
+        self.ai.k = settings.value('ai/k', [1] * 8, float)
+        self.ai.off = settings.value('ai/off', [0] * 8, float)
+        self.ai.eps = settings.value('ai/eps', [1] * 8, float)
+        self.di = owenio.DI16(self.port, settings.value('di/dev', 9, int))
+        self.do1 = owenio.DO32(self.port, settings.value('do1/dev', 1, int), name='DO1')
+        self.do2 = owenio.DO32(self.port, settings.value('do2/dev', 5, int), name='DO2')
+        self.ao = owenio.AO8I(self.port, settings.value('ao/dev', 6, int))
 
-        self.pida = PID(0.7, 4, -0.25, 0.2)
-        self.pidc = PID(10, 50, -2.5, 0.02)
+        self.pv1 = ElMultimeter(self.port, settings.value('pv1/dev', 11, int), k=settings.value('pv1/k', 0.01, float),
+                                eps=settings.value('pv1/eps', 0.01, float), name='PV1')
+        self.pv2 = ElMultimeter(self.port, settings.value('pv2/dev', 12, int), name='PV2')
+        self.pa1 = ElMultimeter(self.port, settings.value('pa1/dev', 21, int), name='PA1')
+        self.pa2 = ElMultimeter(self.port, settings.value('pa2/dev', 22, int), name='PA2')
+        self.pa3 = ElMultimeter(self.port, settings.value('pa3/dev', 23, int), k=settings.value('pa3/k', 0.001, float),
+                                eps=settings.value('pa3/eps', 0.001, float), name='PA3')
+
+        self.pida = PID(*settings.value('pid/pida', [0.7, 4, -0.25, 0.2], float))
+        self.pidc = PID(*settings.value('pid/pidc', [10, 50, -2.5, 0.02], float))
 
         self.dev = [self.ai, self.di, self.do1, self.do2, self.ao, self.pv1, self.pv2, self.pa1, self.pa2, self.pa3]
         for dev in self.dev:
@@ -194,7 +203,11 @@ class Worker2(Worker):
 
     def __init__(self, port=None, baud=9600, timeout=0.05, parent=None):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
-        self.pchv = Pchv(self.port, dev=2, max_speed=1565, fb_k=1.258)
+        settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
+        settings.setIniCodec('UTF-8')
+        self.pchv = Pchv(self.port, dev=settings.value('pchv/dev', 2, int),
+                         max_speed=settings.value('pchv/max_speed', 1565, int),
+                         fb_k=settings.value('pchv/fb_k', 1.258, float))
         self.dev = [self.pchv]
         self.pchv.setActive(False)
 
@@ -204,7 +217,10 @@ class Worker3(Worker):
 
     def __init__(self, port=None, baud=9600, timeout=0.05, parent=None):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
-        self.gen = Generator(self.port, 100)
+        settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
+        settings.setIniCodec('UTF-8')
+
+        self.gen = Generator(self.port, settings.value('gen/dev', 100, int))
         self.dev = [self.gen]
         self.gen.setActive()
 
@@ -214,9 +230,12 @@ class Worker4(Worker):
 
     def __init__(self, port=None, baud=9600, timeout=0.1, parent=None):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
-        self.freq = M7084(self.port, 3)
-        self.freq.k = [0.0078125, 0.0078125, 1, 1, 0, 1, 1, 0.001]
-        self.freq.eps = [0.05, 0.05, 1, 1, 0, 5, 5, 0.005]
+        settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
+        settings.setIniCodec('UTF-8')
+
+        self.freq = M7084(self.port, settings.value('freq/dev', 3, int))
+        self.freq.k = settings.value('freq/k', [0.0078125, 0.0078125, 1, 1, 0, 1, 1, 0.001], float)
+        self.freq.eps = settings.value('freq/eps', [0.05, 0.05, 1, 1, 0, 5, 5, 0.005], float)
         self.dev = [self.freq]
         self.freq.setActive()
 
@@ -238,8 +257,13 @@ class Server(QtCore.QObject):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
+        settings.setIniCodec('UTF-8')
         self.pool = []
-        self.workers = [Worker1('COM1', 38400), Worker2('COM2', 38400), Worker3('COM4', 115200), Worker4('COM7', 38400)]
+        self.workers = [Worker1(settings.value('port/port1', 'COM1'), settings.value('port/baud1', 38400, int)),
+                        Worker2(settings.value('port/port2', 'COM2'), settings.value('port/baud2', 38400, int)),
+                        Worker3(settings.value('port/port3', 'COM4'), settings.value('port/baud3', 115200, int)),
+                        Worker4(settings.value('port/port4', 'COM7'), settings.value('port/baud4', 38400, int))]
         for worker in self.workers:
             thread = QThread()
             worker.moveToThread(thread)
