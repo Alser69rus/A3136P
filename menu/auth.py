@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
 from menu.template import Menu
 from menu.btn import Btn
+from menu.keypad import Keypad
 
 
 class Auth(Menu):
@@ -69,6 +70,7 @@ class Auth(Menu):
         operators = settings.value('employees')
 
         dialog = QtWidgets.QInputDialog(self)
+        keypad = Keypad()
         dialog.setFont(QtGui.QFont('Segoi Ui', 16))
 
         if sender == self.btn_name1:
@@ -78,16 +80,34 @@ class Auth(Menu):
             dialog.setComboBoxItems(operators)
             dialog.setComboBoxEditable(False)
 
-        result = dialog.exec()
+        if sender is self.btn_num:
+            keypad.setText(self.num)
+            result = keypad.exec()
+        if sender is self.btn_date:
+            keypad.setText(self.date)
+            result = keypad.exec()
+        if sender is self.btn_locomotive:
+            keypad.setText(self.locomotive)
+            result = keypad.exec()
+        if sender is self.btn_section:
+            keypad.setText(self.section)
+            result = keypad.exec()
+        if sender is self.btn_name1:
+            result = dialog.exec()
+        if sender is self.btn_name2:
+            result = dialog.exec()
+
+        # keypad.setText()
+
         if result == QtWidgets.QDialog.Accepted:
             if sender is self.btn_num:
-                self.num = dialog.textValue()
+                self.num = keypad.textValue()
             if sender is self.btn_date:
-                self.date = dialog.textValue()
+                self.date = keypad.textValue()
             if sender is self.btn_locomotive:
-                self.locomotive = dialog.textValue()
+                self.locomotive = keypad.textValue()
             if sender is self.btn_section:
-                self.section = dialog.textValue()
+                self.section = keypad.textValue()
             if sender is self.btn_name1:
                 self.name1 = dialog.textValue()
             if sender is self.btn_name2:
