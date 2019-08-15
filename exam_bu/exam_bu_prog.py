@@ -960,6 +960,7 @@ class ShimCheck(QtCore.QState):
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)
+        com.frm.arr = []
         bu.shim_res = ''
         bu.shim_note = ''
         com.args = ['0,6-0,9', 0, 0]
@@ -1664,6 +1665,7 @@ class FiDoneR(QtCore.QState):
 class ShimCheckR(QtCore.QState):
     def onEntry(self, QEvent):
         com.frm.img.clear()
+        com.frm.arr = []
         com.freq.setActive(False)
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
