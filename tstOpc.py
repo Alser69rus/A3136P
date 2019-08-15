@@ -1,11 +1,11 @@
 from PyQt5 import QtCore, QtWidgets
-import opc.opc2
+import opc.opc
 
 
 class Main(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.opc = opc.opc2.Server()
+        self.opc = opc.opc.Server()
 
         self.vbox = QtWidgets.QVBoxLayout()
         self.warning = QtWidgets.QTextEdit()

@@ -2,7 +2,7 @@
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QState as QState
 
-import opc.opc2
+import opc.opc
 import menu.mainform
 import exam_iu.exam_iu_pe
 import exam_iu.exam_iu_dp
@@ -29,7 +29,7 @@ class Main(QtCore.QObject):
         global com
         com = Communicate()
 
-        self.opc = opc.opc2.Server()
+        self.opc = opc.opc.Server()
         com.opc = self.opc
 
         self.form = menu.mainform.MainForm(self.opc)
