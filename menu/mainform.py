@@ -48,7 +48,6 @@ class MainForm(QtWidgets.QWidget):
         self.select_bu.btn_bu_back.clicked.connect(self.btnPanel.btnBack.clicked)
         self.check_bu = CheckBU()
 
-
         self.exam_iu_pe_set_pe = exam_iu.frm_iu.Form_iu_set_pe()
         self.exam_iu_pe_set_dp = exam_iu.frm_iu.Form_iu_set_dp()
         self.exam_iu_pe_inst1 = exam_iu.frm_iu.Form_iu_inst1()

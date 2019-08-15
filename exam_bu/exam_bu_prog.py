@@ -1,6 +1,8 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5 import QtWidgets, QtCore, QtGui, QtPrintSupport
 import time
 from dataclasses import dataclass, field
+import datetime
+from pathlib import Path
 
 com = None
 
@@ -129,6 +131,12 @@ class Form(QtWidgets.QWidget):
             painter.drawPolyline(*points)
 
 
+class FormPrint(QtPrintSupport.QPrintPreviewWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.fitToWidth()
+
+
 class Exam_bu(QtCore.QState):
     success = QtCore.pyqtSignal()
     fail = QtCore.pyqtSignal()
@@ -149,6 +157,10 @@ class Exam_bu(QtCore.QState):
         self.freq = server.freq
         self.frm_main = form
         self.frm = Form()
+        self.frm_print = FormPrint()
+        self.protocol = Protocol(self)
+        self.frm_print.paintRequested.connect(self.protocol.preview)
+        self.frm_main.stl.addWidget(self.frm_print)
         self.frm_main.stl.addWidget(self.frm)
         self.btnBack = self.frm_main.btnPanel.btnBack.clicked
         self.btnOk = self.frm_main.btnPanel.btnOk.clicked
@@ -1823,3 +1835,79 @@ class ShimFinishR(QtCore.QState):
                          'Монотонность графика: {}</p>'
                          '<p><br>Нажмите "ПРИНЯТЬ" для продолжения</p>'
                          ''.format(bu.shim_i1_r, res1, bu.shim_i2_r, res2, res3))
+
+
+class Protocol(QtCore.QState):
+    num: int = 0
+
+    def onEntry(self, QEvent):
+        global com, bu
+        settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
+        settings.setIniCodec('UTF-8')
+        protocol_path = Path(settings.value('protocol/path', 'c:\\протоколы\\'))
+        last_date = settings.value('protocol/date', '01-01-2019')
+        self.num = settings.value('protocol/num', 0, int)
+        today = datetime.datetime.today()
+        month = int(str(last_date).split('-')[1])
+        if month != today.month:
+            self.num = 0
+        self.num += 1
+        protocol_path = protocol_path.joinpath(f'{today.year:0>4}-{today.month:0>2}\\')
+
+        if not protocol_path.exists():
+            protocol_path.mkdir(parents=True, exist_ok=True)
+        protocol_path = protocol_path.joinpath(
+            f'N {self.num} {today.day:0>2}-{today.month:0>2}-{today.year:0>4} ИУ {bu.dev_type} завN'
+            f' {com.frm_main.auth.num} {com.frm_main.auth.date}.pdf')
+
+        com.frm_print.updatePreview()
+        com.frm_main.stl.setCurrentWidget(com.frm_print)
+        wr = QtGui.QPdfWriter(protocol_path)
+        self.preview(wr)
+
+        settings.setValue('protocol/num', self.num)
+        settings.setValue('protocol/date', today.strftime('%d-%m-%Y'))
+
+    def preview(self, printer):
+        SPACE = 62
+        # V_SPACE = 20
+
+        layout = QtGui.QPageLayout()
+        layout.setPageSize(QtGui.QPageSize(QtGui.QPageSize.A4))
+        layout.setOrientation(QtGui.QPageLayout.Portrait)
+        # layout.setMargins(20, 10, 5, 15, QtPrintSupport.QPrinter.Millimeter)
+        printer.setPageLayout(layout)
+        printer.setResolution(300)
+        painter = QtGui.QPainter()
+
+        painter.begin(printer)
+        color = QtGui.QColor(QtCore.Qt.black)
+        pen = QtGui.QPen(color)
+        brush = QtGui.QBrush(color)
+        font = QtGui.QFont('Segoi ui', 10)
+        header_font = QtGui.QFont('Segoi ui', 14)
+        painter.setPen(pen)
+        painter.setBrush(brush)
+        protocol_num = self.num
+        protocol_date = datetime.datetime.today().strftime('%d-%m-%Y')
+
+        # Заголовок
+        # x, y = 200, 30
+        x, y = 625, 94
+        painter.setFont(header_font)
+        painter.drawText(x, y, f'Протокол испытания № {protocol_num: <3d} от  {protocol_date}')
+        painter.setFont(font)
+        # Шапка
+        # x = 50
+        x = 156
+        y += SPACE * 2.5
+        painter.drawText(x, y, f'Тип исполнительного устройства: {iu.dev_type}')
+        y += SPACE
+        painter.drawText(x, y, f'Зав. № {frm_main.auth.num}     Дата изготовления: {frm_main.auth.date}')
+        y += SPACE
+        painter.drawText(x, y, f'Тепловоз № {frm_main.auth.locomotive}     Секция: {frm_main.auth.section}')
+        # Шапка таблицы
+        y += SPACE * 1.5
+        # w = [0, 400, 520, 620]
+        w = [0, 1250, 1625, 1937]
+
