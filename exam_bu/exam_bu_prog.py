@@ -19,7 +19,7 @@ class BU:
     di_max: int = 0
     di_reg: str = ''
 
-    fi_res: str = ''
+    fi_res: list = field(default_factory=list)
     fi_note: str = ''
     fi_res_r: str = ''
     fi_note_r: str = ''
@@ -42,7 +42,7 @@ class BU:
     shim_res2_r: str = ''
     shim_res3_r: str = ''
 
-    ai_res: str = ''
+    ai_res: list = field(default_factory=list)
     ai_note: str = ''
     ai_i11: float = 0
     ai_i12: float = 0
@@ -227,6 +227,7 @@ class Exam_bu(QtCore.QState):
         self.fi_config = FiConfig(self)
         self.fi_measure = FiMeasure(self)
         self.fi_fail = FiFail(self)
+        self.fi_ok = FiOk(self)
         self.fi_done = FiDone(self)
 
         self.fi_check_r = FICheckR(self)
@@ -234,6 +235,7 @@ class Exam_bu(QtCore.QState):
         self.fi_config_r = FiConfigR(self)
         self.fi_measure_r = FiMeasure(self)
         self.fi_fail_r = FiFailR(self)
+
         self.fi_done_r = FiDoneR(self)
 
         self.shim_check = ShimCheck(self)
@@ -342,7 +344,8 @@ class Exam_bu(QtCore.QState):
         self.fi_check.addTransition(self.btnDown, self.fi_param_sav)
         self.fi_param_sav.addTransition(self.btnOk, self.fi_config)
         self.fi_config.addTransition(self.fi_measure)
-        self.fi_measure.addTransition(self.btnOk, self.fi_measure)
+        self.fi_measure.addTransition(self.btnOk, self.fi_ok)
+        self.fi_ok.addTransition(self.fi_measure)
         self.fi_measure.addTransition(self.btnDown, self.fi_fail)
         self.fi_fail.addTransition(self.fi_measure)
         self.fi_measure.addTransition(self.fi_measure.done, self.fi_done)
@@ -887,7 +890,7 @@ class FICheck(QtCore.QState):
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)
-        bu.fi_res = ''
+        bu.fi_res = []
         bu.fi_note = ''
         # com.removeTransition(com.back_transition)
         com.text.setText('<p>Установите на программаторе режим <b><font color="blue">"РЕА0"</font></b>. '
@@ -945,12 +948,17 @@ class FiMeasure(QtCore.QState):
             self.done.emit()
 
 
+class FiOk(QtCore.QState):
+    def onEntry(self, QEvent):
+        fi = com.args[com.idx][3]
+        bu.fi_res.append((fi, 'норма'))
+
+
 class FiFail(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        args = com.args[com.idx]
-        bu.fi_res = 'НЕ НОРМА'
-        bu.fi_note += 'Неисправен частотный вход {}.;'.format(args[3])
+        fi = com.args[com.idx][3]
+        bu.fi_res.append((fi, 'НЕ НОРМА'))
 
 
 class FiDone(QtCore.QState):
@@ -959,8 +967,8 @@ class FiDone(QtCore.QState):
         # com.addTransition(com.back_transition)
         com.do2.setValue(com.do2.value[:12] + [0, 0, 0] + com.do2.value[15:])
         com.gen.setValue([0, 0, 0])
-        if not bu.fi_res:
-            bu.fi_res = 'норма'
+        res = all([it[1] == 'норма' for it in bu.fi_res])
+        if res:
             com.frm_main.check_bu.btn_fi.state = 'ok'
         else:
             com.frm_main.check_bu.btn_fi.state = 'fail'
@@ -1173,7 +1181,7 @@ class AiCheck(QtCore.QState):
         com.idx = 0
         com.args = [
             {'v0': 32, 'ch': 'АВХ1.1 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '0.080', 'norm': '4.45-4.55'},
-            {'v0': 960, 'ch': 'АВХ1.2 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '2.400', 'norm': '19.45-19.55'},
+            {'v0': 969, 'ch': 'АВХ1.2 - ДДН', 'reg': 'PE91', 'row': 'верхнего', 'val': '2.423', 'norm': '19.45-19.55'},
             {'v0': 31, 'ch': 'АВХ2.1 - ДДМ', 'reg': 'PEС0', 'row': 'верхнего', 'val': '00.50', 'norm': '4.45-4.55'},
             {'v0': 969, 'ch': 'АВХ2.2 - ДДМ', 'reg': 'PEС0', 'row': 'верхнего', 'val': '15.50', 'norm': '19.45-19.55'}]
 
@@ -1203,6 +1211,7 @@ class AIMeasure(QtCore.QState):
         row = cur['row']
         val = cur['val']
         norm = cur['norm']
+        bu.ai_res = []
 
         com.text.setText(f'<p>Для проверки канала {ch} установите на программаторе режим '
                          f'<b><font color="blue">"{reg}"</font></b>. Для этого '
@@ -1283,8 +1292,11 @@ class AIRes(QtCore.QState):
         color_success = '#80ff80'
         color_fail = '#ff8080'
         val = [bu.ai_i11, bu.ai_i12, bu.ai_i21, bu.ai_i22]
-        norm = [4.512, 19.36, 4.496, 19.504]
+        norm = [4.512, 19.504, 4.496, 19.504]
         check = [norm[i] - 0.05 <= val[i] <= norm[i] + 0.05 for i in range(4)]
+        name = [it['ch'] for it in com.args]
+        norm2 = [it['norm'] for it in com.args]
+        bu.ai_res = list(zip(name, norm2, val, check))
 
         row = [''] * 4
         for i in range(4):
@@ -1857,12 +1869,12 @@ class Protocol(QtCore.QState):
         if not protocol_path.exists():
             protocol_path.mkdir(parents=True, exist_ok=True)
         protocol_path = protocol_path.joinpath(
-            f'N {self.num} {today.day:0>2}-{today.month:0>2}-{today.year:0>4} ИУ {bu.dev_type} завN'
-            f' {com.frm_main.auth.num} {com.frm_main.auth.date}.pdf')
+            f'N {self.num} от {today.day:0>2}-{today.month:0>2}-{today.year:0>4} БУ {bu.dev_type} завN'
+            f' {com.frm_main.auth.num} дата изг. {com.frm_main.auth.date}.pdf')
 
         com.frm_print.updatePreview()
         com.frm_main.stl.setCurrentWidget(com.frm_print)
-        wr = QtGui.QPdfWriter(protocol_path)
+        wr = QtGui.QPdfWriter(str(protocol_path))
         self.preview(wr)
 
         settings.setValue('protocol/num', self.num)
@@ -1870,12 +1882,10 @@ class Protocol(QtCore.QState):
 
     def preview(self, printer):
         SPACE = 62
-        # V_SPACE = 20
 
         layout = QtGui.QPageLayout()
         layout.setPageSize(QtGui.QPageSize(QtGui.QPageSize.A4))
         layout.setOrientation(QtGui.QPageLayout.Portrait)
-        # layout.setMargins(20, 10, 5, 15, QtPrintSupport.QPrinter.Millimeter)
         printer.setPageLayout(layout)
         printer.setResolution(300)
         painter = QtGui.QPainter()
@@ -1892,22 +1902,68 @@ class Protocol(QtCore.QState):
         protocol_date = datetime.datetime.today().strftime('%d-%m-%Y')
 
         # Заголовок
-        # x, y = 200, 30
         x, y = 625, 94
         painter.setFont(header_font)
         painter.drawText(x, y, f'Протокол испытания № {protocol_num: <3d} от  {protocol_date}')
         painter.setFont(font)
         # Шапка
-        # x = 50
         x = 156
         y += SPACE * 2.5
-        painter.drawText(x, y, f'Тип исполнительного устройства: {iu.dev_type}')
+        painter.drawText(x, y, f'Тип блока управления регулятора: {bu.dev_type}')
         y += SPACE
-        painter.drawText(x, y, f'Зав. № {frm_main.auth.num}     Дата изготовления: {frm_main.auth.date}')
+        painter.drawText(x, y, f'Зав. № {com.frm_main.auth.num}     Дата изготовления: {com.frm_main.auth.date}')
         y += SPACE
-        painter.drawText(x, y, f'Тепловоз № {frm_main.auth.locomotive}     Секция: {frm_main.auth.section}')
-        # Шапка таблицы
+        painter.drawText(x, y, f'Тепловоз № {com.frm_main.auth.locomotive}     Секция: {com.frm_main.auth.section}')
         y += SPACE * 1.5
-        # w = [0, 400, 520, 620]
         w = [0, 1250, 1625, 1937]
 
+        def print_row(*row):
+            nonlocal x, y
+            for i, v in enumerate(row):
+                painter.drawText(x + w[i], y, v)
+            y += SPACE
+
+        # Шапка таблицы
+        y += SPACE * 1.5
+        w = [0, 800, 1300, 1800]
+        r = bu.di_res
+
+        if not bu.di_res:
+            print_row('1. Проверка дискретных входов', 'пропуск')
+        else:
+            print_row('1. Проверка дискретных входов')
+            for it in bu.di_res:
+                if it[1] > 0:
+                    res = 'норма'
+                elif it[1] == 0:
+                    res = '---'
+                else:
+                    res = 'НЕ НОРМА'
+                print_row(f'         {it[0]}', res)
+
+        if not bu.fi_res:
+            print_row('2. Проверка частотных входов', 'пропуск')
+        else:
+            print_row('2. Проверка частотных входов')
+            for it in bu.fi_res:
+                print_row(f'        {it[0]}', it[1])
+
+        if not bu.shim_res:
+            print_row('3. Проверка ШИМ', 'пропуск')
+        else:
+            print_row('3. Проверка ШИМ')
+            print_row(
+                f'         Минимальный ток, норма 0,6-0,9 А, факт: {bu.shim_i1:5.3f} А, результат: {bu.shim_res1}')
+            print_row(
+                f'         Максимальный ток, норма 2,1-2,4 А, факт: {bu.shim_i2:5.3f} А, результат: {bu.shim_res2}')
+            print_row(f'         Монотонность графика: {bu.shim_res3}')
+
+        pass_type = ['ЭРЧМ30Т4-01', 'ЭРЧМ30Т4-03']
+        if not (bu.dev_type in pass_type):
+            if not bu.ai_res:
+                print_row('4. Проверка аналоговых входов', 'пропуск')
+            else:
+                print_row('4. Проверка аналоговых входов')
+                for it in bu.ai_res:
+                    res = 'норма' if it[3] else 'НЕ НОРМА'
+                    print_row(f'        {it[0]: >15}, мА',f'норма: {it[1]}',f'факт: {it[2]:6.3f}',f'результат: {res}')

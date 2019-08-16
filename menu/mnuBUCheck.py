@@ -24,13 +24,13 @@ class CheckBU(Menu):
         self.btn_fi_r = Btn('Проверка резервного канала ДЧД')
         self.btn_shim_r = Btn('Проверка резервного канала ШИМ')
 
-        self.btn_bu_back = Btn('Завершение испытаний')
+        self.btn_protocol = Btn('Завершение испытаний')
 
         lst = [self.btn_prepare, self.btn_di, self.btn_fi, self.btn_shim, self.btn_ai, self.btn_rt,
-               self.btn_prepare_r, self.btn_di_r, self.btn_fi_r, self.btn_shim_r, self.btn_bu_back]
+               self.btn_prepare_r, self.btn_di_r, self.btn_fi_r, self.btn_shim_r, self.btn_protocol]
         self.set_lst(lst)
 
-        self.btn_bu_back.clicked.connect(self.btn_back)
+        self.btn_protocol.clicked.connect(self.btn_back)
 
     def reset(self):
         exam_bu.exam_bu_prog.bu = exam_bu.exam_bu_prog.BU(dev_type=self.dev_type)
@@ -77,10 +77,10 @@ class CheckBU(Menu):
         elif self.dev_type == 'ЭРЧМ30Т4-03':
             vis = [self.btn_di, self.btn_fi, self.btn_shim]
 
-        vis += [self.btn_bu_back, self.btn_prepare]
+        vis += [self.btn_protocol, self.btn_prepare]
 
         for elem in self.list:
-            if elem != self.btn_bu_back and elem != self.btn_prepare:
+            if elem != self.btn_protocol and elem != self.btn_prepare:
                 elem.setEnabled(False)
             if elem in vis:
                 elem.setVisible(True)
