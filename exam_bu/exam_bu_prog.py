@@ -1899,7 +1899,7 @@ class Protocol(QtCore.QState):
         settings.setValue('protocol/date', today.strftime('%d-%m-%Y'))
 
     def preview(self, printer):
-        SPACE = 62
+        SPACE = 50
 
         layout = QtGui.QPageLayout()
         layout.setPageSize(QtGui.QPageSize(QtGui.QPageSize.A4))
@@ -1913,8 +1913,8 @@ class Protocol(QtCore.QState):
         red = QtGui.QColor(QtCore.Qt.red)
         pen = QtGui.QPen(black)
         brush = QtGui.QBrush(black)
-        font = QtGui.QFont('Segoi ui', 10)
-        header_font = QtGui.QFont('Segoi ui', 14)
+        font = QtGui.QFont('Segoi ui', 9)
+        header_font = QtGui.QFont('Segoi ui', 12)
         painter.setPen(pen)
         painter.setBrush(brush)
         protocol_num = self.num
@@ -1927,7 +1927,7 @@ class Protocol(QtCore.QState):
         painter.setFont(font)
         # Шапка
         x = 156
-        y += SPACE * 2.5
+        y += SPACE * 2
         painter.drawText(x, y, f'Тип блока управления регулятора: {bu.dev_type}')
         y += SPACE
         painter.drawText(x, y, f'Зав. № {com.frm_main.auth.num}     Дата изготовления: {com.frm_main.auth.date}')
@@ -1994,7 +1994,7 @@ class Protocol(QtCore.QState):
                              't, с')
 
             painter.drawText(x + ofx + 200,
-                             y + ofy+20+SPACE*6,
+                             y + ofy+20+SPACE*7,
                              caption)
 
             pen = QtGui.QPen(red)
@@ -2029,17 +2029,17 @@ class Protocol(QtCore.QState):
 
         shim_y=y+SPACE*4
         if not bu.shim_res:
-            print_row('3. Проверка ШИМ', 'пропуск')
+            print_row('8. Проверка ШИМ', 'пропуск')
         else:
 
-            print_row('3. Проверка ШИМ')
+            print_row('8. Проверка ШИМ')
             print_row(
                 f'         Минимальный ток, А', f'{bu.shim_res1}', f'факт: {bu.shim_i1:5.3f}', f'норма 0,6-0,9 А')
             print_row(
                 f'         Максимальный ток, А', f'{bu.shim_res2}', f'факт: {bu.shim_i2:5.3f}', f'норма 2,1-2,4')
             print_row(f'         Монотонность графика:', f'{bu.shim_res3}')
-            print_graph(x, y, bu.shim_graph,'График ШИМ')
-            y += SPACE * 8
+            print_graph(x+100, y, bu.shim_graph,'График ШИМ')
+            y += SPACE * 10
         pass_type = ['ЭРЧМ30Т4-01', 'ЭРЧМ30Т4-03']
         if not (bu.dev_type in pass_type):
             if not bu.ai_res:
@@ -2096,7 +2096,7 @@ class Protocol(QtCore.QState):
                 print_row(f'         Монотонность графика:', f'{bu.shim_res3_r}')
                 print_graph(x + 1300, shim_y, bu.shim_graph_r,'График резервного ШИМ')
             painter.setFont(header_font)
-            y += SPACE * 2.5
+            y += SPACE * 2
             painter.drawText(x, y, 'Испытание провел:')
             painter.drawText(x + 312, y, f'{com.frm_main.auth.name1: >50}    {"_" * 20}')
 

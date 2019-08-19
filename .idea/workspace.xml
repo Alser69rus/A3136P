@@ -51,8 +51,8 @@
       <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="451">
-              <caret line="2101" column="84" selection-start-line="2101" selection-start-column="84" selection-end-line="2101" selection-end-column="84" />
+            <state relative-caret-position="213">
+              <caret line="2040" column="29" selection-start-line="2040" selection-start-column="29" selection-end-line="2040" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -356,13 +356,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557316784434</updated>
-    </task>
-    <task id="LOCAL-00002" summary="исправлена ошибка АО, pack data&#10;вместо быстрых классов пчв и М7084 изменены базовые&#10;Добавлена возможность регулировать ток BR3">
-      <created>1553174417430</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1553174417430</updated>
     </task>
     <task id="LOCAL-00003" summary="исправлена ошибка АО, pack data&#10;вместо быстрых классов пчв и М7084 изменены базовые&#10;Добавлена возможность регулировать ток BR3&#10;исправлены ошибки">
       <created>1553174507874</created>
@@ -700,7 +693,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565960041056</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="протокол">
+      <created>1566215824521</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1566215824521</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -799,7 +799,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Завершены проверки БУ:&#10;-проверка дискр. входов&#10;-проверка частотных входов&#10;-проверка ШИМ" />
     <MESSAGE value="переделана проверка иу&#10;добавлен график&#10;изиенен протокол иу" />
     <MESSAGE value="рефракторинг icpdas &#10;исправление ошибок сброса&#10;исправление настройки ПЭ" />
     <MESSAGE value="при ошибке частотометра будет сброс порта&#10;при ошибке ПЧВ лпо или напряжение сброса не будет&#10;путь к протоколу теперь заполняется 0 где дата" />
@@ -824,7 +823,8 @@
     <MESSAGE value="исправлено отображение графика после выхода из испытания по кнопке &quot;назад&quot;" />
     <MESSAGE value="шапка протокола" />
     <MESSAGE value="работа над протоколом" />
-    <option name="LAST_COMMIT_MESSAGE" value="работа над протоколом" />
+    <MESSAGE value="протокол" />
+    <option name="LAST_COMMIT_MESSAGE" value="протокол" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1183,8 +1183,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="451">
-          <caret line="2101" column="84" selection-start-line="2101" selection-start-column="84" selection-end-line="2101" selection-end-column="84" />
+        <state relative-caret-position="213">
+          <caret line="2040" column="29" selection-start-line="2040" selection-start-column="29" selection-end-line="2040" selection-end-column="29" />
         </state>
       </provider>
     </entry>
