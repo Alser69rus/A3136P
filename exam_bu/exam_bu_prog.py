@@ -22,7 +22,7 @@ class BU:
     fi_res: list = field(default_factory=list)
     fi_note: str = ''
     fi_res_r: str = ''
-    fi_note_r: str = ''
+    fi_note_r: list = field(default_factory=list)
 
     shim_res: str = ''
     shim_note: str = ''
@@ -49,9 +49,9 @@ class BU:
     ai_i21: float = 0
     ai_i22: float = 0
 
-    ai_3_1: bool = False
-    ai_3_2: bool = False
-    ai_3_3: bool = False
+    rt_1: int = 0
+    rt_2: int = 0
+    rt_3: int = 0
 
 
 bu = BU('')
@@ -235,7 +235,7 @@ class Exam_bu(QtCore.QState):
         self.fi_config_r = FiConfigR(self)
         self.fi_measure_r = FiMeasure(self)
         self.fi_fail_r = FiFailR(self)
-
+        self.fi_ok_r = FiOkR(self)
         self.fi_done_r = FiDoneR(self)
 
         self.shim_check = ShimCheck(self)
@@ -355,7 +355,8 @@ class Exam_bu(QtCore.QState):
         self.fi_check_r.addTransition(self.btnDown, self.fi_param_sav_r)
         self.fi_param_sav_r.addTransition(self.btnOk, self.fi_config_r)
         self.fi_config_r.addTransition(self.fi_measure_r)
-        self.fi_measure_r.addTransition(self.btnOk, self.fi_measure_r)
+        self.fi_measure_r.addTransition(self.btnOk, self.fi_ok_r)
+        self.fi_ok_r.addTransition(self.fi_measure_r)
         self.fi_measure_r.addTransition(self.btnDown, self.fi_fail_r)
         self.fi_fail_r.addTransition(self.fi_measure_r)
         self.fi_measure_r.addTransition(self.fi_measure_r.done, self.fi_done_r)
@@ -964,7 +965,6 @@ class FiFail(QtCore.QState):
 class FiDone(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        # com.addTransition(com.back_transition)
         com.do2.setValue(com.do2.value[:12] + [0, 0, 0] + com.do2.value[15:])
         com.gen.setValue([0, 0, 0])
         res = all([it[1] == 'норма' for it in bu.fi_res])
@@ -1336,11 +1336,11 @@ class AIDone(QtCore.QState):
 
 class RtCheck(QtCore.QState):
     def onEntry(self, QEvent):
-        global com
+        global com, bu
         com.do2.setValue(True, 31)
-        bu.ai_3_1 = False
-        bu.ai_3_2 = False
-        bu.ai_3_3 = False
+        bu.rt_1 = 0
+        bu.rt_2 = 0
+        bu.rt_3 = 0
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)
@@ -1358,13 +1358,13 @@ class RtCheck(QtCore.QState):
 class RtFail1(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
-        bu.ai_3_1 = False
+        bu.rt_1 = -1
 
 
 class RtSuccess1(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
-        bu.ai_3_1 = True
+        bu.rt_1 = 1
 
 
 class Rt100(QtCore.QState):
@@ -1382,13 +1382,13 @@ class Rt100(QtCore.QState):
 class RtFail2(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
-        bu.ai_3_2 = False
+        bu.rt_2 = -1
 
 
 class RtSuccess2(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
-        bu.ai_3_2 = True
+        bu.rt_2 = 1
 
 
 class RtMax(QtCore.QState):
@@ -1406,13 +1406,13 @@ class RtMax(QtCore.QState):
 class RtFail3(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
-        bu.ai_3_3 = False
+        bu.rt_3 = -1
 
 
 class RtSuccess3(QtCore.QState):
     def onEntry(self, QEvent):
         global bu
-        bu.ai_3_3 = True
+        bu.rt_3 = 1
 
 
 class RtRes(QtCore.QState):
@@ -1420,7 +1420,7 @@ class RtRes(QtCore.QState):
         com.do2.setValue(False, 29)
         com.do2.setValue(False, 30)
         com.do2.setValue(False, 31)
-        if bu.ai_3_1 and bu.ai_3_2 and bu.ai_3_3:
+        if bu.rt_1 + bu.rt_2 + bu.rt_3 == 3:
             com.text.setText('<p>Проверка завершена <b><font color="green">успешно</font></b>.'
                              '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.'
                              )
@@ -1643,7 +1643,7 @@ class FICheckR(QtCore.QState):
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)
-        bu.fi_res_r = ''
+        bu.fi_res_r = []
         bu.fi_note_r = ''
         com.text.setText('<p>Установите на программаторе режим <b><font color="blue">"РЕ70"</font></b>.</p>'
                          '<p>Работа программатора в резервном режиме немного отличается от обычной. '
@@ -1666,12 +1666,17 @@ class FiConfigR(QtCore.QState):
             ('РЕ00', 'верхнего', '0495-0502', 'ЧВХ1 - ДЧД (рез.)', [1030, 0, 0]),)
 
 
+class FiOkR(QtCore.QState):
+    def onEntry(self, QEvent):
+        fi = com.args[com.idx][3]
+        bu.fi_res_r.append((fi, 'норма'))
+
+
 class FiFailR(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        args = com.args[com.idx]
-        bu.fi_res_r = 'НЕ НОРМА'
-        bu.fi_note_r += f'Неисправен частотный вход {args[3]}.;'
+        fi = com.args[com.idx][3]
+        bu.fi_res_r.append((fi, 'НЕ НОРМА'))
 
 
 class FiDoneR(QtCore.QState):
@@ -1679,8 +1684,8 @@ class FiDoneR(QtCore.QState):
         global com
         com.do2.setValue(com.do2.value[:12] + [0, 0, 0] + com.do2.value[15:])
         com.gen.setValue([0, 0, 0])
-        if not bu.fi_res_r:
-            bu.fi_res = 'норма'
+        res = all([it[1] == 'норма' for it in bu.fi_res_r])
+        if res:
             com.frm_main.check_bu.btn_fi_r.state = 'ok'
         else:
             com.frm_main.check_bu.btn_fi_r.state = 'fail'
@@ -1854,6 +1859,19 @@ class Protocol(QtCore.QState):
 
     def onEntry(self, QEvent):
         global com, bu
+        com.opc.ai.setActive(False)
+        com.opc.di.setActive(True)
+        com.opc.pv1.setActive(False)
+        com.opc.pv2.setActive(False)
+        com.opc.pa1.setActive(False)
+        com.opc.pa2.setActive(False)
+        com.opc.pa3.setActive(False)
+        com.opc.connect_bu_di_power(False)
+        com.opc.connect_bu_power(False)
+        com.freq.setActive(True)
+        com.do1.setValue([0] * 32)
+        com.do2.setValue([0] * 32)
+
         settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
         settings.setIniCodec('UTF-8')
         protocol_path = Path(settings.value('protocol/path', 'c:\\протоколы\\'))
@@ -1891,9 +1909,10 @@ class Protocol(QtCore.QState):
         painter = QtGui.QPainter()
 
         painter.begin(printer)
-        color = QtGui.QColor(QtCore.Qt.black)
-        pen = QtGui.QPen(color)
-        brush = QtGui.QBrush(color)
+        black = QtGui.QColor(QtCore.Qt.black)
+        red = QtGui.QColor(QtCore.Qt.red)
+        pen = QtGui.QPen(black)
+        brush = QtGui.QBrush(black)
         font = QtGui.QFont('Segoi ui', 10)
         header_font = QtGui.QFont('Segoi ui', 14)
         painter.setPen(pen)
@@ -1915,7 +1934,6 @@ class Protocol(QtCore.QState):
         y += SPACE
         painter.drawText(x, y, f'Тепловоз № {com.frm_main.auth.locomotive}     Секция: {com.frm_main.auth.section}')
         y += SPACE * 1.5
-        w = [0, 1250, 1625, 1937]
 
         def print_row(*row):
             nonlocal x, y
@@ -1923,10 +1941,71 @@ class Protocol(QtCore.QState):
                 painter.drawText(x + w[i], y, v)
             y += SPACE
 
+        def print_graph(x, y, data,caption=''):
+            width = 800
+            height = 300
+            mx = 15
+            my = 100
+            ofx = 40
+            ofy = 20
+
+            pen = QtGui.QPen(black)
+            brush = QtGui.QBrush(black)
+            painter.setPen(pen)
+            painter.setBrush(brush)
+
+            points = [QtCore.QPointF(x + mx * it[0] + ofx,
+                                     y + height - my * it[1] - ofy)
+                      for it in data]
+            painter.drawLine(x + ofx,
+                             y + height - ofy + 10,
+                             x + ofx,
+                             y + ofx-20)
+
+            painter.drawLine(x + ofx - 10,
+                             y + height - ofy,
+                             x + width - ofx,
+                             y + height - ofy)
+
+            for px in range(0, width - ofx * 2, mx * 5):
+                painter.drawLine(x + px + ofx,
+                                 y + height - ofy + 5,
+                                 x + ofx + px,
+                                 y + height - ofy - 5)
+                painter.drawText(x + px +20,
+                                 y + height + 25,
+                                 f'{px /mx :.0f}')
+
+            for py in range(1, 6):
+                painter.drawLine(x + ofx - 5,
+                                 y + height - ofy - py * my / 2,
+                                 x + ofx + 5,
+                                 y + height - ofy - py * my / 2)
+                painter.drawText(x -40,
+                                 y + height - ofy - py * my / 2+10 ,
+                                 f'{py / 2 :3.1f}')
+
+            painter.drawText(x + ofx + 40,
+                             y + ofy + 20,
+                             'I, А')
+
+            painter.drawText(x + width - 20,
+                             y + height - 10,
+                             't, с')
+
+            painter.drawText(x + ofx + 200,
+                             y + ofy+20+SPACE*6,
+                             caption)
+
+            pen = QtGui.QPen(red)
+            painter.setPen(pen)
+            painter.drawPolyline(*points)
+            pen = QtGui.QPen(black)
+            painter.setPen(pen)
+
         # Шапка таблицы
         y += SPACE * 1.5
-        w = [0, 800, 1300, 1800]
-        r = bu.di_res
+        w = [0, 800, 1100, 1600]
 
         if not bu.di_res:
             print_row('1. Проверка дискретных входов', 'пропуск')
@@ -1936,7 +2015,7 @@ class Protocol(QtCore.QState):
                 if it[1] > 0:
                     res = 'норма'
                 elif it[1] == 0:
-                    res = '---'
+                    res = 'пропуск'
                 else:
                     res = 'НЕ НОРМА'
                 print_row(f'         {it[0]}', res)
@@ -1948,16 +2027,19 @@ class Protocol(QtCore.QState):
             for it in bu.fi_res:
                 print_row(f'        {it[0]}', it[1])
 
+        shim_y=y+SPACE*4
         if not bu.shim_res:
             print_row('3. Проверка ШИМ', 'пропуск')
         else:
+
             print_row('3. Проверка ШИМ')
             print_row(
-                f'         Минимальный ток, норма 0,6-0,9 А, факт: {bu.shim_i1:5.3f} А, результат: {bu.shim_res1}')
+                f'         Минимальный ток, А', f'{bu.shim_res1}', f'факт: {bu.shim_i1:5.3f}', f'норма 0,6-0,9 А')
             print_row(
-                f'         Максимальный ток, норма 2,1-2,4 А, факт: {bu.shim_i2:5.3f} А, результат: {bu.shim_res2}')
-            print_row(f'         Монотонность графика: {bu.shim_res3}')
-
+                f'         Максимальный ток, А', f'{bu.shim_res2}', f'факт: {bu.shim_i2:5.3f}', f'норма 2,1-2,4')
+            print_row(f'         Монотонность графика:', f'{bu.shim_res3}')
+            print_graph(x, y, bu.shim_graph,'График ШИМ')
+            y += SPACE * 8
         pass_type = ['ЭРЧМ30Т4-01', 'ЭРЧМ30Т4-03']
         if not (bu.dev_type in pass_type):
             if not bu.ai_res:
@@ -1966,4 +2048,60 @@ class Protocol(QtCore.QState):
                 print_row('4. Проверка аналоговых входов')
                 for it in bu.ai_res:
                     res = 'норма' if it[3] else 'НЕ НОРМА'
-                    print_row(f'        {it[0]: >15}, мА',f'норма: {it[1]}',f'факт: {it[2]:6.3f}',f'результат: {res}')
+                    print_row(f'        {it[0]: >15}, мА', f'{res}', f'факт: {it[2]:6.3f}', f'норма: {it[1]}')
+
+        pass_type = ['ЭРЧМ30Т3-04', 'ЭРЧМ30Т3-06', 'ЭРЧМ30Т3-07']
+        if bu.dev_type in pass_type:
+            msg = {-1: 'НЕ НОРМА', 0: 'пропуск', 1: 'норма'}
+            res = [msg[it] for it in [bu.rt_1, bu.rt_2, bu.rt_3]]
+            if not (bu.rt_1 or bu.rt_2 or bu.rt_3):
+                print_row('5. Проверка канала АВХ3 -Rt', 'пропуск')
+            else:
+                print_row('5. Проверка канала АВХ3 -Rt')
+                print_row(f'         Контрольная точка 0', f'{res[0]}')
+                print_row(f'         Контрольная точка 100', f'{res[1]}')
+                print_row(f'         Контрольная точка max', f'{res[2]}')
+
+        if bu.dev_type in ['ЭРЧМ30Т3-06', ]:
+
+            if not bu.di_res_r:
+                print_row('6. Резервные дискретные входы', 'пропуск')
+            else:
+                print_row('6. Резервные дискретные входы')
+                for it in bu.di_res_r:
+                    if it[1] > 0:
+                        res = 'норма'
+                    elif it[1] == 0:
+                        res = 'пропуск'
+                    else:
+                        res = 'НЕ НОРМА'
+                    print_row(f'         {it[0]}', res)
+
+            if not bu.fi_res_r:
+                print_row('7. Резервный частотный вход', 'пропуск')
+            else:
+                print_row('7. Резервный частотный вход')
+                for it in bu.fi_res_r:
+                    print_row(f'        {it[0]}', it[1])
+
+            if not bu.shim_res_r:
+                print_row('8. Резервный ШИМ', 'пропуск')
+            else:
+
+                print_row('3. Резервный ШИМ')
+                print_row(f'         Минимальный ток, А', f'{bu.shim_res1_r}', f'факт: {bu.shim_i1_r:5.3f}',
+                          f'норма 0,6-0,9 А')
+                print_row(f'         Максимальный ток, А', f'{bu.shim_res2_r}', f'факт: {bu.shim_i2_r:5.3f}',
+                          f'норма 2,1-2,4')
+                print_row(f'         Монотонность графика:', f'{bu.shim_res3_r}')
+                print_graph(x + 1300, shim_y, bu.shim_graph_r,'График резервного ШИМ')
+            painter.setFont(header_font)
+            y += SPACE * 2.5
+            painter.drawText(x, y, 'Испытание провел:')
+            painter.drawText(x + 312, y, f'{com.frm_main.auth.name1: >50}    {"_" * 20}')
+
+            y += SPACE * 2
+            painter.drawText(x, y, 'Испытание проверил:')
+            painter.drawText(x + 312, y, f'{com.frm_main.auth.name2: >50}    {"_" * 20}')
+
+            painter.end()
