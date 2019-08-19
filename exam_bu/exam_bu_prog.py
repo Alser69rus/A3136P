@@ -2088,7 +2088,7 @@ class Protocol(QtCore.QState):
                 print_row('8. Резервный ШИМ', 'пропуск')
             else:
 
-                print_row('3. Резервный ШИМ')
+                print_row('8. Резервный ШИМ')
                 print_row(f'         Минимальный ток, А', f'{bu.shim_res1_r}', f'факт: {bu.shim_i1_r:5.3f}',
                           f'норма 0,6-0,9 А')
                 print_row(f'         Максимальный ток, А', f'{bu.shim_res2_r}', f'факт: {bu.shim_i2_r:5.3f}',
