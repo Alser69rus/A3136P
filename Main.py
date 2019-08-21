@@ -57,11 +57,13 @@ class Main(QtCore.QObject):
         self.bu_select = BuSelect(self.stm)
         self.reset_check_bu = ResetCheckBu(self.stm)
         self.check_bu = CheckBU(self.stm)
+
         self.exam_bu = Exam_bu(self.stm, self.opc, self.form)
         com.exam_bu = self.exam_bu
         self.bu_ai_tune = BuAiTune(self.stm, self.opc, self.form)
         self.bu_select_2 = BuSelect(self.stm)
         self.bu_rt_tune = BuRtTune(self.stm)
+        self.disconnect_bu = self.exam_bu.disconnect_bu
 
         self.bu_prepare = BuPrepare(self.stm)
         self.bu_prepare_r = BuPrepareR(self.stm)
@@ -105,7 +107,8 @@ class Main(QtCore.QObject):
         self.bu_select.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
         self.bu_select.addTransition(self.form.select_bu.btn_ok, self.reset_check_bu)
         self.reset_check_bu.addTransition(self.check_bu)
-        self.check_bu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
+        self.check_bu.addTransition(self.form.btnPanel.btnBack.clicked, self.disconnect_bu)
+        self.disconnect_bu.addTransition(self.menu_main)
         self.exam_bu.addTransition(self.exam_bu.finished, self.check_bu)
 
         self.check_bu.addTransition(self.form.check_bu.btn_prepare.clicked, self.bu_prepare)
@@ -129,8 +132,8 @@ class Main(QtCore.QObject):
         self.check_bu.addTransition(self.form.check_bu.btn_shim_r.clicked, self.bu_shim_r)
         self.bu_shim_r.addTransition(self.exam_bu)
         self.check_bu.addTransition(self.form.check_bu.btn_protocol.clicked, self.bu_protocol)
-        self.bu_protocol.addTransition(self.form.btnPanel.btnOk.clicked, self.menu_main)
-        self.bu_protocol.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_main)
+        self.bu_protocol.addTransition(self.form.btnPanel.btnOk.clicked, self.disconnect_bu)
+        self.bu_protocol.addTransition(self.form.btnPanel.btnBack.clicked, self.disconnect_bu)
 
         self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_ai_tune.clicked, self.bu_select_2)
         self.bu_select_2.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
@@ -295,11 +298,6 @@ class BuShim(QtCore.QState):
 class BuShimR(QtCore.QState):
     def onEntry(self, QEvent):
         com.exam_bu.setInitialState(com.exam_bu.shim_check_r)
-
-
-# class BuProtocol(QtCore.QState):
-#     def onEntry(self, QEvent):
-#         com.exam_bu.setInitialState(com.exam_bu.protokol)
 
 
 if __name__ == '__main__':

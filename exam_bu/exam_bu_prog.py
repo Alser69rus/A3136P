@@ -162,6 +162,7 @@ class Exam_bu(QtCore.QState):
         self.frm_print.paintRequested.connect(self.protocol.preview)
         self.frm_main.stl.addWidget(self.frm_print)
         self.frm_main.stl.addWidget(self.frm)
+        self.disconnect_bu = DisconnectBU(self)
         self.btnBack = self.frm_main.btnPanel.btnBack.clicked
         self.btnOk = self.frm_main.btnPanel.btnOk.clicked
         self.btnUp = self.frm_main.btnPanel.btnUp.clicked
@@ -421,6 +422,8 @@ class Exam_bu(QtCore.QState):
         self.rt_success_3.addTransition(self.rt_res)
         self.rt_fail_3.addTransition(self.rt_res)
         self.rt_res.addTransition(self.btnOk, self.finish)
+
+
 
 
 class Error(QtCore.QState):
@@ -1941,7 +1944,7 @@ class Protocol(QtCore.QState):
                 painter.drawText(x + w[i], y, v)
             y += SPACE
 
-        def print_graph(x, y, data,caption=''):
+        def print_graph(x, y, data, caption=''):
             width = 800
             height = 300
             mx = 15
@@ -1960,7 +1963,7 @@ class Protocol(QtCore.QState):
             painter.drawLine(x + ofx,
                              y + height - ofy + 10,
                              x + ofx,
-                             y + ofx-20)
+                             y + ofx - 20)
 
             painter.drawLine(x + ofx - 10,
                              y + height - ofy,
@@ -1972,7 +1975,7 @@ class Protocol(QtCore.QState):
                                  y + height - ofy + 5,
                                  x + ofx + px,
                                  y + height - ofy - 5)
-                painter.drawText(x + px +20,
+                painter.drawText(x + px + 20,
                                  y + height + 25,
                                  f'{px /mx :.0f}')
 
@@ -1981,8 +1984,8 @@ class Protocol(QtCore.QState):
                                  y + height - ofy - py * my / 2,
                                  x + ofx + 5,
                                  y + height - ofy - py * my / 2)
-                painter.drawText(x -40,
-                                 y + height - ofy - py * my / 2+10 ,
+                painter.drawText(x - 40,
+                                 y + height - ofy - py * my / 2 + 10,
                                  f'{py / 2 :3.1f}')
 
             painter.drawText(x + ofx + 40,
@@ -1994,7 +1997,7 @@ class Protocol(QtCore.QState):
                              't, с')
 
             painter.drawText(x + ofx + 200,
-                             y + ofy+20+SPACE*7,
+                             y + ofy + 20 + SPACE * 7,
                              caption)
 
             pen = QtGui.QPen(red)
@@ -2027,7 +2030,7 @@ class Protocol(QtCore.QState):
             for it in bu.fi_res:
                 print_row(f'        {it[0]}', it[1])
 
-        shim_y=y+SPACE*4
+        shim_y = y + SPACE * 4
         if not bu.shim_res:
             print_row('8. Проверка ШИМ', 'пропуск')
         else:
@@ -2038,7 +2041,7 @@ class Protocol(QtCore.QState):
             print_row(
                 f'         Максимальный ток, А', f'{bu.shim_res2}', f'факт: {bu.shim_i2:5.3f}', f'норма 2,1-2,4')
             print_row(f'         Монотонность графика:', f'{bu.shim_res3}')
-            print_graph(x+100, y, bu.shim_graph,'График ШИМ')
+            print_graph(x + 100, y, bu.shim_graph, 'График ШИМ')
             y += SPACE * 10
         pass_type = ['ЭРЧМ30Т4-01', 'ЭРЧМ30Т4-03']
         if not (bu.dev_type in pass_type):
@@ -2094,7 +2097,7 @@ class Protocol(QtCore.QState):
                 print_row(f'         Максимальный ток, А', f'{bu.shim_res2_r}', f'факт: {bu.shim_i2_r:5.3f}',
                           f'норма 2,1-2,4')
                 print_row(f'         Монотонность графика:', f'{bu.shim_res3_r}')
-                print_graph(x + 1300, shim_y, bu.shim_graph_r,'График резервного ШИМ')
+                print_graph(x + 1300, shim_y, bu.shim_graph_r, 'График резервного ШИМ')
             painter.setFont(header_font)
             y += SPACE * 2
             painter.drawText(x, y, 'Испытание провел:')
@@ -2105,3 +2108,20 @@ class Protocol(QtCore.QState):
             painter.drawText(x + 312, y, f'{com.frm_main.auth.name2: >50}    {"_" * 20}')
 
             painter.end()
+
+
+class DisconnectBU(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com, bu
+        com.opc.ai.setActive(False)
+        com.opc.di.setActive(True)
+        com.opc.pv1.setActive(False)
+        com.opc.pv2.setActive(False)
+        com.opc.pa1.setActive(False)
+        com.opc.pa2.setActive(False)
+        com.opc.pa3.setActive(False)
+        com.opc.connect_bu_di_power(False)
+        com.opc.connect_bu_power(False)
+        com.freq.setActive(True)
+        com.do1.setValue([0] * 32)
+        com.do2.setValue([0] * 32)
