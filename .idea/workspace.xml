@@ -2,8 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/exam_bp/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exam_bp/bu-prog.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exam_bp/bu.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exam_bp/empty.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exam_bp/exam_bp.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exam_bp/prog.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exam_bp/prog2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/exam_bp/xp1.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -38,7 +45,7 @@
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
+            <state relative-caret-position="-408">
               <caret line="66" selection-start-line="66" selection-end-line="66" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
@@ -47,11 +54,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
-              <caret line="957" column="47" selection-start-line="957" selection-start-column="47" selection-end-line="957" selection-end-column="47" />
+            <state relative-caret-position="221">
+              <caret line="286" column="74" lean-forward="true" selection-start-line="286" selection-start-column="31" selection-end-line="286" selection-end-column="76" />
+              <folding>
+                <element signature="e#0#58#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="exam_bp.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/exam_bp/exam_bp.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="417">
+              <caret line="58" column="21" lean-forward="true" selection-start-line="58" selection-start-column="21" selection-end-line="58" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -59,8 +78,8 @@
       <file leaf-file-name="exam_iu_2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="12461">
-              <caret line="736" column="42" selection-start-line="729" selection-start-column="8" selection-end-line="739" selection-end-column="21" />
+            <state relative-caret-position="17">
+              <caret line="100" column="25" selection-start-line="100" selection-start-column="25" selection-end-line="100" selection-end-column="25" />
               <folding>
                 <element signature="e#0#58#0" expanded="true" />
               </folding>
@@ -113,7 +132,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/exam/frm_ui_pe.py" />
         <option value="$PROJECT_DIR$/exam/frm_iu_pe.py" />
         <option value="$PROJECT_DIR$/exam_iu/exam_ui_pe.py" />
         <option value="$PROJECT_DIR$/menu/tstMenu.py" />
@@ -164,6 +182,7 @@
         <option value="$PROJECT_DIR$/menu/mnuBUCheck.py" />
         <option value="$PROJECT_DIR$/Main.py" />
         <option value="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" />
+        <option value="$PROJECT_DIR$/exam_bp/exam_bp.py" />
       </list>
     </option>
   </component>
@@ -191,12 +210,12 @@
             <path>
               <item name="A3136P" type="b2602c69:ProjectViewProjectNode" />
               <item name="A3136P" type="462c0819:PsiDirectoryNode" />
-              <item name="exam_bu" type="462c0819:PsiDirectoryNode" />
+              <item name="exam_bp" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="A3136P" type="b2602c69:ProjectViewProjectNode" />
               <item name="A3136P" type="462c0819:PsiDirectoryNode" />
-              <item name="exam_iu" type="462c0819:PsiDirectoryNode" />
+              <item name="exam_bu" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="A3136P" type="b2602c69:ProjectViewProjectNode" />
@@ -226,6 +245,9 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Программы\A3136P\exam_bp" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Программы\A3136P" />
     </key>
@@ -355,13 +377,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557316784434</updated>
-    </task>
-    <task id="LOCAL-00006" summary="переделана проверка ПЭ под машину состояний">
-      <created>1554137439364</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1554137439364</updated>
     </task>
     <task id="LOCAL-00007" summary="полностью переделан сервер&#10;теперь 4 независимых потока, повышена потокобезопасность&#10;более-менее рабочие сигналы.">
       <created>1554469299539</created>
@@ -699,7 +714,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566388786017</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="исправлена проверка чвх для разных типов">
+      <created>1566390479187</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1566390479187</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -798,7 +820,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="исправлена ошибка с буквой Т (англ/рус) в названии регуляторов&#10;Переделана проверка дискретных входов на табличную форму" />
     <MESSAGE value="Добавлена проверка АВХ3 - Рт" />
     <MESSAGE value="настройка авх3" />
     <MESSAGE value="переделано меню&#10;добавлены пункты проверка/настройка" />
@@ -823,7 +844,8 @@
     <MESSAGE value="исправлены ошибки протокола (разметка)" />
     <MESSAGE value="исправлены ошибки протокола (разметка)2" />
     <MESSAGE value="отключение программатра от БУ при выходе из проверки и протокола" />
-    <option name="LAST_COMMIT_MESSAGE" value="отключение программатра от БУ при выходе из проверки и протокола" />
+    <MESSAGE value="исправлена проверка чвх для разных типов" />
+    <option name="LAST_COMMIT_MESSAGE" value="исправлена проверка чвх для разных типов" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -846,13 +868,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtWidgets/QWidget.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1025" column="8" selection-start-line="1025" selection-start-column="8" selection-end-line="1025" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/setup.py" />
     <entry file="file://$PROJECT_DIR$/opc/electropribor.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -1133,30 +1148,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12461">
-          <caret line="736" column="42" selection-start-line="729" selection-start-column="8" selection-end-line="739" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#58#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/exam_iu/frm_iu.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="42" selection-start-column="42" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="66" selection-start-line="66" selection-end-line="66" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1177,10 +1172,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="100" column="25" selection-start-line="100" selection-start-column="25" selection-end-line="100" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="957" column="47" selection-start-line="957" selection-start-column="47" selection-end-line="957" selection-end-column="47" />
+        <state relative-caret-position="221">
+          <caret line="286" column="74" lean-forward="true" selection-start-line="286" selection-start-column="31" selection-end-line="286" selection-end-column="76" />
+          <folding>
+            <element signature="e#0#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-408">
+          <caret line="66" selection-start-line="66" selection-end-line="66" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/exam_bp/exam_bp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="417">
+          <caret line="58" column="21" lean-forward="true" selection-start-line="58" selection-start-column="21" selection-end-line="58" selection-end-column="21" />
         </state>
       </provider>
     </entry>
