@@ -9,12 +9,18 @@ pa1 = None
 power = 20
 u_ref = 21
 r_stock = 22
-r_ballast = 23
+r_load = 23
 opc = None
 frm = None
 frm_main = None
 text = None
 img = None
+msg = ''
+msg2 = ''
+u1 = 0
+u2 = 0
+count = 0
+val = 0
 
 
 class Form(QtWidgets.QWidget):
@@ -62,20 +68,35 @@ class ExamBp(QtCore.QState):
         self.error = Error(self)
         self.finish = Finish(self)
 
-        self.prepare1 = Prepare1(self)
-        self.prepare2 = Prepare2(self)
-        self.prepare3 = Prepare3(self)
-        self.prepare4 = Prepare4(self)
+        self.prepare = Prepare(self)
+        self.config_power = ConfigPower(self)
+        self.power_on = PowerOn(self)
+        self.measure_u1 = MeasureU(self)
+        self.check_u1 = CheckU1(self)
+        self.connect_load = ConnectLoad(self)
+        self.measure_u2 = MeasureU(self)
+        self.check_u2 = CheckU2(self)
+        self.power_off = PowerOff(self)
+        self.result = Result(self)
 
-        self.setInitialState(self.prepare1)
+        self.setInitialState(self.prepare)
 
         self.addTransition(opc.error, self.error)
         self.error.addTransition(self.finish)
         self.addTransition(btnBack, self.finish)
 
-        self.prepare1.addTransition(self.btnOk, self.prepare2)
-        self.prepare2.addTransition(self.btnOk, self.prepare3)
-        self.prepare3.addTransition(self.btnOk, self.prepare4)
+        self.prepare.addTransition(btnOk, self.config_power)
+        self.config_power.addTransition(do1.updated, self.power_on)
+        self.power_on.addTransition(do1.updated, self.measure_u1)
+        self.measure_u1.addTransition(do1.updated, self.measure_u1)
+        self.measure_u1.addTransition(self.measure_u1.done, self.check_u1)
+        self.check_u1.addTransition(do1.updated, self.connect_load)
+        self.connect_load.addTransition(do1.updated, self.measure_u2)
+        self.measure_u2.addTransition(do1.updated, self.measure_u2)
+        self.measure_u2.addTransition(self.measure_u2.done, self.check_u2)
+        self.check_u2.addTransition(do1.updated, self.power_off)
+        self.power_off.addTransition(do1.updated, self.result)
+        self.result.addTransition(btnOk, self.finish)
 
 
 class Error(QtCore.QState):
@@ -91,37 +112,98 @@ class Finish(QtCore.QFinalState):
         frm_main.connectmenu()
 
 
-class Prepare1(QtCore.QState):
+class Prepare(QtCore.QState):
     def onEntry(self, QEvent):
         frm_main.disconnectmenu()
         frm_main.stl.setCurrentWidget(frm)
-        img.setPixmap(com.frm.img_bu_prog)
-        com.text.setText('<p>Установите блок управления (БУ) на кронштейн на боковой стенке пульта.</p>'
-                         '<p>Подключите шлейфы к разъемам "XP1", "XP2", "XP3" блока управления и разъемам '
-                         '"XS1 БУ ПИТ.", "XS2 БУ ДВХ", "XS3 БУ АВХ" пульта соответственно</p>'
-                         '<p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+        img.setPixmap(frm.img_empty)
+        text.setText('<p>Установите блок питания на кронштейн на боковой части пульта управления.</p>'
+                     '<p>Подключите при помощи шлейфа разъем "X1" блока питания и "XS11 БП Х1" пульта. '
+                     'Подключите разъем "Х2" блока питания и "XS12 БП Х2" пульта управления.</p>'
+                     '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
 
 
-class Prepare2(QtCore.QState):
+class ConfigPower(QtCore.QState):
     def onEntry(self, QEvent):
-        global com, bu
-        com.img.setPixmap(com.frm.img_bu_prog)
-        com.text.setText('<p>Подключите разъем привода "XS10 ИУ ПЭ" к разъему привода "XP8 НАГРУЗКА", '
-                         'или к разъему поворотного электромагнита регулятора. '
-                         '</p><p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+        do1.setValue(u_ref, 0)
+        do1.setValue(r_stock, 1)
+        text.setText('Входное напряжение 110 В ... ок\n'
+                     'Отключение защитного сопротивления .... ок\n')
 
 
-class Prepare3(QtCore.QState):
+class PowerOn(QtCore.QState):
     def onEntry(self, QEvent):
-        global com, bu
-        com.img.setPixmap(com.frm.img_bu_prog)
-        com.text.setText('<p>Подключите при помощи шлейфа разъем пульта "XS12 БП Х2"'
-                         ' и разъем "ХР13 24 В"</p><p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+        global msg, u1, u2, count, val
+        do1.setValue(power, 1)
+        text.setText(text.text() +
+                     'Подключение блока питания ... ок\n')
+        msg = text.text()
+        val = []
+        count = 0
+        u1 = 0
+        u2 = 0
 
 
-class Prepare4(QtCore.QState):
+class MeasureU(QtCore.QState):
+    done = QtCore.pyqtSignal()
+
     def onEntry(self, QEvent):
-        global com, bu
-        com.img.setPixmap(com.frm.img_bu_prog)
-        com.text.setText('<p>Снимите защитную крышку с разъема БУ "ОСНОВНАЯ РАБОТА" и подключите'
-                         ' программатор</p><p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+        global msg, val, count
+        count += 1
+        if count < 20:
+            text.setText(f'{msg}Напряжение блока питания ...{count/20:3.1%}\n')
+        if 19 < count < 30:
+            val.append(pv1.value)
+            val = val[-10:]
+            text.setText(f'{msg}Напряжение блока питания  {sum(val)/len(val):5.2f} В\n')
+        if count == 30:
+            val = sum(val) / len(val)
+            self.done.emit()
+
+
+class CheckU1(QtCore.QState):
+    def onEntry(self, QEvent):
+        global u1, val, count
+        if 23.5 <= val <= 24.5:
+            text.setText(f'{msg}Напряжение блока питания  {val:5.2f} В ... норма\n')
+        else:
+            text.setText(f'{msg}Напряжение блока питания  {val:5.2f} В ... НЕ НОРМА\n')
+        u1 = val
+
+
+class ConnectLoad(QtCore.QState):
+    def onEntry(self, QEvent):
+        global msg, count, val
+        do1.setValue(r_load, 1)
+        text.setText(text.text() + f'Подключение нагрузки ... ок\n')
+        msg = text.text()
+        val = []
+        count = 0
+
+
+class CheckU2(QtCore.QState):
+    def onEntry(self, QEvent):
+        global u2, val
+        if 23.5 <= val <= 24.5 and pa1.value > 2:
+            text.setText(f'{msg}Напряжение блока питания  {val:5.2f} В ... норма\n')
+            u2 = val
+        else:
+            text.setText(f'{msg}Напряжение блока питания  {val:5.2f} В ... НЕ НОРМА\n')
+            u2 = 0
+
+
+class PowerOff(QtCore.QState):
+    def onEntry(self, QEvent):
+        do1.setValue([0] * 32)
+        text.setText(text.text() + f'Отключение питания ... ок\n')
+
+
+class Result(QtCore.QState):
+    def onEntry(self, QEvent):
+        res1 = 'норма' if 23.5 <= u1 <= 24.5 else 'НЕ НОРМА'
+        res2 = 'норма' if 23.5 <= u2 <= 24.5 else 'НЕ НОРМА'
+        res3 = 'норма' if 23.5 <= u1 <= 24.5 and 23.5 <= u2 <= 24.5 else 'НЕ НОРМА'
+
+        text.setText(f'<p>Напряжение без нагрузки: {u1:5.2f} В ... {res1}<br>'
+                     f'Напряжение под нагрузкой: {u2:5.2f} В ... {res2}</p>'
+                     f'<p>Результат проверки: {res3}</p>')

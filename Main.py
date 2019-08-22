@@ -10,6 +10,7 @@ from exam_iu.exam_iu_2 import ExamIU2
 from exam_iu.exam_iu import ExamIU
 from exam_bu.exam_bu_prog import Exam_bu
 from exam_bu.bu_ai_tune import BuAiTune, BuRtTune
+from exam_bp.exam_bp import ExamBp
 
 com = None
 
@@ -77,6 +78,8 @@ class Main(QtCore.QObject):
         self.bu_shim_r = BuShimR(self.stm)
         self.bu_protocol = self.exam_bu.protocol
 
+        self.exam_bp = ExamBp(self.stm, self.opc, self.form)
+
         self.state_close = QtCore.QFinalState(self.stm)
 
         self.stm.setInitialState(self.init_menu)
@@ -142,6 +145,9 @@ class Main(QtCore.QObject):
 
         self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_ai_3_tune.clicked, self.bu_rt_tune)
         self.bu_rt_tune.addTransition(self.bu_rt_tune.finished, self.menu_bu)
+
+        self.menu_main.addTransition(self.form.mnu_main.btnBP.clicked, self.exam_bp)
+        self.exam_bp.addTransition(self.exam_bp.finished, self.menu_main)
 
         self.opc.started.connect(self.stm.start)
         self.opc.start()
