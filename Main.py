@@ -11,6 +11,7 @@ from exam_iu.exam_iu import ExamIU
 from exam_bu.exam_bu_prog import Exam_bu
 from exam_bu.bu_ai_tune import BuAiTune, BuRtTune
 from exam_bp.exam_bp import ExamBp
+from exam_bu.bu_dp import TuneBuDp
 
 com = None
 
@@ -148,6 +149,14 @@ class Main(QtCore.QObject):
 
         self.menu_main.addTransition(self.form.mnu_main.btnBP.clicked, self.exam_bp)
         self.exam_bp.addTransition(self.exam_bp.finished, self.menu_main)
+
+        self.bu_dp_select_iu = IuSelect(self.stm)
+        self.tune_bu_dp = TuneBuDp(self.stm, self.opc, self.form)
+
+        self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_dp.clicked, self.bu_dp_select_iu)
+        self.bu_dp_select_iu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
+        self.bu_dp_select_iu.addTransition(self.form.select_iu.btn_ok, self.tune_bu_dp)
+        self.tune_bu_dp.addTransition(self.tune_bu_dp.finished, self.menu_bu)
 
         self.opc.started.connect(self.stm.start)
         self.opc.start()
