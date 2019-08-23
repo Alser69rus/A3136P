@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
+﻿from PyQt5 import QtWidgets, QtCore, QtGui
 
 com = None
 btnBack = None
@@ -55,7 +55,9 @@ class ExamBp(QtCore.QState):
         opc = server
         do1 = server.do1
         pv1 = opc.pv1
+        pv1.setActive(True)
         pa1 = opc.pa1
+        pa1.setActive()
         frm_main = form
         frm = Form()
         frm_main.stl.addWidget(frm)
@@ -88,13 +90,13 @@ class ExamBp(QtCore.QState):
         self.prepare.addTransition(btnOk, self.config_power)
         self.config_power.addTransition(do1.updated, self.power_on)
         self.power_on.addTransition(do1.updated, self.measure_u1)
-        self.measure_u1.addTransition(do1.updated, self.measure_u1)
+        self.measure_u1.addTransition(pv1.updated, self.measure_u1)
         self.measure_u1.addTransition(self.measure_u1.done, self.check_u1)
-        self.check_u1.addTransition(do1.updated, self.connect_load)
+        self.check_u1.addTransition(self.connect_load)
         self.connect_load.addTransition(do1.updated, self.measure_u2)
-        self.measure_u2.addTransition(do1.updated, self.measure_u2)
+        self.measure_u2.addTransition(pv1.updated, self.measure_u2)
         self.measure_u2.addTransition(self.measure_u2.done, self.check_u2)
-        self.check_u2.addTransition(do1.updated, self.power_off)
+        self.check_u2.addTransition(self.power_off)
         self.power_off.addTransition(do1.updated, self.result)
         self.result.addTransition(btnOk, self.finish)
 
@@ -108,7 +110,9 @@ class Finish(QtCore.QFinalState):
     def onEntry(self, e):
         global com
         do1.setValue([0] * 32)
-        frm_main.stl.setCurrentWidget(frm_main.menu_main)
+        pv1.setActive(False)
+        pa1.setActive(False)
+        frm_main.stl.setCurrentWidget(frm_main.mnu_main)
         frm_main.connectmenu()
 
 
@@ -117,6 +121,8 @@ class Prepare(QtCore.QState):
         frm_main.disconnectmenu()
         frm_main.stl.setCurrentWidget(frm)
         img.setPixmap(frm.img_empty)
+        pv1.setActive(True)
+        pa1.setActive(True)
         text.setText('<p>Установите блок питания на кронштейн на боковой части пульта управления.</p>'
                      '<p>Подключите при помощи шлейфа разъем "X1" блока питания и "XS11 БП Х1" пульта. '
                      'Подключите разъем "Х2" блока питания и "XS12 БП Х2" пульта управления.</p>'
@@ -125,8 +131,8 @@ class Prepare(QtCore.QState):
 
 class ConfigPower(QtCore.QState):
     def onEntry(self, QEvent):
-        do1.setValue(u_ref, 0)
-        do1.setValue(r_stock, 1)
+        do1.setValue(0, u_ref)
+        do1.setValue(1, r_stock)
         text.setText('Входное напряжение 110 В ... ок\n'
                      'Отключение защитного сопротивления .... ок\n')
 
@@ -134,7 +140,7 @@ class ConfigPower(QtCore.QState):
 class PowerOn(QtCore.QState):
     def onEntry(self, QEvent):
         global msg, u1, u2, count, val
-        do1.setValue(power, 1)
+        do1.setValue(1, power)
         text.setText(text.text() +
                      'Подключение блока питания ... ок\n')
         msg = text.text()
@@ -149,13 +155,13 @@ class MeasureU(QtCore.QState):
 
     def onEntry(self, QEvent):
         global msg, val, count
+
         count += 1
-        if count < 20:
-            text.setText(f'{msg}Напряжение блока питания ...{count/20:3.1%}\n')
-        if 19 < count < 30:
+
+        if count < 30:
             val.append(pv1.value)
             val = val[-10:]
-            text.setText(f'{msg}Напряжение блока питания  {sum(val)/len(val):5.2f} В\n')
+            text.setText(f'{msg}Напряжение блока питания  {sum(val)/len(val):5.2f} В ...{count/30:3.1%}\n')
         if count == 30:
             val = sum(val) / len(val)
             self.done.emit()
@@ -174,7 +180,7 @@ class CheckU1(QtCore.QState):
 class ConnectLoad(QtCore.QState):
     def onEntry(self, QEvent):
         global msg, count, val
-        do1.setValue(r_load, 1)
+        do1.setValue(1, r_load)
         text.setText(text.text() + f'Подключение нагрузки ... ок\n')
         msg = text.text()
         val = []
@@ -186,10 +192,9 @@ class CheckU2(QtCore.QState):
         global u2, val
         if 23.5 <= val <= 24.5 and pa1.value > 2:
             text.setText(f'{msg}Напряжение блока питания  {val:5.2f} В ... норма\n')
-            u2 = val
         else:
             text.setText(f'{msg}Напряжение блока питания  {val:5.2f} В ... НЕ НОРМА\n')
-            u2 = 0
+        u2 = val
 
 
 class PowerOff(QtCore.QState):

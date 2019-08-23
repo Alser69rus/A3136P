@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exam_bp/exam_bp.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_bp/exam_bp.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -60,11 +59,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="exam_bp.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="exam_bp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exam_bp/exam_bp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="485">
-              <caret line="97" column="48" selection-start-line="97" selection-start-column="48" selection-end-line="97" selection-end-column="48" />
+            <state relative-caret-position="3315">
+              <caret line="195" column="87" selection-start-line="195" selection-start-column="87" selection-end-line="195" selection-end-column="87" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="reader2.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../rss/reader2.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="60" selection-start-line="60" selection-end-line="60" />
             </state>
           </provider>
         </entry>
@@ -126,7 +134,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/exam/frm_iu_pe.py" />
         <option value="$PROJECT_DIR$/exam_iu/exam_ui_pe.py" />
         <option value="$PROJECT_DIR$/menu/tstMenu.py" />
         <option value="$PROJECT_DIR$/guielement/test1.py" />
@@ -177,6 +184,7 @@
         <option value="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" />
         <option value="$PROJECT_DIR$/Main.py" />
         <option value="$PROJECT_DIR$/exam_bp/exam_bp.py" />
+        <option value="$PROJECT_DIR$/../rss/reader2.py" />
       </list>
     </option>
   </component>
@@ -194,7 +202,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -231,11 +238,12 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="NBKnowledgePane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../rss/reader2.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -371,13 +379,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557316784434</updated>
-    </task>
-    <task id="LOCAL-00008" summary="на сервере сделан общий обработчик ошибок и предупреждений&#10;на сервере введены ссылки на приборы в разных потоках">
-      <created>1554543880015</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1554543880015</updated>
     </task>
     <task id="LOCAL-00009" summary="добавлены ПИД-регуляторы&#10;исправлено главное меню для работы с новым сервером">
       <created>1554789608928</created>
@@ -715,7 +716,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566393408523</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="проверка блока питания">
+      <created>1566471384295</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1566471384295</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -814,7 +822,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="настройка авх3" />
     <MESSAGE value="переделано меню&#10;добавлены пункты проверка/настройка" />
     <MESSAGE value="рефакторинг испытаний. Цвета, кнопака вниз вместо назад" />
     <MESSAGE value="переделаны колонки меню&#10;исправлены мелкие ошибки" />
@@ -839,7 +846,8 @@
     <MESSAGE value="отключение программатра от БУ при выходе из проверки и протокола" />
     <MESSAGE value="исправлена проверка чвх для разных типов" />
     <MESSAGE value="начата работа с БП" />
-    <option name="LAST_COMMIT_MESSAGE" value="начата работа с БП" />
+    <MESSAGE value="проверка блока питания" />
+    <option name="LAST_COMMIT_MESSAGE" value="проверка блока питания" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -862,7 +870,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/setup.py" />
     <entry file="file://$PROJECT_DIR$/opc/electropribor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="434">
@@ -1198,8 +1205,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/exam_bp/exam_bp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
-          <caret line="97" column="48" selection-start-line="97" selection-start-column="48" selection-end-line="97" selection-end-column="48" />
+        <state relative-caret-position="3315">
+          <caret line="195" column="87" selection-start-line="195" selection-start-column="87" selection-end-line="195" selection-end-column="87" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../rss/reader2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="60" selection-start-line="60" selection-end-line="60" />
         </state>
       </provider>
     </entry>
