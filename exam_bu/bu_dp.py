@@ -60,6 +60,7 @@ class TuneBuDp(QtCore.QState):
         self.pa3 = server.pa3
         self.ao = server.ao
         self.freq = server.freq
+        self.pchv = server.pchv
         self.frm_main = form
         self.frm = Form()
         self.frm_main.stl.addWidget(self.frm)
@@ -68,6 +69,10 @@ class TuneBuDp(QtCore.QState):
         self.btnOk = self.frm_main.btnPanel.btnOk.clicked
         self.btnUp = self.frm_main.btnPanel.btnUp.clicked
         self.btnDown = self.frm_main.btnPanel.btnDown.clicked
+
+        self.font_red = '<font color="red">'
+        self.font_end = '</font>'
+        self.ok_to_cont = '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.</p>'
 
         self.text = self.frm.text
 
@@ -78,6 +83,9 @@ class TuneBuDp(QtCore.QState):
         self.f1 = 0
         self.f2 = 0
         self.args = []
+        self.msg_head = ''
+        self.msg = ''
+        self.msg_tail = ''
 
         self.error = Error(self)
         self.finish = Finish(self)
@@ -86,9 +94,6 @@ class TuneBuDp(QtCore.QState):
         self.prepare2 = Prepare2(self)
         self.prepare3 = Prepare3(self)
         self.prepare4 = Prepare4(self)
-        self.switch_work = SwitchWork(self)
-        self.connect_bu_di = ConnectBUDI(self)
-        self.connect_bu = ConnectBU(self)
 
         self.setInitialState(self.prepare1)
 
@@ -100,6 +105,33 @@ class TuneBuDp(QtCore.QState):
         self.prepare2.addTransition(self.btnOk, self.prepare3)
         self.prepare3.addTransition(self.btnOk, self.prepare4)
 
+        self.connect_iu = ConnectIU(self)
+        self.set_speed = SetSpeed(self)
+        self.reset_br2 = ResetBr2(self)
+        self.prepare4.addTransition(self.btnOk, self.connect_iu)
+        self.connect_iu.addTransition(self.pchv.task_changed, self.set_speed)
+        self.set_speed.addTransition(self.pchv.speed_reached, self.reset_br2)
+
+        self.set_pos_2 = SetPos2(self)
+        self.prepare_measure_2 = PrepareMeasure(self)
+        self.measure_2 = MeasureF(self)
+        self.reset_br2.addTransition(self.set_pos_2)
+        self.set_pos_2.addTransition(self.opc.pida.task_reached, self.prepare_measure_2)
+        self.prepare_measure_2.addTransition(self.measure_2)
+        self.measure_2.addTransition(self.freq.updated, self.measure_2)
+
+        self.set_pos_8 = SetPos8(self)
+        self.prepare_measure_8 = PrepareMeasure(self)
+        self.measure_8 = MeasureF(self)
+        self.set_current_0 = SetCurrent0(self)
+        self.disconnect_iu = DisconnectIU(self)
+        self.measure_2.addTransition(self.measure_2.done, self.set_pos_8)
+        self.set_pos_8.addTransition(self.opc.pida.task_reached, self.prepare_measure_8)
+        self.prepare_measure_8.addTransition(self.measure_8)
+        self.measure_8.addTransition(self.freq.updated, self.measure_8)
+        self.measure_8.addTransition(self.measure_8.done, self.set_current_0)
+        self.set_current_0.addTransition(self.pchv.break_on, self.disconnect_iu)
+
 
 class Error(QtCore.QState):
     def onEntry(self, e):
@@ -109,18 +141,17 @@ class Error(QtCore.QState):
 class Finish(QtCore.QFinalState):
     def onEntry(self, e):
         global com
-        # com.opc.ai.setActive(False)
-        # com.opc.di.setActive(True)
-        # com.opc.pv1.setActive(False)
-        # com.opc.pv2.setActive(False)
-        # com.opc.pa1.setActive(False)
-        # com.opc.pa2.setActive(False)
-        # com.opc.pa3.setActive(False)
-        # com.opc.connect_bu_di_power(False)
-        # com.opc.connect_bu_power(False)
+        com.pchv.setActive(True)
+        com.opc.connect_pchv(False)
+        com.opc.connect_pe(False)
+        com.opc.connect_dp(False)
+
+        com.opc.connect_bu_di_power(False)
+        com.opc.connect_bu_power(False)
         com.freq.setActive(True)
         com.frm_main.stl.setCurrentWidget(com.frm_main.check_bu)
         com.frm_main.connectmenu()
+        com.do1.setValue([0] * 32)
         # com.pchv.setActive(False)
 
 
@@ -131,84 +162,159 @@ class Prepare1(QtCore.QState):
         com.opc.connect_bu_power(False)
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
-        com.text.setText('<p>Установите блок управления (БУ) на кронштейн на боковой стенке пульта.</p>'
-                         '<p>Подключите шлейфы к разъемам "XP1", "XP2", "XP3" блока управления и разъемам '
-                         '"XS1 БУ ПИТ.", "XS2 БУ ДВХ", "XS3 БУ АВХ" пульта соответственно</p>'
-                         '<p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+        com.text.setText(f'<p><br>{com.font_red}Внимание! Согласование датчика положения с блоком управления '
+                         f'следует проводить на исправном исполнительном устройстве. Согласование '
+                         f'применяется для настройки блока управления на особенности конкретного '
+                         f'исполнительного устройства и не проверяет правильность его работы.{com.font_end}</p>'
+                         f'{com.ok_to_cont}')
 
 
 class Prepare2(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.text.setText('<p>Подключите разъем привода "XS10 ИУ ПЭ" к разъему привода "XP8 НАГРУЗКА", '
-                         'или к разъему поворотного электромагнита регулятора. '
-                         '</p><p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+        com.text.setText(f'<p><br>'
+                         f'<ol><b>Установка исполнительного устройства на привод</b>'
+                         f'<li>Установите на вал привода подходящую муфту.'
+                         f'<li>Установите исполнительное устройство на привод и зафиксируйте при помощи болтов.'
+                         f'<li>Проверте отсутствие перекосов при помощи поворота вала за шестерню распроложееную внутри'
+                         f' стенда. При необходимости устраните перекос.'
+                         f'</ol>'
+                         f'</p>'
+                         f'{com.ok_to_cont}')
 
 
 class Prepare3(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.text.setText('<p>Подключите при помощи шлейфа разъем пульта "XS12 БП Х2"'
-                         ' и разъем "ХР13 24 В"</p><p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+        com.text.setText(f'<p><br>'
+                         f'<ol><b>Установка датчика угла поворота</b>'
+                         f'<li>Снимите с силового вала рычаг.'
+                         f'<li>Установите на силовой вал резиновую муфту.'
+                         f'<li>На кронштейне датчика угла поворота ослабте барашки.'
+                         f'<li>Присоедините датчик угла при помощи резиновой муфты к силовому валу. '
+                         f'По возможности соосно.'
+                         f'<li> Зафиксируйте положение кронштейна затянув барашки.'
+                         f'<li> Разъем датчика подключите к разъему привода "ХР17 ДАТЧИК УГЛА".'
+                         f'</ol>'
+                         f'</p>'
+                         f'{com.ok_to_cont}')
 
 
 class Prepare4(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.text.setText('<p>Снимите защитную крышку с разъема БУ "ОСНОВНАЯ РАБОТА" и подключите'
-                         ' программатор</p><p>Нажмите "ПРИНЯТЬ" для продолжения.</p>')
+        com.text.setText(f'<p><br>'
+                         f'<ol><b>Подключение поворотного электромагнита и датчика положения</b>'
+                         f'<li>Подключите датчик положения исполнительного устройства к разъему привода "ХР9 ИУ ДП"'
+                         f'<li>Подключите поворотный электромагнит исполнительного устройства к разъему '
+                         f'привода "XS10 ИУ ПЭ"'
+                         f'</ol>'
+                         f'</p>'
+                         f'{com.ok_to_cont}')
 
 
-class SwitchWork(QtCore.QState):
-    success = QtCore.pyqtSignal()
+class ConnectIU(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.msg_head = '<p><br><ol><b>Измерение параметров исполнительного устройства</b>'
+        com.msg = '<li>Подключение привода ... </li>'
+        com.msg_tail = '</ol></p>'
+        com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
+
+        com.pchv.setActive(True)
+        com.opc.connect_pchv(True, com.frm_main.select_iu.dir[0])
+        com.opc.connect_pe(True)
+        com.opc.connect_dp(True)
+        com.opc.current.setActive('manual', 10)
+        com.pchv.speed = 300
+
+
+class SetSpeed(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.msg_head += '<li>Подключение привода ... ok</li>'
+        com.msg = '<li>Разгон до скорости 500 об/мин ...</li>'
+        com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
+        com.opc.pchv.speed = 500
+
+
+class ResetBr2(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.msg_head += '<li>Разгон до скорости 500 об/мин ... ok</li>'
+        com.msg = '<li>Установка  позиции индикатора "0" ... </li>'
+        com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
+        com.freq.setClear(0)
+
+
+class SetPos2(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.msg_head += '<li>Установка  позиции индикатора "0" ... ok</li>'
+        com.msg = '<li>Установка позиции индикатора "2" ... </li>'
+        com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
+        com.opc.current.setActive('pida', 2)
+
+
+class PrepareMeasure(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.msg_head += com.msg[:-5] + 'ok</li>'
+        com.msg = '<li>Показания датчика положения ... </li>'
+        com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
+        com.val = 0
+        com.idx = 0
+
+
+class MeasureF(QtCore.QState):
+    done = QtCore.pyqtSignal()
 
     def onEntry(self, QEvent):
-        if bu.dev_type == 'ЭРЧМ30Т3-06':
-            com.text.setText('<p>Переведите переключатель "РЕЗЕРВНАЯ РАБОТА" на БУ в положение '
-                             '"ОТКЛ."</p><p>Для продолжения нажмите "ПРИНЯТЬ"</p>')
-        else:
-            self.success.emit()
+        global com
+        com.idx += 1
+        com.val += com.freq.value[7]
+        com.text.setText(f'{com.msg_head}{com.msg[:-5]}{com.val/com.idx:6.3f} кГц{com.msg_tail}')
+        if com.idx >= 50:
+            self.done.emit()
 
 
-class ConnectBUDI(QtCore.QState):
+class SetPos8(QtCore.QState):
     def onEntry(self, QEvent):
-        com.text.setText('Производится подключение питания дискретных входов БУ')
+        global com
+        com.f1 = com.val / com.idx
+        com.idx = 0
+        com.val = 0
 
-        if bu.dev_type in ['ЭРЧМ30Т3-06', 'ЭРЧМ30Т3-04', 'ЭРЧМ30Т3-07']:
-            com.opc.connect_bu_di_power(True, 110)
-        elif bu.dev_type in ['ЭРЧМ30Т3-12', 'ЭРЧМ30Т3-12-01', 'ЭРЧМ30Т3-12-02', 'ЭРЧМ30Т3-12-03']:
-            com.opc.connect_bu_di_power(True, 110)
-        elif bu.dev_type in ['ЭРЧМ30Т3-08', 'ЭРЧМ30Т3-08-01']:
-            com.opc.connect_bu_di_power(True, 75)
-        elif bu.dev_type in ['ЭРЧМ30Т3-02', 'ЭРЧМ30Т3-05', 'ЭРЧМ30Т3-10', 'ЭРЧМ30Т3-10-01']:
-            com.opc.connect_bu_di_power(True, 110)
-        elif bu.dev_type in ['ЭРЧМ30Т4-01']:
-            com.opc.connect_bu_di_power(True, 75)
-        elif bu.dev_type in ['ЭРЧМ30Т4-02']:
-            com.opc.connect_bu_di_power(True, 24)
-        elif bu.dev_type in ['ЭРЧМ30Т4-02-01']:
-            com.opc.connect_bu_di_power(True, 48)
-        elif bu.dev_type in ['ЭРЧМ30Т4-03']:
-            com.opc.connect_bu_di_power(True, 75)
-        else:
-            com.opc.connect_bu_di_power(False)
-            print(f'Неизвестный тип {bu.dev_type}')
+        com.msg_head += f'<li>Показания датчика положения ... {com.f1:6.3f} кГц</li>'
+        com.msg = f'<li>Установка позиции индикатора "8" ... </li>'
+        com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
+
+        com.opc.current.setActive('pida', 8)
 
 
-class ConnectBU(QtCore.QState):
+class SetCurrent0(QtCore.QState):
     def onEntry(self, QEvent):
-        com.text.setText('Производится подключение питания БУ')
+        global com
+        com.f2 = com.val / com.idx
+        com.idx = 0
+        com.val = 0
 
-        com.opc.connect_bu_power()
+        com.msg_head += f'<li>Показания датчика положения ... {com.f2:6.3f} кГц</li>'
+        com.msg = f'<li>Отключение привода ... </li>'
+        com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
 
-        lst = [com.frm_main.check_bu.btn_di, com.frm_main.check_bu.btn_fi, com.frm_main.check_bu.btn_shim,
-               com.frm_main.check_bu.btn_ai, com.frm_main.check_bu.btn_rt, com.frm_main.check_bu.btn_prepare_r]
-        for e in lst:
-            e.setEnabled(True)
+        com.opc.current.setActive('manual', 0)
+        com.pchv.speed = 0
 
-        lst = [com.frm_main.check_bu.btn_di_r, com.frm_main.check_bu.btn_fi_r, com.frm_main.check_bu.btn_shim_r]
-        for it in lst:
-            it.setEnabled(False)
 
-        com.frm_main.check_bu.btn_prepare.state = 'ok'
-        bu.prepare = True
+class DisconnectIU(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.msg = f'<li>Отключение привода ... ok</li>'
+        com.msg_tail = f'</ol>{com.ok_to_cont}</p>'
+        com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
+
+        com.pchv.setActive(False)
+        com.opc.connect_pchv(False)
+        com.opc.connect_pe(False)
+        com.opc.connect_dp(False)

@@ -345,7 +345,7 @@ class Server(QtCore.QObject):
 
     @QtCore.pyqtSlot(bool, bool)
     def connect_pchv(self, start=True, reverse=True):
-        self.do2.value[0] = True
+        self.do2.value[0] = start
         if reverse:
             self.do2.setValue(False, 1)
             self.do2.setValue(start, 2)

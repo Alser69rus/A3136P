@@ -112,10 +112,10 @@ class M7084(QtCore.QObject):
                 self.port._serial.flushInput()
                 self.port._serial.flushOutput()
                 self.thread().msleep(20)
-                self.port._serial.close()
-                self.thread().msleep(20)
-                self.port._serial.open()
-                self.thread().msleep(20)
+                # self.port._serial.close()
+                # self.thread().msleep(20)
+                # self.port._serial.open()
+                # self.thread().msleep(20)
 
     @QtCore.pyqtSlot(bool)
     def setActive(self, value=True):
