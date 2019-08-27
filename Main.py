@@ -151,11 +151,14 @@ class Main(QtCore.QObject):
         self.exam_bp.addTransition(self.exam_bp.finished, self.menu_main)
 
         self.bu_dp_select_iu = IuSelect(self.stm)
+        self.bu_dp_select_bu = BuSelect(self.stm)
         self.tune_bu_dp = TuneBuDp(self.stm, self.opc, self.form)
 
         self.menu_bu.addTransition(self.form.mnu_bu.btn_bu_dp.clicked, self.bu_dp_select_iu)
         self.bu_dp_select_iu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
-        self.bu_dp_select_iu.addTransition(self.form.select_iu.btn_ok, self.tune_bu_dp)
+        self.bu_dp_select_iu.addTransition(self.form.select_iu.btn_ok, self.bu_dp_select_bu)
+        self.bu_dp_select_bu.addTransition(self.form.btnPanel.btnBack.clicked, self.menu_bu)
+        self.bu_dp_select_bu.addTransition(self.form.select_bu.btn_ok, self.tune_bu_dp)
         self.tune_bu_dp.addTransition(self.tune_bu_dp.finished, self.menu_bu)
 
         self.opc.started.connect(self.stm.start)

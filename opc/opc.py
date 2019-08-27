@@ -383,12 +383,8 @@ class Server(QtCore.QObject):
             self.do1.value = self.do1.value[:16] + [0, 0, 0, 0, 0, 0] + self.do1.value[22:]
             self.do1.setValue(False, 27)
 
-        if value:
-            self.do1.setValue(True, 22)
-            self.do1.setValue(True, 20)
-        else:
-            self.do1.setValue(False, 22)
-            self.do1.setValue(False, 20)
+        self.do1.setValue(value, 22)
+        self.do1.setValue(value, 20)
 
     @QtCore.pyqtSlot(bool)
     def connect_pe(self, value=True):

@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
+﻿from PyQt5 import QtWidgets, QtCore, QtGui
 from guielement.scale import ScaledDevice
 
 com = None
@@ -71,6 +71,8 @@ class TuneBuDp(QtCore.QState):
         self.btnDown = self.frm_main.btnPanel.btnDown.clicked
 
         self.font_red = '<font color="red">'
+        self.font_blue = '<font color="blue">'
+        self.font_green = '<font color="green">'
         self.font_end = '</font>'
         self.ok_to_cont = '<p><br>Нажмите "ПРИНЯТЬ" для продолжения.</p>'
 
@@ -94,6 +96,8 @@ class TuneBuDp(QtCore.QState):
         self.prepare2 = Prepare2(self)
         self.prepare3 = Prepare3(self)
         self.prepare4 = Prepare4(self)
+        self.prepare5 = Prepare5(self)
+        self.prepare6 = Prepare6(self)
 
         self.setInitialState(self.prepare1)
 
@@ -104,11 +108,13 @@ class TuneBuDp(QtCore.QState):
         self.prepare1.addTransition(self.btnOk, self.prepare2)
         self.prepare2.addTransition(self.btnOk, self.prepare3)
         self.prepare3.addTransition(self.btnOk, self.prepare4)
+        self.prepare4.addTransition(self.btnOk, self.prepare5)
+        self.prepare5.addTransition(self.btnOk, self.prepare6)
 
         self.connect_iu = ConnectIU(self)
         self.set_speed = SetSpeed(self)
         self.reset_br2 = ResetBr2(self)
-        self.prepare4.addTransition(self.btnOk, self.connect_iu)
+        self.prepare6.addTransition(self.btnOk, self.connect_iu)
         self.connect_iu.addTransition(self.pchv.task_changed, self.set_speed)
         self.set_speed.addTransition(self.pchv.speed_reached, self.reset_br2)
 
@@ -132,6 +138,23 @@ class TuneBuDp(QtCore.QState):
         self.measure_8.addTransition(self.measure_8.done, self.set_current_0)
         self.set_current_0.addTransition(self.pchv.break_on, self.disconnect_iu)
 
+        self.connect_bu = ConnectBu(self)
+        self.set_f2 = SetF(self)
+        self.tune_f2 = TuneF2(self)
+        self.disconnect_iu.addTransition(self.btnOk, self.connect_bu)
+        self.connect_bu.addTransition(self.set_f2)
+        self.set_f2.addTransition(self.freq.updated, self.set_f2)
+        self.set_f2.addTransition(self.set_f2.done, self.tune_f2)
+
+        self.set_f8 = SetF(self)
+        self.tune_f8 = TuneF8(self)
+        self.save = Save(self)
+        self.tune_f2.addTransition(self.btnOk, self.set_f8)
+        self.set_f8.addTransition(self.set_f8.done, self.tune_f8)
+        self.set_f8.addTransition(self.freq.updated, self.set_f8)
+        self.tune_f8.addTransition(self.btnOk, self.save)
+        self.save.addTransition(self.btnOk, self.finish)
+
 
 class Error(QtCore.QState):
     def onEntry(self, e):
@@ -145,6 +168,8 @@ class Finish(QtCore.QFinalState):
         com.opc.connect_pchv(False)
         com.opc.connect_pe(False)
         com.opc.connect_dp(False)
+
+        com.opc.connect_gen(False)
 
         com.opc.connect_bu_di_power(False)
         com.opc.connect_bu_power(False)
@@ -205,9 +230,39 @@ class Prepare4(QtCore.QState):
         global com
         com.text.setText(f'<p><br>'
                          f'<ol><b>Подключение поворотного электромагнита и датчика положения</b>'
-                         f'<li>Подключите датчик положения исполнительного устройства к разъему привода "ХР9 ИУ ДП"'
+                         f'<li>Подключите датчик положения исполнительного устройства к разъему привода "ХР9 ИУ ДП".'
                          f'<li>Подключите поворотный электромагнит исполнительного устройства к разъему '
-                         f'привода "XS10 ИУ ПЭ"'
+                         f'привода "XS10 ИУ ПЭ".'
+                         f'</ol>'
+                         f'</p>'
+                         f'{com.ok_to_cont}')
+
+
+class Prepare5(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.text.setText(f'<p><br>'
+                         f'<ol><b>Подключение блока управления</b>'
+                         f'<li>Установите блок управления регулятора на боковой кронштейн пульта управления.'
+                         f'<li>Подключите при помощи шлейфов разъемы "XP1", "XP2", "XP3" блока управления к '
+                         f'разъемам "XS1 БУ ПИТ.", "XS2 БУ ДВХ", "XS3 БУ АВХ" пульта соответственно.'
+                         f'<li>Подключите при помощи шлейфа разъем пульта "XS12 БП Х2" к разъему "ХР13 24 В".'
+                         f'</ol>'
+                         f'</p>'
+                         f'{com.ok_to_cont}')
+
+
+class Prepare6(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.msg = ''
+        if com.frm_main.select_bu.dev_type == 'ЭРЧМ30Т3-06':
+            com.msg = '<li>Переведите переключатель "РЕЗЕРВНАЯ РАБОТА" на БУ в положение "ОТКЛ."'
+
+        com.text.setText(f'<p><br>'
+                         f'<ol><b>Подключение программатора</b>'
+                         f'<li>Снимите защитную крышку с разъема БУ "ОСНОВНАЯ РАБОТА" и подключите программатор.'
+                         f'{com.msg}'
                          f'</ol>'
                          f'</p>'
                          f'{com.ok_to_cont}')
@@ -242,7 +297,7 @@ class ResetBr2(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         com.msg_head += '<li>Разгон до скорости 500 об/мин ... ok</li>'
-        com.msg = '<li>Установка  позиции индикатора "0" ... </li>'
+        com.msg = '<li>Установка  указателя нагрузки в положение "0" ... </li>'
         com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
         com.freq.setClear(0)
 
@@ -250,8 +305,8 @@ class ResetBr2(QtCore.QState):
 class SetPos2(QtCore.QState):
     def onEntry(self, QEvent):
         global com
-        com.msg_head += '<li>Установка  позиции индикатора "0" ... ok</li>'
-        com.msg = '<li>Установка позиции индикатора "2" ... </li>'
+        com.msg_head += '<li>Установка  указателя нагрузки в положение "0" ... ok</li>'
+        com.msg = '<li>Установка указателя нагрузки в положение "2" ... </li>'
         com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
         com.opc.current.setActive('pida', 2)
 
@@ -286,7 +341,7 @@ class SetPos8(QtCore.QState):
         com.val = 0
 
         com.msg_head += f'<li>Показания датчика положения ... {com.f1:6.3f} кГц</li>'
-        com.msg = f'<li>Установка позиции индикатора "8" ... </li>'
+        com.msg = f'<li>Установка указателя нагрузки в положение "8" ... </li>'
         com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
 
         com.opc.current.setActive('pida', 8)
@@ -315,6 +370,107 @@ class DisconnectIU(QtCore.QState):
         com.text.setText(f'{com.msg_head}{com.msg}{com.msg_tail}')
 
         com.pchv.setActive(False)
-        com.opc.connect_pchv(False)
+        # com.opc.connect_pchv(False)
         com.opc.connect_pe(False)
         com.opc.connect_dp(False)
+
+
+class ConnectBu(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        dev_type = com.frm_main.select_bu.dev_type
+
+        if dev_type in ['ЭРЧМ30Т3-06', 'ЭРЧМ30Т3-04', 'ЭРЧМ30Т3-07']:
+            com.opc.connect_bu_di_power(True, 110)
+        elif dev_type in ['ЭРЧМ30Т3-12', 'ЭРЧМ30Т3-12-01', 'ЭРЧМ30Т3-12-02', 'ЭРЧМ30Т3-12-03']:
+            com.opc.connect_bu_di_power(True, 110)
+        elif dev_type in ['ЭРЧМ30Т3-08', 'ЭРЧМ30Т3-08-01']:
+            com.opc.connect_bu_di_power(True, 75)
+        elif dev_type in ['ЭРЧМ30Т3-02', 'ЭРЧМ30Т3-05', 'ЭРЧМ30Т3-10', 'ЭРЧМ30Т3-10-01']:
+            com.opc.connect_bu_di_power(True, 110)
+        elif dev_type in ['ЭРЧМ30Т4-01']:
+            com.opc.connect_bu_di_power(True, 75)
+        elif dev_type in ['ЭРЧМ30Т4-02']:
+            com.opc.connect_bu_di_power(True, 24)
+        elif dev_type in ['ЭРЧМ30Т4-02-01']:
+            com.opc.connect_bu_di_power(True, 48)
+        elif dev_type in ['ЭРЧМ30Т4-03']:
+            com.opc.connect_bu_di_power(True, 75)
+        else:
+            com.opc.connect_bu_di_power(False)
+            print(f'Неизвестный тип {dev_type}')
+
+        com.opc.connect_bu_power()
+        com.opc.connect_gen()
+        com.f1 = int(com.f1 * 1000)
+        com.f2 = int(com.f2 * 1000)
+        com.idx = 0
+        com.val = com.f1
+
+
+class SetF(QtCore.QState):
+    done = QtCore.pyqtSignal()
+
+    def onEntry(self, QEvent):
+        global com
+
+        com.gen.setValue([0, 0, com.val + com.idx])
+        if com.val - 100 <= com.freq.value[7] * 1000 <= com.val + 1100:
+            com.gen.setValue([0, 0, com.val])
+            self.done.emit()
+        else:
+            com.idx += 1
+
+        com.text.setText(f'<p>Ожидайте установки частоты {com.val} Гц.</p>')
+
+
+class TuneF2(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.text.setText(f'<p><br><ol><b>Настройка положения "2" указателя нагрузки</b>'
+                         f'<li>Установите режим <b>{com.font_blue}"PECC"</font></b> на программаторе. '
+                         f'Для этого удерживайте нажатой кнопку '
+                         f'1  программатора, а затем кнопками 5 и 6 установите на верхнем индикаторе номер '
+                         f'режима. После чего отпустите кнопку 1 и нажмите кнопку программатора 2. Кнопками 5 и 6 '
+                         f'установите номер подрежима.</li>'
+                         f'<li>На нижних индикаторах будет значение <b>{com.font_green}"05.00"</font></b>. '
+                         f'На верхних - произвольное значение. '
+                         f'Нажмите и отпустите {com.font_red}кнопку 4</font> программатора, допускается делать '
+                         f'это несколько раз</li>'
+                         f'</ol>'
+                         f'{com.ok_to_cont}')
+        com.idx = 0
+        com.val = com.f2
+
+
+class TuneF8(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.text.setText(f'<p><br><ol><b>Настройка положения "8" указателя нагрузки</b>'
+                         f'<li>Установите режим <b>{com.font_blue}"PECD"</font></b> на программаторе. '
+                         f'Для этого удерживайте нажатой кнопку '
+                         f'1  программатора, а затем кнопками 5 и 6 установите на верхнем индикаторе номер '
+                         f'режима. После чего отпустите кнопку 1 и нажмите кнопку программатора 2. Кнопками 5 и 6 '
+                         f'установите номер подрежима.</li>'
+                         f'<li>На нижних индикаторах будет значение <b>{com.font_green}"20.00"</font></b>. '
+                         f'На верхних - произвольное значение. '
+                         f'Нажмите и отпустите {com.font_red}кнопку 4</font> программатора. Допускается делать '
+                         f'это несколько раз</li>'
+                         f'</ol>'
+                         f'{com.ok_to_cont}')
+
+
+class Save(QtCore.QState):
+    def onEntry(self, QEvent):
+        global com
+        com.text.setText(f'<p><br><ol><b>Запись параметров в память</b>'
+                         f'<li>Установите режим <b>{com.font_blue}"PEF0"</font></b> на программаторе. '
+                         f'Для этого удерживайте нажатой кнопку '
+                         f'1  программатора, а затем кнопками 5 и 6 установите на верхнем индикаторе номер '
+                         f'режима. После чего отпустите кнопку 1 и нажмите кнопку программатора 2. Кнопками 5 и 6 '
+                         f'установите номер подрежима.</li>'
+                         f'<li>Нажмите и удерживайте кнопку 3 программатора</li>'
+                         f'<li>Удерживая кнопку 3 нажмите и отпустите кнопку 6.</li>'
+                         f'<li>Через несколько секунд, после изменения показаний индикаторов отпустить кнопку 3.</li>'
+                         f'</ol>'
+                         f'{com.ok_to_cont}')
