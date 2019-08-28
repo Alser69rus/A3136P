@@ -1,8 +1,9 @@
-from PyQt5 import QtWidgets, QtCore, QtGui, QtPrintSupport
+﻿from PyQt5 import QtWidgets, QtCore, QtGui, QtPrintSupport
 import time
 from dataclasses import dataclass, field
 import datetime
 from pathlib import Path
+import random
 
 com = None
 
@@ -226,6 +227,7 @@ class Exam_bu(QtCore.QState):
         self.fi_check = FICheck(self)
         self.fi_param_sav = FiParamSave(self)
         self.fi_config = FiConfig(self)
+        self.fi_set_f = FiSetF(self)
         self.fi_measure = FiMeasure(self)
         self.fi_fail = FiFail(self)
         self.fi_ok = FiOk(self)
@@ -234,6 +236,7 @@ class Exam_bu(QtCore.QState):
         self.fi_check_r = FICheckR(self)
         self.fi_param_sav_r = FiParamSave(self)
         self.fi_config_r = FiConfigR(self)
+        self.fi_set_f_r = FiSetF(self)
         self.fi_measure_r = FiMeasure(self)
         self.fi_fail_r = FiFailR(self)
         self.fi_ok_r = FiOkR(self)
@@ -344,22 +347,26 @@ class Exam_bu(QtCore.QState):
         self.fi_check.addTransition(self.btnOk, self.fi_config)
         self.fi_check.addTransition(self.btnDown, self.fi_param_sav)
         self.fi_param_sav.addTransition(self.btnOk, self.fi_config)
-        self.fi_config.addTransition(self.fi_measure)
+        self.fi_config.addTransition(self.fi_set_f)
+        self.fi_set_f.addTransition(self.freq.updated, self.fi_set_f)
+        self.fi_set_f.addTransition(self.fi_set_f.done, self.fi_measure)
         self.fi_measure.addTransition(self.btnOk, self.fi_ok)
-        self.fi_ok.addTransition(self.fi_measure)
+        self.fi_ok.addTransition(self.fi_set_f)
         self.fi_measure.addTransition(self.btnDown, self.fi_fail)
-        self.fi_fail.addTransition(self.fi_measure)
+        self.fi_fail.addTransition(self.fi_set_f)
         self.fi_measure.addTransition(self.fi_measure.done, self.fi_done)
         self.fi_done.addTransition(self.finish)
 
         self.fi_check_r.addTransition(self.btnOk, self.fi_config_r)
         self.fi_check_r.addTransition(self.btnDown, self.fi_param_sav_r)
         self.fi_param_sav_r.addTransition(self.btnOk, self.fi_config_r)
-        self.fi_config_r.addTransition(self.fi_measure_r)
+        self.fi_config_r.addTransition(self.fi_set_f_r)
+        self.fi_set_f_r.addTransition(self.freq.updated,self.fi_set_f_r)
+        self.fi_set_f_r.addTransition(self.fi_set_f_r.done,self.fi_measure_r)
         self.fi_measure_r.addTransition(self.btnOk, self.fi_ok_r)
-        self.fi_ok_r.addTransition(self.fi_measure_r)
+        self.fi_ok_r.addTransition(self.fi_set_f_r)
         self.fi_measure_r.addTransition(self.btnDown, self.fi_fail_r)
-        self.fi_fail_r.addTransition(self.fi_measure_r)
+        self.fi_fail_r.addTransition(self.fi_set_f_r)
         self.fi_measure_r.addTransition(self.fi_measure_r.done, self.fi_done_r)
         self.fi_done_r.addTransition(self.finish)
 
@@ -441,6 +448,7 @@ class Finish(QtCore.QFinalState):
         # com.opc.pa3.setActive(False)
         # com.opc.connect_bu_di_power(False)
         # com.opc.connect_bu_power(False)
+        com.opc.connect_gen(False)
         com.freq.setActive(True)
         com.frm_main.stl.setCurrentWidget(com.frm_main.check_bu)
         com.frm_main.connectmenu()
@@ -889,6 +897,7 @@ class DIResult(QtCore.QState):
 class FICheck(QtCore.QState):
     def onEntry(self, QEvent):
         global com
+        com.opc.connect_gen(True)
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)
@@ -964,6 +973,28 @@ class FiConfig(QtCore.QState):
                 ('РЕ9E', 'нижнего', '0995-1005', 'ЧВХ2 - ДЧТК', [0, 1000, 0]),
                 ('РЕ70', 'верхнего', '01.00-06.00', 'ЧВХ3 - ДП 25 кГц', [0, 0, 25000]),
                 ('РЕ70', 'верхнего', '14.00-25.00', 'ЧВХ3 - ДП 17 кГц', [0, 0, 17000]))
+
+
+class FiSetF(QtCore.QState):
+    done = QtCore.pyqtSignal()
+
+    def onEntry(self, QEvent):
+        global com
+        if com.idx + 1 >= len(com.args):
+            self.done.emit()
+            return
+        g = com.args[com.idx + 1][4]
+
+        g = [it + random.randint(1, 10) for it in g]
+        com.text.setText(f'<p>Установка частоты генератора {g[0]}, {g[1]}, {g[2]}</p>')
+        com.gen.setValue(g)
+        f = com.freq.value[5:8]
+        f[2] = int(f[2] * 1000)
+        com.text.setText(com.text.text() + f'<p>Текущая частота {f[0]}, {f[1]}, {f[2]}</p>')
+        f = [g[i] - 10 <= f[i] <= g[i] + 20 for i in range(3)]
+        com.text.setText(com.text.text() + f'<p>Текущая частота {f[0]}, {f[1]}, {f[2]}</p>')
+        if all(f):
+            self.done.emit()
 
 
 class FiMeasure(QtCore.QState):
@@ -1546,7 +1577,7 @@ class DIConfigR(QtCore.QState):
                     (8, '10', 'ДВХ6 (Работа/стоп)'),
                     (6, '20', 'ДВХ7 (Поезд. реж.)'),
                     )
-
+        bu.di_reg = '29'
         bu.di_min = 0
         bu.di_max = len(com.args)
 
@@ -1677,6 +1708,7 @@ class DIResultR(QtCore.QState):
 class FICheckR(QtCore.QState):
     def onEntry(self, QEvent):
         global com
+        com.opc.connect_gen(True)
         com.frm_main.disconnectmenu()
         com.frm_main.stl.setCurrentWidget(com.frm)
         com.img.setPixmap(com.frm.img_prog2)

@@ -23,6 +23,7 @@ class MainForm(QtWidgets.QWidget):
         self.vbox = QtWidgets.QVBoxLayout()
         self.setWindowTitle('А3136. Стенд проверки и регулировки ЭРЧМ')
         self.resize(1024, 768)
+
         self.table = QtWidgets.QWidget()
         self.btnPanel = btnPanel.BtnPanel()
         self.statusbar = QtWidgets.QStatusBar()

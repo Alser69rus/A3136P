@@ -43,7 +43,7 @@ class Form(QtWidgets.QWidget):
         self.vbox.addWidget(self.img)
         self.vbox.addWidget(self.text)
         self.vbox.addStretch(1)
-        self.img.setPixmap(self.img_empty)
+        # self.img.setPixmap(self.img_empty)
 
 
 class ExamBp(QtCore.QState):
@@ -120,7 +120,7 @@ class Prepare(QtCore.QState):
     def onEntry(self, QEvent):
         frm_main.disconnectmenu()
         frm_main.stl.setCurrentWidget(frm)
-        img.setPixmap(frm.img_empty)
+        # img.setPixmap(frm.img_empty)
         pv1.setActive(True)
         pa1.setActive(True)
         text.setText('<p>Установите блок питания на кронштейн на боковой части пульта управления.</p>'

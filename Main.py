@@ -321,7 +321,5 @@ class BuShimR(QtCore.QState):
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     main = Main()
-    print('Старт')
-    print(com.form.width(), com.form.height())
-
+    print(com.form.size())
     sys.exit(app.exec_())
