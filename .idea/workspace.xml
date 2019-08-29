@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exam_bp/exam_bp.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_bp/exam_bp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exam_iu/frm_iu.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_iu/frm_iu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/menu/mainform.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu/mainform.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,7 +17,7 @@
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5270">
+            <state relative-caret-position="451">
               <caret line="323" selection-start-line="323" selection-end-line="323" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
@@ -51,16 +47,16 @@
       <file leaf-file-name="exam_bp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exam_bp/exam_bp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
+            <state relative-caret-position="782">
               <caret line="46" selection-start-line="46" selection-end-line="46" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
+            <state relative-caret-position="17">
               <caret line="368" column="52" selection-start-line="368" selection-start-column="52" selection-end-line="368" selection-end-column="52" />
               <folding>
                 <element signature="e#0#58#0" expanded="true" />
@@ -72,7 +68,7 @@
       <file leaf-file-name="random.py" pinned="false" current-in-tab="false">
         <entry file="file://D:/python/Lib/random.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
+            <state relative-caret-position="3553">
               <caret line="218" column="48" selection-start-line="218" selection-start-column="42" selection-end-line="218" selection-end-column="48" />
             </state>
           </provider>
@@ -90,11 +86,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="frm_iu.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="frm_iu.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/exam_iu/frm_iu.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="349">
-              <caret line="306" column="66" selection-start-line="306" selection-start-column="66" selection-end-line="306" selection-end-column="66" />
+              <caret line="309" column="90" selection-start-line="309" selection-start-column="90" selection-end-line="309" selection-end-column="90" />
               <folding>
                 <element signature="e#0#58#0" expanded="true" />
               </folding>
@@ -102,11 +98,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="exam_iu_dp.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_dp.py">
+      <file leaf-file-name="opc.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/opc/opc.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="24" column="49" selection-start-line="24" selection-start-column="49" selection-end-line="24" selection-end-column="49" />
+            <state relative-caret-position="196">
+              <caret line="262" column="107" selection-start-line="262" selection-start-column="70" selection-end-line="262" selection-end-column="110" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -156,7 +155,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/menu/tstMenu.py" />
         <option value="$PROJECT_DIR$/guielement/test1.py" />
         <option value="$PROJECT_DIR$/guielement/indicator.py" />
         <option value="$PROJECT_DIR$/guielement/Tachometr.py" />
@@ -202,11 +200,12 @@
         <option value="$PROJECT_DIR$/exam_bu/bu_ai_tune.py" />
         <option value="$PROJECT_DIR$/exam_iu/exam_iu_2.py" />
         <option value="$PROJECT_DIR$/menu/auth.py" />
-        <option value="$PROJECT_DIR$/exam_iu/frm_iu.py" />
         <option value="$PROJECT_DIR$/Main.py" />
         <option value="$PROJECT_DIR$/menu/mainform.py" />
         <option value="$PROJECT_DIR$/exam_bp/exam_bp.py" />
         <option value="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" />
+        <option value="$PROJECT_DIR$/st.py" />
+        <option value="$PROJECT_DIR$/exam_iu/frm_iu.py" />
       </list>
     </option>
   </component>
@@ -224,7 +223,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="NBKnowledgePane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -266,7 +265,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="NBKnowledgePane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -330,24 +329,6 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <configuration name="frm_iu" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="A3136P" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/exam_iu" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/exam_iu/frm_iu.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
     <configuration name="keypad" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="A3136P" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -361,6 +342,24 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/menu/keypad.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="st" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="A3136P" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/st.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -381,18 +380,18 @@
     </configuration>
     <list>
       <item itemvalue="Python.Main" />
-      <item itemvalue="Python.frm_iu" />
       <item itemvalue="Python.exam_bu_prog" />
       <item itemvalue="Python tests.Unittests in test_icpdas.py" />
       <item itemvalue="Python.keypad" />
+      <item itemvalue="Python.st" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.Main" />
+        <item itemvalue="Python.st" />
         <item itemvalue="Python.keypad" />
         <item itemvalue="Python tests.Unittests in test_icpdas.py" />
         <item itemvalue="Python.exam_bu_prog" />
-        <item itemvalue="Python.frm_iu" />
       </list>
     </recent_temporary>
   </component>
@@ -406,13 +405,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557316784434</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Добавлена проверка записи М7084, АО и DO">
-      <created>1555134134235</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1555134134235</updated>
     </task>
     <task id="LOCAL-00014" summary="добавлен выбор ИУ&#10;добавлена форма данных испытания">
       <created>1555409013056</created>
@@ -750,7 +742,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566906696469</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="исправлена ошибка проверки резервных двх (номер режима)&#10;исправлена ошибка установки частоты при проверке бу">
+      <created>1566997243275</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1566997243275</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -849,7 +848,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="при проверке авх отдельная стадия для переключения режимов" />
     <MESSAGE value="рефакторинг. проверки rt вместо ai_3" />
     <MESSAGE value="добавлена проверка двх рез" />
     <MESSAGE value="добавлена проверка чвх1 - дчд рез." />
@@ -874,7 +872,8 @@
     <MESSAGE value="начало согласования дп" />
     <MESSAGE value="измерение частоты при согласовании ДП&#10;корректировка icpdas" />
     <MESSAGE value="доделано согласование ДП" />
-    <option name="LAST_COMMIT_MESSAGE" value="доделано согласование ДП" />
+    <MESSAGE value="исправлена ошибка проверки резервных двх (номер режима)&#10;исправлена ошибка установки частоты при проверке бу" />
+    <option name="LAST_COMMIT_MESSAGE" value="исправлена ошибка проверки резервных двх (номер режима)&#10;исправлена ошибка установки частоты при проверке бу" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -897,13 +896,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/opc/monad.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="38" column="35" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/exam_bu/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1120,16 +1112,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/opc/opc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="354" column="23" selection-start-line="354" selection-start-column="23" selection-end-line="354" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/menu/mnuBU.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -1141,9 +1123,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
           <caret line="66" lean-forward="true" selection-start-line="66" selection-end-line="66" />
-          <folding>
-            <element signature="e#0#42#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1199,16 +1178,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5270">
-          <caret line="323" selection-start-line="323" selection-end-line="323" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/menu/mainform.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -1218,32 +1187,59 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/exam_bp/exam_bp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
+        <state relative-caret-position="782">
           <caret line="46" selection-start-line="46" selection-end-line="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://D:/python/Lib/random.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
+        <state relative-caret-position="3553">
           <caret line="218" column="48" selection-start-line="218" selection-start-column="42" selection-end-line="218" selection-end-column="48" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exam_iu/frm_iu.py">
+    <entry file="file://$PROJECT_DIR$/st.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="306" column="66" selection-start-line="306" selection-start-column="66" selection-end-line="306" selection-end-column="66" />
+        <state relative-caret-position="85">
+          <caret line="5" column="1" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="368" column="52" selection-start-line="368" selection-start-column="52" selection-end-line="368" selection-end-column="52" />
           <folding>
             <element signature="e#0#58#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
+    <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="368" column="52" selection-start-line="368" selection-start-column="52" selection-end-line="368" selection-end-column="52" />
+        <state relative-caret-position="451">
+          <caret line="323" selection-start-line="323" selection-end-line="323" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/opc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="262" column="107" selection-start-line="262" selection-start-column="70" selection-end-line="262" selection-end-column="110" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/exam_iu/frm_iu.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="349">
+          <caret line="309" column="90" selection-start-line="309" selection-start-column="90" selection-end-line="309" selection-end-column="90" />
           <folding>
             <element signature="e#0#58#0" expanded="true" />
           </folding>

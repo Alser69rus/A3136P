@@ -289,6 +289,8 @@ class FormIUPressureCheck(QtWidgets.QWidget):
         self.vbox = QtWidgets.QVBoxLayout()
         self.hbox = QtWidgets.QHBoxLayout()
         self.text = QtWidgets.QLabel()
+        settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
+        settings.setIniCodec('UTF-8')
 
         self.pressure = ScaledDevice(width=300, height=330, arr_x=150, arr_y=160, arr_r=70, min_a=270,
                                      max_a=-22.5, min_v=0, max_v=1.6, mark_prim=16, mark_sec=5, mark_ter=1,
@@ -305,7 +307,7 @@ class FormIUPressureCheck(QtWidgets.QWidget):
         self.tachometer.setValue(0)
 
         self.timer = ScaledDevice(width=290, height=330, arr_x=145, arr_y=160, arr_r=60, min_a=90,
-                                  max_a=-240, min_v=0, max_v=6, mark_prim=6, mark_sec=2, mark_ter=5,
+                                  max_a=-240, min_v=0, max_v=settings.value('progrev', 600, int), mark_prim=6, mark_sec=2, mark_ter=5,
                                   f_mark='{:.0f}', f_text='Осталось: {: >3.0f} сек')
         self.timer.caption.setText('Таймер')
         self.timer.setArrowVisible(True, False)
