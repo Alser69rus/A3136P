@@ -403,7 +403,7 @@ class SetCurrentDown(QtCore.QState):
         else:
             frm.text.setText(f'<p>Выполняется построение рабочей диаграмы:</p>'
                              f'<p>Ток силовой цепи {data.i:5.3f} А<br>'
-                             f'Позиция индикатора выходного вала {data.a:4.1f}<br>'
+                             f'Позиция указателя нагрузки {data.a:4.1f}<br>'
                              f'Частота датчика положения {data.f:6.3} кГц'
                              f'</p>')
             data.arr.append((data.i, data.a, data.f))
