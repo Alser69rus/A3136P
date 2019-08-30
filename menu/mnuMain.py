@@ -8,7 +8,7 @@ class MainMenu(template.Menu):
     def __init__(self, parent=None):
         super().__init__('Главное меню', parent)
         self.btnBU = btn.Btn('Проверка блока управления при помощи программатора')
-        self.btnBUTune = btn.Btn('Регулировка болка управления')
+        self.btnBUTune = btn.Btn('Регулировка блока управления')
         self.btnIU = btn.Btn('Проверка исполнительного устройства')
         self.btnIUTune = btn.Btn('Регулировка исполнительного устройства')
         self.btnBP = btn.Btn('Проверка блока питания')

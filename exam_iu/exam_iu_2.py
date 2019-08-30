@@ -111,7 +111,7 @@ class ExamIU2(QtCore.QState):
         self.addTransition(opc.error, self.error)
         self.error.addTransition(self.stop_PCHV)
         self.addTransition(btnBack, self.stop_PCHV)
-        self.stop_PCHV.addTransition(self.disconnect_devices)
+        self.stop_PCHV.addTransition(opc.pchv.break_on,self.disconnect_devices)
         self.disconnect_devices.addTransition(self.finish)
 
         self.install_0 = Install0(self)
