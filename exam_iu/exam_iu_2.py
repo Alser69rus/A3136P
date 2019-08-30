@@ -196,7 +196,7 @@ class ExamIU2(QtCore.QState):
         self.set_current_down.addTransition(self.set_current_down.done, self.stop_all)
         self.stop_all.addTransition(self.extract_res)
         self.extract_res.addTransition(self.print_result)
-        self.print_result.addTransition(btnOk, self.stop_PCHV)
+        self.print_result.addTransition(btnOk, self.disconnect_devices)
         frm_main.frm_print.paintRequested.connect(self.print_result.preview)
 
 
@@ -374,7 +374,7 @@ class SetCurrentUp(QtCore.QState):
         else:
             frm.text.setText('<p>Выполняется построение рабочей диаграмы:</p>'
                              f'<p>Ток силовой цепи {data.i:5.3f} А<br>'
-                             f'Позиция индикатора выходного вала {data.a:4.1f}<br>'
+                             f'Позиция указателя нагрузки {data.a:4.1f}<br>'
                              f'Частота датчика положения {data.f:6.3f} кГц'
                              f'</p>')
             data.arr.append((data.i, data.a, data.f))
