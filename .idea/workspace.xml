@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exam_iu/exam_iu_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_iu/exam_iu_2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/menu/mnuMain.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu/mnuMain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/icpdas.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/icpdas.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,7 +17,7 @@
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5270">
+            <state relative-caret-position="5491">
               <caret line="323" selection-start-line="323" selection-end-line="323" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
@@ -36,19 +35,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="exam_bp.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/exam_bp/exam_bp.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="782">
-              <caret line="46" selection-start-line="46" selection-end-line="46" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="exam_bu_prog.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6171">
+            <state relative-caret-position="6256">
               <caret line="368" column="52" selection-start-line="368" selection-start-column="52" selection-end-line="368" selection-end-column="52" />
               <folding>
                 <element signature="e#0#58#0" expanded="true" />
@@ -57,23 +47,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="random.py" pinned="false" current-in-tab="false">
-        <entry file="file://D:/python/Lib/random.py">
+      <file leaf-file-name="exam_iu_2.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3553">
-              <caret line="218" column="48" selection-start-line="218" selection-start-column="42" selection-end-line="218" selection-end-column="48" />
+            <state relative-caret-position="6341">
+              <caret line="376" column="57" selection-start-line="376" selection-start-column="57" selection-end-line="376" selection-end-column="57" />
+              <folding>
+                <element signature="e#0#58#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="exam_iu_2.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_2.py">
+      <file leaf-file-name="icpdas.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1785">
-              <caret line="198" column="62" lean-forward="true" selection-start-line="198" selection-start-column="8" selection-end-line="198" selection-end-column="62" />
-              <folding>
-                <element signature="e#0#58#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="145">
+              <caret line="39" column="31" selection-start-line="39" selection-start-column="31" selection-end-line="39" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -193,7 +183,6 @@
         <option value="$PROJECT_DIR$/menu/keypad.py" />
         <option value="$PROJECT_DIR$/menu/mnuBUCheck.py" />
         <option value="$PROJECT_DIR$/../rss/reader2.py" />
-        <option value="$PROJECT_DIR$/opc/icpdas.py" />
         <option value="$PROJECT_DIR$/opc/opc.py" />
         <option value="$PROJECT_DIR$/menu/mnuBU.py" />
         <option value="$PROJECT_DIR$/exam_bu/bu_dp.py" />
@@ -205,8 +194,9 @@
         <option value="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" />
         <option value="$PROJECT_DIR$/st.py" />
         <option value="$PROJECT_DIR$/exam_iu/frm_iu.py" />
-        <option value="$PROJECT_DIR$/exam_iu/exam_iu_2.py" />
         <option value="$PROJECT_DIR$/menu/mnuMain.py" />
+        <option value="$PROJECT_DIR$/exam_iu/exam_iu_2.py" />
+        <option value="$PROJECT_DIR$/opc/icpdas.py" />
       </list>
     </option>
   </component>
@@ -224,6 +214,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="NBKnowledgePane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -265,8 +257,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="NBKnowledgePane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -406,20 +396,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557316784434</updated>
-    </task>
-    <task id="LOCAL-00016" summary="написан общий компонент для управления током">
-      <created>1556018161119</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1556018161119</updated>
-    </task>
-    <task id="LOCAL-00017" summary="исправлена ошибка ПЧВ &quot;на задании&quot;&#10;завершена проверка давления ИУ">
-      <created>1556105906201</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1556105906201</updated>
     </task>
     <task id="LOCAL-00018" summary="завершена проверка тока ПЭ&#10;завершена проверка частоты ДП">
       <created>1556172779522</created>
@@ -750,7 +726,21 @@
       <option name="project" value="LOCAL" />
       <updated>1567061200708</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="мелкие ошибки орфографии в меню">
+      <created>1567146121686</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1567146121687</updated>
+    </task>
+    <task id="LOCAL-00066" summary="мелкие ошибки орфографии">
+      <created>1567153916427</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1567153916427</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -800,16 +790,16 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14427084" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14427084" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32908705" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5015625" side_tool="true" weight="0.32590234" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4984375" visible="true" weight="0.32590234" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32908705" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4984375" weight="0.32590234" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32908705" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4997356" weight="0.39808917" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -849,7 +839,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="добавлена проверка чвх1 - дчд рез." />
     <MESSAGE value="добавлена проверка шм рез." />
     <MESSAGE value="исправлена ошибка подключения БУ" />
     <MESSAGE value="исправлениы проверки платы резервирования связанные с отличным от основного управлением программатора" />
@@ -873,6 +862,7 @@
     <MESSAGE value="доделано согласование ДП" />
     <MESSAGE value="исправлена ошибка проверки резервных двх (номер режима)&#10;исправлена ошибка установки частоты при проверке бу" />
     <MESSAGE value="время прогрева вынесено в настройки" />
+    <MESSAGE value="мелкие ошибки орфографии в меню" />
     <MESSAGE value="мелкие ошибки орфографии" />
     <option name="LAST_COMMIT_MESSAGE" value="мелкие ошибки орфографии" />
   </component>
@@ -897,9 +887,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/exam_bu/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/exam_bu/form_iu.py" />
     <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-287100998/PyQt5/QtCore/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
@@ -1064,13 +1051,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="423">
-          <caret line="117" column="42" lean-forward="true" selection-start-line="114" selection-start-column="18" selection-end-line="117" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/guielement/scale.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -1172,7 +1152,7 @@
     <entry file="file://$PROJECT_DIR$/st.py" />
     <entry file="file://$PROJECT_DIR$/exam_bu/exam_bu_prog.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6171">
+        <state relative-caret-position="6256">
           <caret line="368" column="52" selection-start-line="368" selection-start-column="52" selection-end-line="368" selection-end-column="52" />
           <folding>
             <element signature="e#0#58#0" expanded="true" />
@@ -1182,7 +1162,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5270">
+        <state relative-caret-position="5491">
           <caret line="323" selection-start-line="323" selection-end-line="323" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
@@ -1207,16 +1187,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/opc/opc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6443">
-          <caret line="389" column="12" selection-start-line="389" selection-start-column="12" selection-end-line="389" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_pe.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1003">
@@ -1233,11 +1203,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/exam_iu/exam_iu_2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1785">
-          <caret line="198" column="62" lean-forward="true" selection-start-line="198" selection-start-column="8" selection-end-line="198" selection-end-column="62" />
+        <state relative-caret-position="6341">
+          <caret line="376" column="57" selection-start-line="376" selection-start-column="57" selection-end-line="376" selection-end-column="57" />
           <folding>
             <element signature="e#0#58#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/opc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6443">
+          <caret line="389" column="12" selection-start-line="389" selection-start-column="12" selection-end-line="389" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/python/Lib/site-packages/modbus_tk/modbus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1786">
+          <caret line="136" column="8" selection-start-line="136" selection-start-column="8" selection-end-line="136" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/opc/icpdas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="145">
+          <caret line="39" column="31" selection-start-line="39" selection-start-column="31" selection-end-line="39" selection-end-column="31" />
         </state>
       </provider>
     </entry>

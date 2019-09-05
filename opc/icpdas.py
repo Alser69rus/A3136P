@@ -42,6 +42,24 @@ class M7084(QtCore.QObject):
         self._enable_ch: int = 0
         self._enable_value: bool = True
 
+        try:
+            self.reset_watchdog()
+            print('M-7084 reset ok')
+        except Exception as e:
+            print('reset m-7084 watchdog fail')
+            print(e)
+
+    def reset_watchdog(self):
+        delay=50
+        self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 488, output_value=delay)
+        self.thread().msleep(5)
+        self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 491, output_value=0)
+        self.thread().msleep(5)
+        self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 269, output_value=1)
+        self.thread().msleep(5)
+        self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 260, output_value=1)
+        self.thread().msleep(5)
+
     def _read_data(self) -> Tuple[int]:
         v = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
         self.thread().msleep(2)
@@ -104,6 +122,8 @@ class M7084(QtCore.QObject):
                 if value != self.value:
                     self.changed.emit()
                 self.value = value
+                self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 491, output_value=0)
+                self.thread().msleep(2)
                 self.updated.emit()
             except Exception as e:
                 self.error = e
