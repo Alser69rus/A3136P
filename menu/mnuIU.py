@@ -6,7 +6,7 @@ except Exception:
 
 class mnuIU(template.Menu):
     def __init__(self, parent=None):
-        super().__init__('Проверка исполнительного устройства', parent)
+        super().__init__('Регулировка исполнительного устройства', parent)
 
         self.btn_iu_pe_tune = btn.Btn('Регулировка поворотного электромагнита')
         self.btn_iu_dp_tune = btn.Btn('Регулировка датчика положения')

@@ -103,6 +103,7 @@ class ExamIU2(QtCore.QState):
 
         btnOk = frm_main.btnPanel.btnOk.clicked
         btnBack = frm_main.btnPanel.btnBack.clicked
+        btnDown=frm_main.btnPanel.btnDown.clicked
 
         self.error = Error(self)
         self.stop_PCHV = StopPCHV(self)
@@ -151,6 +152,7 @@ class ExamIU2(QtCore.QState):
         self.stop_pchv2 = StopPCHV(self)
         self.connect_pchv2 = ConnectPchv(self)
         self.wait_timer.addTransition(self.wait_timer.done, self.set_speed_pressure1)
+        self.wait_timer.addTransition(btnDown,self.set_speed_pressure1)
         self.set_speed_pressure1.addTransition(opc.pchv.speed_reached, self.measure_p1)
         self.measure_p1.addTransition(self.measure_p1.done, self.set_speed_pressure2)
         self.measure_p1.addTransition(opc.ai.updated, self.measure_p1)
@@ -299,11 +301,13 @@ class WaitTimer(QtCore.QState):
     def onEntry(self, QEvent):
         t = frm1.timer.max_v + ti - time.time()
         frm1.timer.setValue(t)
-        frm1.text.setText('<p>Ожидайте.<br>Выполняется прогрев исполнительного устройства перед началом '
-                          'испытания.</p><p>Осталось {: 3.0f} мин {: 2.0f} сек</p>'.format(t // 60, t % 60))
+        frm1.text.setText(f'<p>Ожидайте.<br>Выполняется прогрев исполнительного устройства перед началом '
+                          f'испытания.</p><p>Осталось {t//60: 3.0f} мин {t%60: 2.0f} сек</p>'
+                          f'<br>Для пропуска нажмите кнопку "ВНИЗ"')
         if t <= 0:
             data.speed_idx = 1
             self.done.emit()
+        data.speed_idx = 1
 
 
 class SetSpeed(QtCore.QState):
