@@ -3,6 +3,7 @@ import modbus_tk.defines as cst
 from PyQt5 import QtCore
 
 from opc.monad import Maybe
+from pymodbus.client.sync import ModbusSerialClient as Client
 
 
 class ElMultimeter(QtCore.QObject):
@@ -15,7 +16,7 @@ class ElMultimeter(QtCore.QObject):
     def __init__(self, port=None, dev=1, k=1, offset=0, eps=1, name='PX', parent=None):
         super().__init__(parent)
         self.name = name
-        self.port = port
+        self.port: Client = port
         self.dev = dev
         self.value = 0
         self.error = None
@@ -24,34 +25,30 @@ class ElMultimeter(QtCore.QObject):
         self.off = offset
         self.eps = eps
 
-    def _read_data(self, port):
-        return port.execute(self.dev, cst.READ_INPUT_REGISTERS, 4, 1)
+    def read_data(self):
+        return self.port.read_input_registers(4, 1, unit=self.dev)
 
-    def _unpack_data(self, data):
+    def unpack_data(self, data):
         value = data[0]
         if value == 32768:
             raise Exception('{}. Выход за пределы диапазона'.format(self.name))
-
         if value > 32768:
             value = 65536 - value
         value = value * self.k - self.off
         return value
 
-    def _emit_warning(self, data, error):
-        self.error = error
-        self.warning.emit('{} warning: {}'.format(self.name, self.error))
-        return data
-
-    def _emit_updated(self, value):
-        if abs(value - self.value) > self.eps:
-            self.value = value
-            self.changed.emit(value)
-        self.updated.emit()
-        return value
-
     def update(self):
-        if self.active:
-            Maybe(self.port)(self._read_data)(self._unpack_data)(self._emit_updated).or_else(self._emit_warning)
+        if not self.active: return
+        req = self.read_data()
+        if not req.isError():
+            data = req.registers
+            value = self.unpack_data(data)
+            if abs(value - self.value) > self.eps:
+                self.value = value
+                self.changed.emit(value)
+            self.updated.emit()
+        else:
+            self.warning.emit(f'{self.name} warning: {req}')
 
     @QtCore.pyqtSlot(bool)
     def setActive(self, value=True):
