@@ -19,9 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="dds generator переписан под pymodbus">
+    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="electropribors переписан под pymodbus">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/ddsgenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/ddsgenerator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/opc/electropribor.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/electropribor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/icpdas.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/icpdas.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,13 +214,6 @@
       <option name="presentableId" value="LOCAL-00023" />
       <option name="project" value="LOCAL" />
       <updated>1557316784182</updated>
-    </task>
-    <task id="LOCAL-00024" summary="добавлена полготовка к испытанию БУ">
-      <created>1557316705052</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1557316705052</updated>
     </task>
     <task id="LOCAL-00025" summary="добавлена подготовка к проверке БУ">
       <created>1557316785618</created>
@@ -549,7 +544,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601466219331</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="electropribors переписан под pymodbus">
+      <created>1601466883126</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1601466883126</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -599,7 +601,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="В меню авторизации вместо нативной виртуальной клавы использована самодельная keypad" />
     <MESSAGE value="удален старый opc" />
     <MESSAGE value="большинство настроек вынесено в отдельный файл" />
     <MESSAGE value="исправлено отображение графика после выхода из испытания по кнопке &quot;назад&quot;" />
@@ -624,52 +625,60 @@
     <MESSAGE value="какаие-то изменения" />
     <MESSAGE value="Worker переписан под pymodbus" />
     <MESSAGE value="dds generator переписан под pymodbus" />
-    <option name="LAST_COMMIT_MESSAGE" value="dds generator переписан под pymodbus" />
+    <MESSAGE value="electropribors переписан под pymodbus" />
+    <option name="LAST_COMMIT_MESSAGE" value="electropribors переписан под pymodbus" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="587" y="87" key="CommitChangelistDialog2" timestamp="1601466218224">
+    <state x="587" y="87" key="CommitChangelistDialog2" timestamp="1601466882104">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="587" y="87" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1601466218224" />
+    <state x="587" y="87" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1601466882104" />
     <state width="659" height="466" key="DebuggerActiveHint" timestamp="1601462346107">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="659" height="466" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1601462346107" />
-    <state width="1876" height="273" key="GridCell.Tab.0.bottom" timestamp="1601466852840">
+    <state width="1876" height="340" key="GridCell.Tab.0.bottom" timestamp="1601468438512">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="273" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601466852840" />
-    <state width="1876" height="273" key="GridCell.Tab.0.center" timestamp="1601466852840">
+    <state width="1876" height="340" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
+    <state width="1876" height="340" key="GridCell.Tab.0.center" timestamp="1601468438512">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="273" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601466852840" />
-    <state width="1876" height="273" key="GridCell.Tab.0.left" timestamp="1601466852840">
+    <state width="1876" height="340" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
+    <state width="1876" height="340" key="GridCell.Tab.0.left" timestamp="1601468438512">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="273" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601466852840" />
-    <state width="1876" height="273" key="GridCell.Tab.0.right" timestamp="1601466852840">
+    <state width="1876" height="340" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
+    <state width="1876" height="340" key="GridCell.Tab.0.right" timestamp="1601468438512">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="273" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601466852840" />
-    <state width="1876" height="340" key="GridCell.Tab.1.bottom" timestamp="1601463816784">
+    <state width="1876" height="340" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
+    <state width="1876" height="340" key="GridCell.Tab.1.bottom" timestamp="1601468438513">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601463816784" />
-    <state width="1876" height="340" key="GridCell.Tab.1.center" timestamp="1601463816784">
+    <state width="1876" height="340" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438513" />
+    <state width="1876" height="340" key="GridCell.Tab.1.center" timestamp="1601468438512">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601463816784" />
-    <state width="1876" height="340" key="GridCell.Tab.1.left" timestamp="1601463816784">
+    <state width="1876" height="340" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
+    <state width="1876" height="340" key="GridCell.Tab.1.left" timestamp="1601468438512">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601463816784" />
-    <state width="1876" height="340" key="GridCell.Tab.1.right" timestamp="1601463816784">
+    <state width="1876" height="340" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
+    <state width="1876" height="340" key="GridCell.Tab.1.right" timestamp="1601468438512">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601463816784" />
+    <state width="1876" height="340" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Main.py</url>
+          <line>40</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

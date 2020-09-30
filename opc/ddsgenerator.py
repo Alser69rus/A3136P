@@ -60,3 +60,4 @@ class Generator(QtCore.QObject):
             self.setActive(False)
         else:
             self.warning.emit(f'{self.name} warning: {req}')
+            print(f'{self.name} warning: {req}')

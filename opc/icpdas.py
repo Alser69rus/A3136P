@@ -1,8 +1,9 @@
-﻿from PyQt5 import QtCore
-import modbus_tk.defines as cst
+﻿from typing import List
+
+from PyQt5 import QtCore
+from pymodbus.client.sync import ModbusSerialClient as Client
+
 import opc.bitwise as bitwise
-from opc.monad import Maybe
-from typing import List, Tuple, Any
 
 SOFTWARE_CLEAR: bool = True
 
@@ -25,7 +26,7 @@ class M7084(QtCore.QObject):
     def __init__(self, port=None, dev: int = 1, name: str = 'Частотомер', parent=None):
         super().__init__(parent)
         self.name = name
-        self.port = port
+        self.port: Client = port
         self.dev = dev
         self.value: List[float] = [0.0] * 8
         self.raw_value: List[float] = [0.0] * 8
@@ -42,30 +43,10 @@ class M7084(QtCore.QObject):
         self._enable_ch: int = 0
         self._enable_value: bool = True
 
-        try:
-            self.reset_watchdog()
-            print('M-7084 reset ok')
-        except Exception as e:
-            print('reset m-7084 watchdog fail')
-            print(e)
+    def read_data(self):
+        return self.port.read_input_registers(0, 16, unit=self.dev)
 
-    def reset_watchdog(self):
-        delay=20
-        self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 488, output_value=delay)
-        self.thread().msleep(5)
-        self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 491, output_value=0)
-        self.thread().msleep(5)
-        #self.port.execute(self.dev, cst.WRITE_SINGLE_COIL, 269, output_value=1)
-        #self.thread().msleep(5)
-        #self.port.execute(self.dev, cst.WRITE_SINGLE_COIL, 260, output_value=1)
-        #self.thread().msleep(5)
-
-    def _read_data(self) -> Tuple[int]:
-        v = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 0, 16)
-        self.thread().msleep(2)
-        return v
-
-    def _unpack_data(self) -> List[float]:
+    def unpack_data(self) -> List[float]:
         value: list = [0] * 8
         for i in range(8):
             value[i] = self.data[i * 2] + 65536 * self.data[i * 2 + 1]
@@ -73,69 +54,62 @@ class M7084(QtCore.QObject):
             value[i] = value[i] * self.k[i] + self.off[i]
         return value
 
-    def _unpack_value(self) -> List[float]:
+    def unpack_value(self) -> List[float]:
         return [self.raw_value[i] - self.zero[i] for i in range(8)]
 
-    def _clear(self) -> bool:
-        try:
-            self.thread().msleep(5)
-            self.port.execute(self.dev, cst.WRITE_SINGLE_COIL, 512 + self._clear_ch, output_value=1)
-            self.thread().msleep(5)
+    def clear(self) -> bool:
+        req = self.port.write_coil(512 + self._clear_ch, True, unit=self.dev)
+        if not req.isError():
             self._clear_cmd = False
             self.active = True
             self.cleared.emit()
             return True
-        except Exception as e:
-            self.error = e
-            self.warning.emit(f'{self.name} warning clear err: {self.error}')
-            self.thread().msleep(20)
+        else:
+            self.warning.emit(f'{self.name} warning clear err: {req}')
+            print(f'{self.name} warning clear err: {req}')
             return False
 
-    def _enable(self) -> bool:
-        try:
-            v = self.port.execute(self.dev, cst.READ_INPUT_REGISTERS, 489, 1)
-            self.thread().msleep(5)
-            data = bitwise.override(v, self._enable_ch, self._enable_value)
-            self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 489, output_value=data)
-            self.thread().msleep(5)
+    def enable(self) -> bool:
+        req = self.port.read_input_registers(489, 1, unit=self.dev)
+        if not req.isError():
+            data = req.registers
+            value = bitwise.override(data, self._enable_ch, self._enable_value)
+        else:
+            self.warning.emit(f'{self.name} warning enable err: {req}')
+            print(f'{self.name} warning enable err: {req}')
+            return False
+
+        req = self.port.write_register(489, value, unit=self.dev)
+        if not req.isError():
             self._enable_cmd = False
             self.enabled.emit()
-            return True
-        except Exception as e:
-            self.error = e
-            self.warning.emit(f'{self.name} warning enable err: {self.error}')
-            self.thread().msleep(20)
+        else:
+            self.warning.emit(f'{self.name} warning enable err: {req}')
+            print(f'{self.name} warning enable err: {req}')
             return False
+        return True
 
     def update(self):
         if self._clear_cmd:
-            self._clear()
+            self.clear()
 
         if self._enable_cmd:
-            self._enable()
+            self.enable()
 
-        if self.active:
-            try:
-                self.data = self._read_data()
-                self.raw_value = self._unpack_data()
-                value = self._unpack_value()
-                if value != self.value:
-                    self.changed.emit()
-                self.value = value
-                self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 491, output_value=0)
-                self.thread().msleep(2)
-                self.updated.emit()
-            except Exception as e:
-                self.error = e
-                self.warning.emit(f'{self.name} warning read err: {self.error}')
-                self.thread().msleep(20)
-                self.port._serial.flushInput()
-                self.port._serial.flushOutput()
-                self.thread().msleep(20)
-                # self.port._serial.close()
-                # self.thread().msleep(20)
-                # self.port._serial.open()
-                # self.thread().msleep(20)
+        if not self.active: return
+        req = self.read_data()
+        if req.isError():
+            self.warning.emit(f'{self.name} warning enable err: {req}')
+            print(f'{self.name} warning enable err: {req}')
+            return False
+        self.data = req.registers
+        self.raw_value = self.unpack_data()
+        value = self.unpack_value()
+        if value != self.value:
+            self.changed.emit()
+        self.value = value
+        self.updated.emit()
+        return True
 
     @QtCore.pyqtSlot(bool)
     def setActive(self, value=True):

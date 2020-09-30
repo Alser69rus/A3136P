@@ -1,8 +1,5 @@
-import time
-import modbus_tk.defines as cst
 from PyQt5 import QtCore
 
-from opc.monad import Maybe
 from pymodbus.client.sync import ModbusSerialClient as Client
 
 
@@ -49,6 +46,7 @@ class ElMultimeter(QtCore.QObject):
             self.updated.emit()
         else:
             self.warning.emit(f'{self.name} warning: {req}')
+            print(f'{self.name} warning: {req}')
 
     @QtCore.pyqtSlot(bool)
     def setActive(self, value=True):
