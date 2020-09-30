@@ -138,7 +138,7 @@ class Worker(QtCore.QObject):
                 self.thread().msleep(2)
                 if not self.running:
                     break
-            self.thread().msleep(5)
+            #self.thread().msleep(5)
 
         print('Остановлен сервер {}'.format(self.name))
         self.finished.emit()

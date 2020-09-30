@@ -2098,10 +2098,10 @@ class Protocol(QtCore.QState):
 
         shim_y = y + SPACE * 4
         if not bu.shim_res:
-            print_row('8. Проверка ШИМ', 'пропуск')
+            print_row('3. Проверка ШИМ', 'пропуск')
         else:
 
-            print_row('8. Проверка ШИМ')
+            print_row('3. Проверка ШИМ')
             print_row(
                 f'         Минимальный ток, А', f'{bu.shim_res1}', f'факт: {bu.shim_i1:5.3f}', f'норма 0,6-0,9 А')
             print_row(
@@ -2164,16 +2164,16 @@ class Protocol(QtCore.QState):
                           f'норма 2,1-2,4')
                 print_row(f'         Монотонность графика:', f'{bu.shim_res3_r}')
                 print_graph(x + 1300, shim_y, bu.shim_graph_r, 'График резервного ШИМ')
-            painter.setFont(header_font)
-            y += SPACE * 2
-            painter.drawText(x, y, 'Испытание провел:')
-            painter.drawText(x + 312, y, f'{com.frm_main.auth.name1: >50}    {"_" * 20}')
+        painter.setFont(header_font)
+        y += SPACE * 2
+        painter.drawText(x, y, 'Испытание провел:')
+        painter.drawText(x + 312, y, f'{com.frm_main.auth.name1: >50}    {"_" * 20}')
 
-            y += SPACE * 2
-            painter.drawText(x, y, 'Испытание проверил:')
-            painter.drawText(x + 312, y, f'{com.frm_main.auth.name2: >50}    {"_" * 20}')
+        y += SPACE * 2
+        painter.drawText(x, y, 'Испытание проверил:')
+        painter.drawText(x + 312, y, f'{com.frm_main.auth.name2: >50}    {"_" * 20}')
 
-            painter.end()
+        painter.end()
 
 
 class DisconnectBU(QtCore.QState):

@@ -177,7 +177,7 @@ class InitMenu(QtCore.QState):
     def onEntry(self, QEvent):
         global com
         print('stm started')
-        com.opc.ai.setActive(False)
+        com.opc.ai.setActive(True)
         com.opc.di.setActive(True)
         com.opc.ao.setActive(False)
         com.opc.do1.setActive(False)
