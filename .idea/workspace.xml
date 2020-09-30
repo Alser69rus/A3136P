@@ -19,14 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="исправление названия меню регулировки БУ">
-      <change beforePath="$PROJECT_DIR$/.idea/A3136P.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/A3136P.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="какаие-то изменения">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" beforeDir="false" afterPath="$PROJECT_DIR$/exam_bu/exam_bu_prog.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/opc/opc.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/opc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/settings.ini" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -210,13 +205,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557316784434</updated>
-    </task>
-    <task id="LOCAL-00020" summary="вместо чтения статуса ПЧВ для определения сигнала &quot;на задании&quot; используется сравнение скоростей&#10;в ПИД убран останов таймера, поскольку приводил к ошибкам при вызове из другого потока&#10;в М7084 добавлена дополнительная задержка перед очисткой&#10;добавлено событие &quot;не удалось установить позицию для испытания ИУ&quot;">
-      <created>1556519779730</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1556519779730</updated>
     </task>
     <task id="LOCAL-00021" summary="добавлена установка задания индикатора&#10;при проверке ПЭ">
       <created>1556523557019</created>
@@ -554,7 +542,14 @@
       <option name="project" value="LOCAL" />
       <updated>1567773003043</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="какаие-то изменения">
+      <created>1601461523936</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1601461523937</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -591,15 +586,6 @@
       <configuration name="Unittests in test_icpdas.py" configurationId="tests" />
     </history-entry>
   </component>
-  <component name="TodoView" selected-index="4">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -613,7 +599,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="исправлениы проверки платы резервирования связанные с отличным от основного управлением программатора" />
     <MESSAGE value="добавлена клава (тест)" />
     <MESSAGE value="добавлена клава (тест)2" />
     <MESSAGE value="В меню авторизации вместо нативной виртуальной клавы использована самодельная keypad" />
@@ -638,7 +623,50 @@
     <MESSAGE value="мелкие ошибки орфографии" />
     <MESSAGE value="Попытка включить сторожевой таймер М-7084" />
     <MESSAGE value="исправление названия меню регулировки БУ" />
-    <option name="LAST_COMMIT_MESSAGE" value="исправление названия меню регулировки БУ" />
+    <MESSAGE value="какаие-то изменения" />
+    <option name="LAST_COMMIT_MESSAGE" value="какаие-то изменения" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="587" y="87" key="CommitChangelistDialog2" timestamp="1601461521630">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="587" y="87" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1601461521630" />
+    <state width="659" height="466" key="DebuggerActiveHint" timestamp="1601462346107">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="659" height="466" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1601462346107" />
+    <state width="1876" height="273" key="GridCell.Tab.0.bottom" timestamp="1601464016953">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1876" height="273" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601464016953" />
+    <state width="1876" height="273" key="GridCell.Tab.0.center" timestamp="1601464016953">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1876" height="273" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601464016953" />
+    <state width="1876" height="273" key="GridCell.Tab.0.left" timestamp="1601464016952">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1876" height="273" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601464016952" />
+    <state width="1876" height="273" key="GridCell.Tab.0.right" timestamp="1601464016953">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1876" height="273" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601464016953" />
+    <state width="1876" height="340" key="GridCell.Tab.1.bottom" timestamp="1601463816784">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1876" height="340" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601463816784" />
+    <state width="1876" height="340" key="GridCell.Tab.1.center" timestamp="1601463816784">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1876" height="340" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601463816784" />
+    <state width="1876" height="340" key="GridCell.Tab.1.left" timestamp="1601463816784">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1876" height="340" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601463816784" />
+    <state width="1876" height="340" key="GridCell.Tab.1.right" timestamp="1601463816784">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1876" height="340" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601463816784" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

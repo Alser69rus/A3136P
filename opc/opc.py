@@ -1,11 +1,10 @@
 ﻿from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QThread
-import serial
-from modbus_tk import modbus_rtu
-from opc.monad import Maybe
+from pymodbus.client.sync import ModbusSerialClient as Client
+
 import opc.owenio as owenio
-from opc.electropribor import ElMultimeter
 from opc.ddsgenerator import Generator
+from opc.electropribor import ElMultimeter
 from opc.icpdas import M7084
 from opc.owenpchv import Pchv
 from opc.pid import PID
@@ -115,57 +114,42 @@ class Worker(QtCore.QObject):
     """opc-сервер"""
     finished = QtCore.pyqtSignal()
 
-    def __init__(self, port=None, baud=9600, timeout=0.05, parent=None):
+    def __init__(self, port: str = '', baud: int = 9600, timeout: float = 0.05, parent=None):
         super().__init__(parent)
         self.running = False
         self.name = port
-        self.port = Maybe(port)(self.open_serial, baud)(self.modbus_master)(self.set_timeout, timeout)
-        if self.port.value is None:
-            print(self.port.error)
-        self.port = self.port.value
+        try:
+            self.port = Client(method='rtu', port=port, timeout=timeout, baudrate=baud, retry_on_empty=True, retries=5,
+                               strict=False)
+            print(f'Порт {self.name} baud = {baud} таймаут {timeout*1000:.0f} мс')
+        except Exception as exc:
+            print(exc)
+
         self.dev = []
 
     def run(self):
-
-        if self.port is not None:
-            print('Запущен сервер {}'.format(self.name))
+        if self.port.connect():
+            print(f'Открыт порт {self.name}')
             self.running = True
+        else:
+            print(f'Порт {self.name} не удалось открыть')
 
         while self.running:
             for dev in self.dev:
-                if self.thread() == dev.thread(): print(self.thread(), dev.thread(), dev)
+                # if self.thread() == dev.thread(): print(self.thread(), dev.thread(), dev)
                 dev.update()
                 self.thread().msleep(2)
                 if not self.running:
                     break
-            #self.thread().msleep(5)
-
+        self.port.close()
         print('Остановлен сервер {}'.format(self.name))
         self.finished.emit()
-
-    def open_serial(self, port_name, baud_rate, *args, **kwargs):
-        return serial.Serial(port_name, baud_rate, *args, **kwargs)
-
-    def modbus_master(self, serial_port, *args, **kwargs):
-        master = None
-        try:
-            master = modbus_rtu.RtuMaster(serial_port, *args, **kwargs)
-            return master
-        except Exception:
-
-            if not (master is None):
-                master._serial.close()
-            raise
-
-    def set_timeout(self, master, timeout):
-        master.set_timeout(timeout)
-        return master
 
 
 class Worker1(Worker):
     """сервер модулей"""
 
-    def __init__(self, port=None, baud=9600, timeout=0.05, parent=None):
+    def __init__(self, port='', baud=9600, timeout=0.05, parent=None):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
         settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
         settings.setIniCodec('UTF-8')
@@ -201,7 +185,7 @@ class Worker1(Worker):
 class Worker2(Worker):
     """сервер ПЧВ"""
 
-    def __init__(self, port=None, baud=9600, timeout=0.05, parent=None):
+    def __init__(self, port='', baud=9600, timeout=0.05, parent=None):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
         settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
         settings.setIniCodec('UTF-8')
@@ -215,7 +199,7 @@ class Worker2(Worker):
 class Worker3(Worker):
     """сервер генератора"""
 
-    def __init__(self, port=None, baud=9600, timeout=0.05, parent=None):
+    def __init__(self, port='', baud=9600, timeout=0.05, parent=None):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
         settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
         settings.setIniCodec('UTF-8')
@@ -228,7 +212,7 @@ class Worker3(Worker):
 class Worker4(Worker):
     """сервер частотомера"""
 
-    def __init__(self, port=None, baud=9600, timeout=0.1, parent=None):
+    def __init__(self, port='', baud=9600, timeout=0.1, parent=None):
         super().__init__(port=port, baud=baud, timeout=timeout, parent=parent)
         settings = QtCore.QSettings('settings.ini', QtCore.QSettings.IniFormat)
         settings.setIniCodec('UTF-8')
