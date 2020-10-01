@@ -1,8 +1,6 @@
 from PyQt5 import QtCore
+from pymodbus.client.sync import ModbusSerialClient as Client
 
-import modbus_tk.defines as cst
-
-from opc.monad import Maybe
 import opc.bitwise as bitwise
 
 
@@ -16,27 +14,10 @@ class OwenModule(QtCore.QObject):
         super().__init__(parent)
         self.value = None
         self.error = None
-        self.port = port
+        self.port: Client = port
         self.dev = dev
         self.active = False
         self.name = name
-
-    def _read_data(self, data):
-        pass
-
-    def _unpack_data(self, pack):
-        pass
-
-    def _pack_data(self, data):
-        pass
-
-    def _write_data(self, pack):
-        pass
-
-    def _emit_warning(self, data, error):
-        self.error = error
-        self.warning.emit('{} warning: {}'.format(self.name, self.error))
-        return data
 
     @QtCore.pyqtSlot(bool)
     def setActive(self, value=True):
@@ -50,15 +31,20 @@ class OwenInputModule(OwenModule):
         super().__init__(port=port, dev=dev, name=name, parent=parent)
 
     def update(self):
-        if self.active:
-            Maybe(self.port)(self._read_data)(self._unpack_data)(self._emit_updated).or_else(self._emit_warning)
-
-    def _emit_updated(self, data):
-        if data != self.value:
-            self.value = data
+        if not self.active: return False
+        req = self.read_data()
+        if not req.isError():
+            data = req.registers
+            value = self.unpack_data(data)
+        else:
+            self.warning.emit(f'{self.name} read warning: {req}')
+            print(f'{self.name} read warning: {req}')
+            return False
+        if value != self.value:
+            self.value = value
             self.changed.emit()
         self.updated.emit()
-        return data
+        return True
 
 
 class OwenOutputModule(OwenModule):
@@ -66,20 +52,18 @@ class OwenOutputModule(OwenModule):
         super().__init__(port=port, dev=dev, name=name, parent=parent)
 
     def update(self):
-        if self.active:
-            Maybe(self.value)(self._pack_data)(self._write_data)(self._read_data)(self._check_data)(self._emit_updated)(
-                self._write_done).or_else(
-                self._emit_warning)
-
-    def _emit_updated(self, data):
-        if self.active:
+        if not self.active: return False
+        data = self.pack_data(self.value)
+        req = self.write_data(data)
+        if not req.isError():
+            self.setActive(False)
             self.changed.emit()
-        self.updated.emit()
-        return data
-
-    def _write_done(self, data):
-        self.setActive(False)
-        return data
+            self.updated.emit()
+        else:
+            self.warning.emit(f'{self.name} write warning: {req}')
+            print(f'{self.name} write warning: {req}')
+            return False
+        return True
 
     def setValue(self, value, n=-1):
         if n >= 0:
@@ -94,13 +78,13 @@ class DI16(OwenInputModule):
         super().__init__(port=port, dev=dev, name=name, parent=parent)
         self.value = [0] * 16
 
-    def _read_data(self, port):
-        return port.execute(self.dev, cst.READ_INPUT_REGISTERS, 51, 1)
+    def read_data(self):
+        return self.port.read_input_registers(51, 1, unit=self.dev)
 
-    def _unpack_data(self, pack):
+    def unpack_data(self, data):
         value = []
         for i in range(16):
-            value.append(bitwise.get(pack[0], i))
+            value.append(bitwise.get(data[0], i))
         return value
 
 
@@ -112,20 +96,13 @@ class AI8(OwenInputModule):
         self.off = [0] * 8
         self.eps = [1] * 8
 
-    def _read_data(self, port):
-        return port.execute(self.dev, cst.READ_INPUT_REGISTERS, 256, 8)
+    def read_data(self):
+        return self.port.read_input_registers(256, 8, unit=self.dev)
 
-    def _unpack_data(self, data):
+    def unpack_data(self, data):
         values = [i if i < 32768 else 655536 - i for i in data]
         values = [values[i] * self.k[i] + self.off[i] for i in range(8)]
         values = [i if i != 32768 else None for i in values]
-        return values
-
-    def _emit_updated(self, values):
-        if any([abs(self.value[i] - values[i]) > self.eps[i] for i in range(8)]):
-            self.value = values
-            self.changed.emit()
-        self.updated.emit()
         return values
 
 
@@ -135,29 +112,15 @@ class DO32(OwenOutputModule):
         super().__init__(port=port, dev=dev, name=name, parent=parent)
         self.value = [0] * 32
 
-    def _pack_data(self, data):
+    def pack_data(self, data):
         pack = [0, 0]
         for i in range(16):
             pack[0] = bitwise.override(pack[0], i, data[i + 16])
             pack[1] = bitwise.override(pack[1], i, data[i])
         return pack
 
-    def _write_data(self, pack):
-        self.thread().msleep(2)
-        return self.port.execute(self.dev, cst.WRITE_MULTIPLE_REGISTERS, 97, output_value=pack)
-
-    def _read_data(self, data):
-        self.thread().msleep(2)
-        return self.port.execute(self.dev, cst.READ_HOLDING_REGISTERS, 97, 2)
-
-    def _check_data(self, data):
-        v = [0] * 32
-        for i in range(16):
-            v[i] = bitwise.get(data[1], i)
-            v[i + 16] = bitwise.get(data[0], i)
-        if v == self.value:
-            return v
-        return None
+    def write_data(self, data):
+        return self.port.write_registers(97, data, unit=self.dev)
 
 
 class AO8I(OwenOutputModule):
@@ -166,19 +129,8 @@ class AO8I(OwenOutputModule):
         super().__init__(port=port, dev=dev, name=name, parent=parent)
         self.value = [0] * 8
 
-    def _pack_data(self, data):
+    def pack_data(self, data):
         return [int(i) for i in data]
 
-    def _write_data(self, data):
-        self.thread().msleep(2)
-        return self.port.execute(self.dev, cst.WRITE_MULTIPLE_REGISTERS, 0, output_value=data)
-
-    def _read_data(self, data):
-        self.thread().msleep(2)
-        v = self.port.execute(self.dev, cst.READ_HOLDING_REGISTERS, 0, 8)
-        return v
-
-    def _check_data(self, data):
-        if list(data) == self.value:
-            return data
-        return None
+    def write_data(self, data):
+        return self.port.write_registers(0, data, unit=self.dev)

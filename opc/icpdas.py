@@ -65,8 +65,8 @@ class M7084(QtCore.QObject):
             self.cleared.emit()
             return True
         else:
-            self.warning.emit(f'{self.name} warning clear err: {req}')
-            print(f'{self.name} warning clear err: {req}')
+            self.warning.emit(f'{self.name} warning clear {self._clear_ch} err: {req}')
+            print(f'{self.name} warning clear {self._clear_ch} err: {req}')
             return False
 
     def enable(self) -> bool:
@@ -75,8 +75,8 @@ class M7084(QtCore.QObject):
             data = req.registers
             value = bitwise.override(data, self._enable_ch, self._enable_value)
         else:
-            self.warning.emit(f'{self.name} warning enable err: {req}')
-            print(f'{self.name} warning enable err: {req}')
+            self.warning.emit(f'{self.name} warning enable {self._enable_ch} err: {req}')
+            print(f'{self.name} warning read enable {self._enable_ch} err: {req}')
             return False
 
         req = self.port.write_register(489, value, unit=self.dev)
@@ -84,8 +84,8 @@ class M7084(QtCore.QObject):
             self._enable_cmd = False
             self.enabled.emit()
         else:
-            self.warning.emit(f'{self.name} warning enable err: {req}')
-            print(f'{self.name} warning enable err: {req}')
+            self.warning.emit(f'{self.name} warning write enable {self._enable_ch} err: {req}')
+            print(f'{self.name} warning write enable {self._enable_ch} err: {req}')
             return False
         return True
 
@@ -99,8 +99,8 @@ class M7084(QtCore.QObject):
         if not self.active: return
         req = self.read_data()
         if req.isError():
-            self.warning.emit(f'{self.name} warning enable err: {req}')
-            print(f'{self.name} warning enable err: {req}')
+            self.warning.emit(f'{self.name} warning read err: {req}')
+            print(f'{self.name} warning read err: {req}')
             return False
         self.data = req.registers
         self.raw_value = self.unpack_data()

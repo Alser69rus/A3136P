@@ -19,11 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="electropribors переписан под pymodbus">
+    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="icpdas переписан под pymodbus">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opc/ddsgenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/ddsgenerator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opc/electropribor.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/electropribor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/opc/icpdas.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/icpdas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/owenio.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/owenio.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,13 +206,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557316784434</updated>
-    </task>
-    <task id="LOCAL-00023" summary="first">
-      <created>1557309852263</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1557316784182</updated>
     </task>
     <task id="LOCAL-00025" summary="добавлена подготовка к проверке БУ">
       <created>1557316785618</created>
@@ -551,7 +543,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601466883126</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="icpdas переписан под pymodbus">
+      <created>1601468471991</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1601468471993</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -601,7 +600,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="удален старый opc" />
     <MESSAGE value="большинство настроек вынесено в отдельный файл" />
     <MESSAGE value="исправлено отображение графика после выхода из испытания по кнопке &quot;назад&quot;" />
     <MESSAGE value="шапка протокола" />
@@ -626,59 +624,61 @@
     <MESSAGE value="Worker переписан под pymodbus" />
     <MESSAGE value="dds generator переписан под pymodbus" />
     <MESSAGE value="electropribors переписан под pymodbus" />
-    <option name="LAST_COMMIT_MESSAGE" value="electropribors переписан под pymodbus" />
+    <MESSAGE value="icpdas переписан под pymodbus" />
+    <option name="LAST_COMMIT_MESSAGE" value="icpdas переписан под pymodbus" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="587" y="87" key="CommitChangelistDialog2" timestamp="1601466882104">
+    <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1601468516482">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="587" y="87" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1601466882104" />
+    <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1601468516482" />
+    <state x="587" y="87" key="CommitChangelistDialog2" timestamp="1601468470880">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="587" y="87" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1601468470880" />
     <state width="659" height="466" key="DebuggerActiveHint" timestamp="1601462346107">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="659" height="466" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1601462346107" />
-    <state width="1876" height="340" key="GridCell.Tab.0.bottom" timestamp="1601468438512">
+    <state width="1876" height="340" key="GridCell.Tab.0.bottom" timestamp="1601471611407">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
-    <state width="1876" height="340" key="GridCell.Tab.0.center" timestamp="1601468438512">
+    <state width="1876" height="340" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601471611407" />
+    <state width="1876" height="340" key="GridCell.Tab.0.center" timestamp="1601471611407">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
-    <state width="1876" height="340" key="GridCell.Tab.0.left" timestamp="1601468438512">
+    <state width="1876" height="340" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601471611407" />
+    <state width="1876" height="340" key="GridCell.Tab.0.left" timestamp="1601471611407">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
-    <state width="1876" height="340" key="GridCell.Tab.0.right" timestamp="1601468438512">
+    <state width="1876" height="340" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601471611407" />
+    <state width="1876" height="340" key="GridCell.Tab.0.right" timestamp="1601471611407">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
-    <state width="1876" height="340" key="GridCell.Tab.1.bottom" timestamp="1601468438513">
+    <state width="1876" height="340" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601471611407" />
+    <state width="1876" height="340" key="GridCell.Tab.1.bottom" timestamp="1601471611407">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438513" />
-    <state width="1876" height="340" key="GridCell.Tab.1.center" timestamp="1601468438512">
+    <state width="1876" height="340" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601471611407" />
+    <state width="1876" height="340" key="GridCell.Tab.1.center" timestamp="1601471611407">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
-    <state width="1876" height="340" key="GridCell.Tab.1.left" timestamp="1601468438512">
+    <state width="1876" height="340" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601471611407" />
+    <state width="1876" height="340" key="GridCell.Tab.1.left" timestamp="1601471611407">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
-    <state width="1876" height="340" key="GridCell.Tab.1.right" timestamp="1601468438512">
+    <state width="1876" height="340" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601471611407" />
+    <state width="1876" height="340" key="GridCell.Tab.1.right" timestamp="1601471611407">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="340" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601468438512" />
+    <state width="1876" height="340" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601471611407" />
+    <state x="524" y="248" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1601468649499">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="524" y="248" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.1040@0.0.1920.1040" timestamp="1601468649499" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>40</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
