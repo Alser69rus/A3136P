@@ -2,6 +2,7 @@
 from PyQt5 import QtCore
 import opc.bitwise as bitwise
 from opc.monad import Maybe
+from pymodbus.client.sync import ModbusSerialClient as Client
 
 
 class Pchv(QtCore.QObject):
@@ -18,7 +19,7 @@ class Pchv(QtCore.QObject):
     def __init__(self, port=None, dev=1, max_speed=1380, fb_k=1.33333333333, fb_off=0, eps=2, name='ПЧВ', parent=None):
         super().__init__(parent)
         self.name = name
-        self.port = port
+        self.port: Client = port
         self.dev = dev
         self.max_speed = max_speed
         self.fb_k = fb_k
@@ -98,17 +99,12 @@ class Pchv(QtCore.QObject):
             self.active = value
             self.active_change.emit(value)
 
-    def _cmd_send_done(self, data):
-        self.send_cmd = False
-        self.task_changed.emit(self.task)
-        return data
+    def emit_warning(self, txt, error):
+        self.warning.emit(f'{self.name} {txt} warning: {error}')
+        print(f'{self.name} {txt} warning: {error}')
 
-    def _emit_warning(self, data, error):
-        self.error = error
-        self.warning.emit('{} warning: {}'.format(self.name, self.error))
-        return data
-
-    def _emit_stw_signals(self, stw):
+    def emit_stw_signals(self):
+        stw = self.stw
         alarm = stw & 0b1111000011011000
         if alarm:
             msg = self.err_msg(stw)
@@ -131,28 +127,13 @@ class Pchv(QtCore.QObject):
 
         return stw
 
-    def _upd_stw(self, stw):
-        self.stw = stw
-        return stw
-
-    def _upd_fb(self, fb):
-        self.fb = fb
-        return fb
-
-    def _speed_changed(self, fb):
+    def speed_change(self):
+        fb = self.fb
         speed = fb * self.fb_k + self.fb_off
         if speed < 0: speed = 0
         if abs(self.speed - speed) > self.eps:
             self.speed_changed.emit(speed)
         return fb
-
-    def _upd_mav(self, mav):
-        self.mav = mav
-        return mav
-
-    def _delay(self, value, delay=2):
-        self.thread().msleep(delay)
-        return value
 
     def err_msg(self, stw):
         msg = ''
@@ -168,28 +149,52 @@ class Pchv(QtCore.QObject):
 
     def update(self):
         if self.send_cmd:
-            Maybe(self.ref)(self._write_ref)(self._delay).ret(self.ctw)(self._write_ctw)(self._cmd_send_done)(
-                self._delay).or_else(self._emit_warning)
+            req = self.write_ref()
+            if req.isError():
+                self.emit_warning('write ref', req)
+                return False
+            req = self.write_ctw()
+            if req.isError():
+                self.emit_warning('write ctw', req)
+                return False
+            self.send_cmd = False
+            self.task_changed.emit(self.task)
+
         if self.active:
-            Maybe(self.port)(self._read_stw)(self._emit_stw_signals)(self._upd_stw)(self._delay).or_else(
-                self._emit_warning)
-            Maybe(self.port)(self._read_fb)(self._speed_changed)(self._upd_fb)(self._delay).or_else(self._emit_warning)
-            Maybe(self.port)(self._read_mav)(self._upd_mav).or_else(self._emit_warning)
+            req = self.read_stw()
+            if req.isError():
+                self.emit_warning('read stw', req)
+                return False
+            self.stw = req.registers[0]
+            self.emit_stw_signals()
+
+            req = self.read_mav()
+            if req.isError():
+                self.emit_warning('read mav', req)
+                return False
+            self.mav = req.registers[0]
+
+            req = self.read_fb()
+            if req.isError():
+                self.emit_warning('read fb', req)
+                return False
+            self.fb = req.registers[0]
+            self.speed_change()
+
             self.updated.emit()
+            return True
 
-    def _write_ref(self, value):
-        self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 50009, output_value=value)
-        return value
+    def write_ref(self):
+        return self.port.write_register(50009, self.ref, unit=self.dev)
 
-    def _write_ctw(self, value):
-        self.port.execute(self.dev, cst.WRITE_SINGLE_REGISTER, 49999, output_value=value)
-        return value
+    def write_ctw(self):
+        return self.port.write_register(49999, self.ctw, unit=self.dev)
 
-    def _read_stw(self, port):
-        return port.execute(self.dev, cst.READ_HOLDING_REGISTERS, 50199, 1)[0]
+    def read_stw(self):
+        return self.port.read_holding_registers(50199, 1, unit=self.dev)
 
-    def _read_mav(self, port):
-        return port.execute(self.dev, cst.READ_HOLDING_REGISTERS, 50209, 1)[0]
+    def read_mav(self):
+        return self.port.read_holding_registers(50209, 1, unit=self.dev)
 
-    def _read_fb(self, port):
-        return port.execute(self.dev, cst.READ_HOLDING_REGISTERS, 16679, 1)[0]
+    def read_fb(self):
+        return self.port.read_holding_registers(16679, 1, unit=self.dev)
