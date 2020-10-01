@@ -1,17 +1,20 @@
-﻿import sys
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QState as QState
+﻿import logging
+import sys
 
-import opc.opc
-import menu.mainform
-import exam_iu.exam_iu_pe
+from PyQt5 import QtCore, QtWidgets
+
 import exam_iu.exam_iu_dp
-from exam_iu.exam_iu_2 import ExamIU2
-from exam_iu.exam_iu import ExamIU
-from exam_bu.exam_bu_prog import Exam_bu
-from exam_bu.bu_ai_tune import BuAiTune, BuRtTune
+import exam_iu.exam_iu_pe
+import menu.mainform
+import opc.opc
 from exam_bp.exam_bp import ExamBp
+from exam_bu.bu_ai_tune import BuAiTune, BuRtTune
 from exam_bu.bu_dp import TuneBuDp
+from exam_bu.exam_bu_prog import Exam_bu
+from exam_iu.exam_iu import ExamIU
+from exam_iu.exam_iu_2 import ExamIU2
+
+logging.basicConfig(filename='log\\log.txt', filemode='w', level=logging.INFO)
 
 com = None
 

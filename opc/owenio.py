@@ -1,3 +1,5 @@
+import logging
+
 from PyQt5 import QtCore
 from pymodbus.client.sync import ModbusSerialClient as Client
 
@@ -38,7 +40,7 @@ class OwenInputModule(OwenModule):
             value = self.unpack_data(data)
         else:
             self.warning.emit(f'{self.name} read warning: {req}')
-            print(f'{self.name} read warning: {req}')
+            logging.warning(f'{self.name} read warning: {req}')
             return False
         if value != self.value:
             self.value = value
@@ -61,7 +63,7 @@ class OwenOutputModule(OwenModule):
             self.updated.emit()
         else:
             self.warning.emit(f'{self.name} write warning: {req}')
-            print(f'{self.name} write warning: {req}')
+            logging.warning(f'{self.name} write warning: {req}')
             return False
         return True
 

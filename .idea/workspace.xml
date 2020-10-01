@@ -19,8 +19,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="owenio переписан под pymodbus">
+    <list default="true" id="a036c0fb-72be-40a6-9099-c32b9e12f1c3" name="Default" comment="owenpchv переписан под pymodbus">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Log/Err.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/ddsgenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/ddsgenerator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/electropribor.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/electropribor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/icpdas.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/icpdas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opc/owenio.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/owenio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/opc/owenpchv.py" beforeDir="false" afterPath="$PROJECT_DIR$/opc/owenpchv.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -205,13 +211,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557316784434</updated>
-    </task>
-    <task id="LOCAL-00026" summary="Завершены проверки БУ:&#10;-проверка дискр. входов&#10;-проверка частотных входов&#10;-проверка ШИМ">
-      <created>1558443392767</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1558443392767</updated>
     </task>
     <task id="LOCAL-00027" summary="переделана проверка иу&#10;добавлен график&#10;изиенен протокол иу">
       <created>1563858367844</created>
@@ -549,7 +548,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601553024885</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="owenpchv переписан под pymodbus">
+      <created>1601555384333</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1601555384333</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <option name="createBranch" value="false" />
     <option name="commitChanges" value="false" />
     <servers />
@@ -599,7 +605,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="исправлено отображение графика после выхода из испытания по кнопке &quot;назад&quot;" />
     <MESSAGE value="шапка протокола" />
     <MESSAGE value="работа над протоколом" />
     <MESSAGE value="протокол" />
@@ -624,37 +629,42 @@
     <MESSAGE value="electropribors переписан под pymodbus" />
     <MESSAGE value="icpdas переписан под pymodbus" />
     <MESSAGE value="owenio переписан под pymodbus" />
-    <option name="LAST_COMMIT_MESSAGE" value="owenio переписан под pymodbus" />
+    <MESSAGE value="owenpchv переписан под pymodbus" />
+    <option name="LAST_COMMIT_MESSAGE" value="owenpchv переписан под pymodbus" />
   </component>
   <component name="WindowStateProjectService">
     <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1601468516482">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1601468516482" />
-    <state x="587" y="87" key="CommitChangelistDialog2" timestamp="1601553022693">
+    <state x="587" y="87" key="CommitChangelistDialog2" timestamp="1601555383232">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="587" y="87" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1601553022693" />
+    <state x="587" y="87" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1601555383232" />
     <state width="659" height="466" key="DebuggerActiveHint" timestamp="1601462346107">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="659" height="466" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1601462346107" />
-    <state width="1876" height="273" key="GridCell.Tab.0.bottom" timestamp="1601555289535">
+    <state x="820" y="431" key="Github.Dialog.Accounts.Choose" timestamp="1601555413575">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="273" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601555289535" />
-    <state width="1876" height="273" key="GridCell.Tab.0.center" timestamp="1601555289535">
+    <state x="820" y="431" key="Github.Dialog.Accounts.Choose/0.0.1920.1040@0.0.1920.1040" timestamp="1601555413575" />
+    <state width="1876" height="273" key="GridCell.Tab.0.bottom" timestamp="1601556265836">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="273" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601555289535" />
-    <state width="1876" height="273" key="GridCell.Tab.0.left" timestamp="1601555289534">
+    <state width="1876" height="273" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601556265836" />
+    <state width="1876" height="273" key="GridCell.Tab.0.center" timestamp="1601556265836">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="273" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601555289534" />
-    <state width="1876" height="273" key="GridCell.Tab.0.right" timestamp="1601555289535">
+    <state width="1876" height="273" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601556265836" />
+    <state width="1876" height="273" key="GridCell.Tab.0.left" timestamp="1601556265836">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="273" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601555289535" />
+    <state width="1876" height="273" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601556265836" />
+    <state width="1876" height="273" key="GridCell.Tab.0.right" timestamp="1601556265836">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1876" height="273" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601556265836" />
     <state width="1876" height="340" key="GridCell.Tab.1.bottom" timestamp="1601471611407">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -671,6 +681,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="340" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601471611407" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1601555401184">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1601555401184" />
     <state x="524" y="248" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1601468649499">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

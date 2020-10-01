@@ -1,3 +1,5 @@
+import logging
+
 from PyQt5 import QtCore
 from pymodbus.client.sync import ModbusSerialClient as Client
 
@@ -60,4 +62,5 @@ class Generator(QtCore.QObject):
             self.setActive(False)
         else:
             self.warning.emit(f'{self.name} warning: {req}')
-            print(f'{self.name} warning: {req}')
+            logging.warning(f'{self.name} warning: {req}')
+

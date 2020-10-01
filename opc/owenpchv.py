@@ -1,8 +1,9 @@
-﻿import modbus_tk.defines as cst
+﻿import logging
+
 from PyQt5 import QtCore
-import opc.bitwise as bitwise
-from opc.monad import Maybe
 from pymodbus.client.sync import ModbusSerialClient as Client
+
+import opc.bitwise as bitwise
 
 
 class Pchv(QtCore.QObject):
@@ -101,7 +102,7 @@ class Pchv(QtCore.QObject):
 
     def emit_warning(self, txt, error):
         self.warning.emit(f'{self.name} {txt} warning: {error}')
-        print(f'{self.name} {txt} warning: {error}')
+        logging.warning(f'{self.name} {txt} warning: {error}')
 
     def emit_stw_signals(self):
         stw = self.stw

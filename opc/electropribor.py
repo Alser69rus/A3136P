@@ -1,5 +1,6 @@
-from PyQt5 import QtCore
+import logging
 
+from PyQt5 import QtCore
 from pymodbus.client.sync import ModbusSerialClient as Client
 
 
@@ -46,7 +47,7 @@ class ElMultimeter(QtCore.QObject):
             self.updated.emit()
         else:
             self.warning.emit(f'{self.name} warning: {req}')
-            print(f'{self.name} warning: {req}')
+            logging.warning(f'{self.name} warning: {req}')
 
     @QtCore.pyqtSlot(bool)
     def setActive(self, value=True):

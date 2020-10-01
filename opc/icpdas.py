@@ -1,4 +1,5 @@
-﻿from typing import List
+﻿import logging
+from typing import List
 
 from PyQt5 import QtCore
 from pymodbus.client.sync import ModbusSerialClient as Client
@@ -66,7 +67,7 @@ class M7084(QtCore.QObject):
             return True
         else:
             self.warning.emit(f'{self.name} warning clear {self._clear_ch} err: {req}')
-            print(f'{self.name} warning clear {self._clear_ch} err: {req}')
+            logging.warning(f'{self.name} warning clear {self._clear_ch} err: {req}')
             return False
 
     def enable(self) -> bool:
@@ -76,7 +77,7 @@ class M7084(QtCore.QObject):
             value = bitwise.override(data, self._enable_ch, self._enable_value)
         else:
             self.warning.emit(f'{self.name} warning enable {self._enable_ch} err: {req}')
-            print(f'{self.name} warning read enable {self._enable_ch} err: {req}')
+            logging.warning(f'{self.name} warning read enable {self._enable_ch} err: {req}')
             return False
 
         req = self.port.write_register(489, value, unit=self.dev)
@@ -85,7 +86,7 @@ class M7084(QtCore.QObject):
             self.enabled.emit()
         else:
             self.warning.emit(f'{self.name} warning write enable {self._enable_ch} err: {req}')
-            print(f'{self.name} warning write enable {self._enable_ch} err: {req}')
+            logging.warning(f'{self.name} warning write enable {self._enable_ch} err: {req}')
             return False
         return True
 
@@ -100,7 +101,7 @@ class M7084(QtCore.QObject):
         req = self.read_data()
         if req.isError():
             self.warning.emit(f'{self.name} warning read err: {req}')
-            print(f'{self.name} warning read err: {req}')
+            logging.warning(f'{self.name} warning read err: {req}')
             return False
         self.data = req.registers
         self.raw_value = self.unpack_data()
